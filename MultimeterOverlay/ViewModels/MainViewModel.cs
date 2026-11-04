@@ -2,16 +2,20 @@
 using MultimeterOverlay.Core;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using UT161EReader;
 
 namespace MultimeterOverlay.ViewModels;
 
 public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 {
+    private const int ReconnectDelayMs = 2000;
+    private const int ReadDelayMs = 200;
+    private const int MaxConsecutiveTimeouts = 3;
+
     private UT161EMultimeter? _multimeter;
     private CancellationTokenSource? _cts;
     private Task? _readingTask;
+    private bool _disposed;
 
     private string _deviceName = "UNI-T UT161E";
     private string _displayValue = "----";
@@ -67,81 +71,147 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public void Start()
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         if (_readingTask is not null)
             return;
 
-        try
-        {
-            _multimeter = new UT161EMultimeter();
-            _cts = new CancellationTokenSource();
-
-            DeviceName = _multimeter.Name;
-            Status = "Połączono";
-
-            _readingTask = ReadLoopAsync(_cts.Token);
-        }
-        catch (Exception ex)
-        {
-            Status = "Błąd połączenia";
-            Function = ex.Message;
-        }
+        _cts = new CancellationTokenSource();
+        _readingTask = RunAsync(_cts.Token);
     }
 
-    private async Task ReadLoopAsync(CancellationToken token)
+    private async Task RunAsync(CancellationToken token)
     {
-        if (_multimeter is null)
-            return;
-
         try
         {
             while (!token.IsCancellationRequested)
             {
-                MultimeterReading? reading;
+                if (_multimeter is null)
+                {
+                    Status = "Łączenie...";
 
-                try
-                {
-                    reading = await _multimeter.ReadAsync(token);
-                }
-                catch (TimeoutException)
-                {
-                    Status = "Oczekiwanie na miernik...";
-                    continue;
-                }
+                    try
+                    {
+                        _multimeter = new UT161EMultimeter();
+                        DeviceName = _multimeter.Name;
+                        Status = "Połączono";
+                    }
+                    catch (Exception ex)
+                    {
+                        Status = "Miernik niedostępny";
+                        Function = ex.Message;
 
-                if (token.IsCancellationRequested)
-                    break;
+                        await Task.Delay(
+                            ReconnectDelayMs, token);
 
-                if (reading is not null)
-                {
-                    DisplayValue = reading.DisplayValue;
-                    Unit = reading.Unit;
-                    Function = reading.Function;
-                    Range = reading.IsAutoRange ? "AUTO" : "MANUAL";
-                    IsHold = reading.IsHold;
-                    Status = "Połączono";
-                }
-                else
-                {
-                    Status = "Brak danych";
+                        continue;
+                    }
                 }
 
-                await Task.Delay(200, token);
+                int timeoutCount = 0;
+                bool reconnect = false;
+
+                while (!token.IsCancellationRequested &&
+                       !reconnect)
+                {
+                    try
+                    {
+                        MultimeterReading? reading =
+                            await _multimeter.ReadAsync(token);
+
+                        if (token.IsCancellationRequested)
+                            break;
+
+                        timeoutCount = 0;
+
+                        if (reading is not null)
+                        {
+                            UpdateReading(reading);
+                            Status = "Połączono";
+                        }
+                        else
+                        {
+                            Status = "Brak danych";
+                        }
+
+                        await Task.Delay(ReadDelayMs, token);
+                    }
+                    catch (TimeoutException)
+                    {
+                        timeoutCount++;
+
+                        Status = "Oczekiwanie na miernik...";
+
+                        if (timeoutCount >= MaxConsecutiveTimeouts)
+                        {
+                            Status = "Brak odpowiedzi miernika";
+                            reconnect = true;
+                        }
+                    }
+                    catch (OperationCanceledException)
+                        when (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        Status = "Utracono połączenie";
+                        Function = ex.Message;
+                        reconnect = true;
+                    }
+                }
+
+                Disconnect();
+
+                if (!token.IsCancellationRequested)
+                {
+                    ClearReading();
+
+                    await Task.Delay(
+                        ReconnectDelayMs, token);
+                }
             }
         }
         catch (OperationCanceledException)
+            when (token.IsCancellationRequested)
         {
-            // Normalne zakończenie.
+            // Normalne zatrzymanie.
         }
-        catch (Exception ex)
+        finally
         {
-            Status = "Błąd odczytu";
-            Function = ex.Message;
+            Disconnect();
         }
+    }
+
+    private void UpdateReading(MultimeterReading reading)
+    {
+        DisplayValue = reading.DisplayValue;
+        Unit = reading.Unit;
+        Function = reading.Function;
+        Range = reading.IsAutoRange ? "AUTO" : "MANUAL";
+        IsHold = reading.IsHold;
+    }
+
+    private void ClearReading()
+    {
+        DisplayValue = "----";
+        Unit = "";
+        Range = "";
+        IsHold = false;
+    }
+
+    private void Disconnect()
+    {
+        _multimeter?.Dispose();
+        _multimeter = null;
     }
 
     public async Task StopAsync()
     {
-        _cts?.Cancel();
+        if (_cts is null)
+            return;
+
+        _cts.Cancel();
 
         if (_readingTask is not null)
         {
@@ -151,27 +221,35 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             }
             catch (OperationCanceledException)
             {
+                // Normalne zatrzymanie.
             }
         }
 
-        _multimeter?.Dispose();
-        _cts?.Dispose();
-
-        _multimeter = null;
-        _cts = null;
         _readingTask = null;
 
+        _cts.Dispose();
+        _cts = null;
+
+        ClearReading();
         Status = "Rozłączono";
     }
 
     public void Dispose()
     {
-        _cts?.Cancel();
+        if (_disposed)
+            return;
 
-        // Dispose nie zastępuje StopAsync.
-        // StopAsync należy wywołać przed Dispose.
+        if (_readingTask is not null)
+        {
+            throw new InvalidOperationException(
+                "Przed Dispose należy wywołać StopAsync.");
+        }
+
+        _disposed = true;
         _cts?.Dispose();
-        _multimeter?.Dispose();
+        Disconnect();
+
+        GC.SuppressFinalize(this);
     }
 
     private void SetField<T>(
@@ -183,6 +261,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             return;
 
         field = value;
+
         PropertyChanged?.Invoke(
             this,
             new PropertyChangedEventArgs(propertyName));
