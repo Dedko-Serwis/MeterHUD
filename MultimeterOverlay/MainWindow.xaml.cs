@@ -1,24 +1,27 @@
-﻿using System.Text;
+﻿
+using MultimeterOverlay.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace MultimeterOverlay
+namespace MultimeterOverlay;
+
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    private readonly MainViewModel _viewModel = new();
+
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+
+        DataContext = _viewModel;
+
+        Loaded += (_, _) => _viewModel.Start();
+        Closed += MainWindow_Closed;
+    }
+
+    private async void MainWindow_Closed(
+        object? sender, EventArgs e)
+    {
+        await _viewModel.StopAsync();
+        _viewModel.Dispose();
     }
 }
