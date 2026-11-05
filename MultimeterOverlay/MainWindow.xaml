@@ -27,24 +27,93 @@
                    FontSize="18"
                    Foreground="#AAAAAA"/>
 
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+        <Grid Grid.Row="1"
+      VerticalAlignment="Center"
+      HorizontalAlignment="Center">
 
-            <TextBlock x:Name="ValueText"
-                       Text="{Binding DisplayValue}"
-                       FontSize="76"
-                       FontWeight="SemiBold"
+            <!-- Zwykły pojedynczy pomiar -->
+            <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center">
+
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAcDcMode}"
+                                 Value="True">
+                                <Setter Property="Visibility"
+                                Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <TextBlock x:Name="ValueText"
+                   Text="{Binding DisplayValue}"
+                   FontSize="76"
+                   FontWeight="SemiBold"
+                   FontFamily="Consolas"
+                   VerticalAlignment="Center"/>
+
+                <TextBlock x:Name="UnitText"
+                   Text="{Binding Unit}"
+                   FontSize="24"
+                   Margin="12,20,0,0"
+                   VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Dwa pomiary AC+DC -->
+            <StackPanel HorizontalAlignment="Center">
+
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAcDcMode}"
+                                 Value="True">
+                                <Setter Property="Visibility"
+                                Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+                    <TextBlock Text="~"
+                       Foreground="#F4D35E"
+                       FontSize="32"
+                       Width="45"/>
+
+                    <TextBlock Text="{Binding AcDisplayValue}"
                        FontFamily="Consolas"
-                       VerticalAlignment="Center"/>
+                       FontSize="42"
+                       Foreground="White"/>
 
-            <TextBlock x:Name="UnitText"
-                       Text="{Binding Unit}"
-                       FontSize="24"
-                       Margin="12,20,0,0"
-                       VerticalAlignment="Center"/>
-        </StackPanel>
+                    <TextBlock Text="{Binding AcDcUnit}"
+                       FontSize="22"
+                       Margin="12,12,0,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+                    <TextBlock Text="⎓"
+                       Foreground="#62D989"
+                       FontSize="32"
+                       Width="45"/>
+
+                    <TextBlock Text="{Binding DcDisplayValue}"
+                       FontFamily="Consolas"
+                       FontSize="42"
+                       Foreground="White"/>
+
+                    <TextBlock Text="{Binding AcDcUnit}"
+                       FontSize="22"
+                       Margin="12,12,0,0"/>
+                </StackPanel>
+
+            </StackPanel>
+        </Grid>
 
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"

@@ -30,6 +30,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private bool _hasRecording;
     private bool _isMin;
     private bool _isMax;
+    private bool _isAcDcMode;
+    private string _acDisplayValue = "----";
+    private string _dcDisplayValue = "----";
+    private string _acDcUnit = "V";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -97,6 +101,29 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         get => _hasRecording;
         private set => SetField(ref _hasRecording, value);
+    }
+    public bool IsAcDcMode
+    {
+        get => _isAcDcMode;
+        private set => SetField(ref _isAcDcMode, value);
+    }
+
+    public string AcDisplayValue
+    {
+        get => _acDisplayValue;
+        private set => SetField(ref _acDisplayValue, value);
+    }
+
+    public string DcDisplayValue
+    {
+        get => _dcDisplayValue;
+        private set => SetField(ref _dcDisplayValue, value);
+    }
+
+    public string AcDcUnit
+    {
+        get => _acDcUnit;
+        private set => SetField(ref _acDcUnit, value);
     }
 
     public void Start()
@@ -319,6 +346,34 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     private void UpdateReading(MultimeterReading reading)
     {
+        if (reading.IsAcDc)
+        {
+            // Przy wejściu do AC+DC usuwamy stare wskazania.
+            if (!IsAcDcMode)
+            {
+                AcDisplayValue = "----";
+                DcDisplayValue = "----";
+            }
+
+            IsAcDcMode = true;
+
+            if (reading.IsAcComponent == true)
+                AcDisplayValue = reading.DisplayValue;
+            else if (reading.IsAcComponent == false)
+                DcDisplayValue = reading.DisplayValue;
+
+            AcDcUnit = reading.Unit
+                .Replace("AC+DC", "", StringComparison.OrdinalIgnoreCase)
+                .Trim();
+
+            if (string.IsNullOrEmpty(AcDcUnit))
+                AcDcUnit = "V";
+        }
+        else
+        {
+            IsAcDcMode = false;
+        }
+
         DisplayValue = reading.DisplayValue;
         Unit = reading.Unit;
         Function = reading.Function;
@@ -331,6 +386,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     private void ClearReading()
     {
+        IsAcDcMode = false;
+        AcDisplayValue = "----";
+        DcDisplayValue = "----";
         DisplayValue = "----";
         Unit = "";
         Range = "";

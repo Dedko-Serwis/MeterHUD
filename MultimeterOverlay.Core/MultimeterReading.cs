@@ -58,4 +58,16 @@ public sealed record MultimeterReading
     /// Czas odebrania pomiaru.
     /// </summary>
     public DateTime Timestamp { get; init; } = DateTime.Now;
+
+    /// <summary>
+    /// Pomiar należy do trybu AC+DC.
+    /// </summary>
+    public bool IsAcDc { get; init; }
+
+    /// <summary>
+    /// W trybie AC+DC określa składową pomiaru.
+    /// True = AC, false = DC.
+    /// Dla pozostałych trybów wartość null.
+    /// </summary>
+    public bool? IsAcComponent { get; init; }
 }

@@ -17,7 +17,8 @@ bool IsMax,
 bool ManualRange,
     bool Negative,
     bool Overload,
-    string Hex);
+    string Hex,
+    bool IsAcDcAcComponent);
 
 public static class UT161EDecoder
 {
@@ -105,6 +106,11 @@ public static class UT161EDecoder
 
             bool manual = (frame[15] & 0x04) != 0;
             bool negative = (frame[16] & 0x01) != 0;
+            
+            // AC+DC: bit 3 bajtu 16 rozróżnia dwie składowe.
+            // Przypisanie bitu do AC wymaga jeszcze potwierdzenia.
+            bool isAcDcAcComponent =
+                function == 0x19 && (frame[16] & 0x08) != 0;
 
             measurement = new UT161EMeasurement(
                 Function: functionName,
@@ -118,8 +124,9 @@ public static class UT161EDecoder
                 IsMax: isMax,
                 ManualRange: manual,
                 Negative: negative,
-                Overload: overload,
-                Hex: Convert.ToHexString(frame)
+                Overload: overload,                
+                Hex: Convert.ToHexString(frame),
+                IsAcDcAcComponent: isAcDcAcComponent
             );
 
             return true;

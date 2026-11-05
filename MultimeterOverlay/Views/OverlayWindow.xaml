@@ -293,41 +293,123 @@
                     </StackPanel>
 
                     <!-- POMIAR -->
+                    <Grid Grid.Column="1"       VerticalAlignment="Center"      HorizontalAlignment="Stretch">
 
-                    <!-- POMIAR -->
-                    <Grid Grid.Column="1"
-      VerticalAlignment="Center"
-      HorizontalAlignment="Stretch">
+                        <!-- Pojedynczy pomiar -->
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsAcDcMode}"
+                                 Value="True">
+                                            <Setter Property="Visibility"
+                                Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
 
-                        <Grid.ColumnDefinitions>
-                            <!-- Wartość pomiaru -->
-                            <ColumnDefinition Width="195"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="195"/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
 
-                            <!-- Jednostka -->
-                            <ColumnDefinition Width="80"/>
-                        </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                   Text="{Binding DisplayValue}"
+                   FontFamily="Consolas"
+                   FontSize="47"
+                   FontWeight="SemiBold"
+                   Foreground="White"
+                   TextAlignment="Right"
+                   VerticalAlignment="Center"
+                   TextWrapping="NoWrap"/>
 
-                        <!-- WARTOŚĆ -->
-                        <TextBlock Grid.Column="0"
-               Text="{Binding DisplayValue}"
-               FontFamily="Consolas"
-               FontSize="47"
-               FontWeight="SemiBold"
-               Foreground="White"
-               TextAlignment="Right"
-               VerticalAlignment="Center"
-               TextTrimming="None"
-               TextWrapping="NoWrap"/>
+                            <TextBlock Grid.Column="1"
+                   Text="{Binding OverlayUnit}"
+                   FontSize="26"
+                   Foreground="White"
+                   TextAlignment="Center"
+                   VerticalAlignment="Center"
+                   TextWrapping="NoWrap"/>
+                        </Grid>
 
-                        <!-- JEDNOSTKA -->
-                        <TextBlock Grid.Column="1"
-               Text="{Binding OverlayUnit}"
-               FontSize="26"
-               Foreground="White"
-               TextAlignment="Center"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Center"
-               TextWrapping="NoWrap"/>
+                        <!-- Dwa pomiary AC+DC -->
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsAcDcMode}"
+                                 Value="True">
+                                            <Setter Property="Visibility"
+                                Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="45"/>
+                                <RowDefinition Height="45"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="35"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- AC -->
+                            <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Text="~"
+                   Foreground="#F4D35E"
+                   FontSize="25"
+                   VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Row="0"
+                   Grid.Column="1"
+                   Text="{Binding AcDisplayValue}"
+                   FontFamily="Consolas"
+                   FontSize="31"
+                   Foreground="White"
+                   TextAlignment="Right"
+                   VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Row="0"
+                   Grid.Column="2"
+                   Text="{Binding AcDcUnit}"
+                   FontSize="21"
+                   Foreground="White"
+                   TextAlignment="Center"
+                   VerticalAlignment="Center"/>
+
+                            <!-- DC -->
+                            <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   Text="⎓"
+                   Foreground="#62D989"
+                   FontSize="25"
+                   VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Row="1"
+                   Grid.Column="1"
+                   Text="{Binding DcDisplayValue}"
+                   FontFamily="Consolas"
+                   FontSize="31"
+                   Foreground="White"
+                   TextAlignment="Right"
+                   VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Row="1"
+                   Grid.Column="2"
+                   Text="{Binding AcDcUnit}"
+                   FontSize="21"
+                   Foreground="White"
+                   TextAlignment="Center"
+                   VerticalAlignment="Center"/>
+                        </Grid>
 
                     </Grid>
 

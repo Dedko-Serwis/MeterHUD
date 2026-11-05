@@ -71,7 +71,11 @@ public sealed class UT161EMultimeter : IMultimeter
 
                     IsAutoRange = !measurement.ManualRange,
 
-                    Timestamp = DateTime.Now
+                    Timestamp = DateTime.Now,
+
+                    IsAcDc = measurement.FunctionCode == 0x19,
+
+                    IsAcComponent = measurement.FunctionCode == 0x19  ? measurement.IsAcDcAcComponent : null
                 };
             }, cancellationToken);
         }
