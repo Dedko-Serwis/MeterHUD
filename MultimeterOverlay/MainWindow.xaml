@@ -68,12 +68,38 @@
                        Visibility="{Binding IsHold, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </StackPanel>
 
-        <TextBlock x:Name="StatusText"
-                   Grid.Row="3"
-                   Text="{Binding Status}"
-                   Foreground="#AAAAAA"
-                   FontSize="12"
-                   HorizontalAlignment="Right"
-                   Margin="0,12,0,0"/>
+        <StatusBar Grid.Row="3"
+           Margin="0,12,0,0"
+           Background="#252525"
+           Foreground="#DDDDDD">
+
+            <StatusBarItem>
+                <TextBlock Text="F12"
+                   Foreground="#888888"/>
+            </StatusBarItem>
+            
+            <StatusBarItem>
+                <TextBlock x:Name="RecordingIndicator" Text="{Binding RecordingStatus}" FontWeight="Bold" Foreground="#999999" Width="50"/>
+            </StatusBarItem>
+            
+            <Separator/>
+            
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Ramki: "
+                       Foreground="#AAAAAA" />
+                    <TextBlock Text="{Binding RecordedFrames}" Width="50"/>
+                </StackPanel>
+            </StatusBarItem>
+
+            <Separator/>
+
+            
+            <StatusBarItem>
+                <TextBlock Text="{Binding Status}"
+                   Foreground="#55D980"/>
+            </StatusBarItem>            
+
+        </StatusBar>
     </Grid>
 </Window>

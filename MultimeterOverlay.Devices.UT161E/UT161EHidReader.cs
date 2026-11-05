@@ -16,6 +16,8 @@ public sealed class UT161EHidReader : IDisposable
     private readonly HidStream _stream;
     private readonly byte[] _input;
     private readonly byte[] _output;
+    private readonly UT161EHidLogger _logger = new();
+    public UT161EHidLogger Logger => _logger;
 
     public UT161EHidReader()
     {
@@ -64,6 +66,7 @@ public sealed class UT161EHidReader : IDisposable
 
     public UT161EMeasurement? ReadMeasurement()
     {
+        _logger.Log("OUT", _output);
         _stream.Write(_output);
 
         int count = _stream.Read(
@@ -71,6 +74,8 @@ public sealed class UT161EHidReader : IDisposable
 
         if (count <= 0)
             return null;
+
+        _logger.Log("IN", _input.AsSpan(0, count));
 
         return UT161EDecoder.TryDecode(
             _input.AsSpan(0, count),
@@ -81,6 +86,7 @@ public sealed class UT161EHidReader : IDisposable
 
     public void Dispose()
     {
+        _logger.Dispose();
         _stream.Dispose();
     }
 }

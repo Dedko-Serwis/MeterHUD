@@ -24,6 +24,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private string _range = "";
     private string _status = "Niepołączono";
     private bool _isHold;
+    private int _recordedFrames;
+    private string _recordingStatus = "READY";
+    private bool _isRecording;
+    private bool _hasRecording;
     private bool _isMin;
     private bool _isMax;
 
@@ -71,6 +75,29 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _isHold, value);
     }
 
+    public int RecordedFrames
+    {
+        get => _recordedFrames;
+        private set => SetField(ref _recordedFrames, value);
+    }
+
+    public string RecordingStatus
+    {
+        get => _recordingStatus;
+        private set => SetField(ref _recordingStatus, value);
+    }
+
+    public bool IsRecording
+    {
+        get => _isRecording;
+        private set => SetField(ref _isRecording, value);
+    }
+
+    public bool HasRecording
+    {
+        get => _hasRecording;
+        private set => SetField(ref _hasRecording, value);
+    }
 
     public void Start()
     {
@@ -249,6 +276,47 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
+    public void ToggleRecording()
+    {
+        if (IsRecording)
+        {
+            StopRecording();
+            return;
+        }
+
+        if (_multimeter is null)
+            return;
+
+        _multimeter.Logger.Start();
+
+        RecordedFrames = 0;
+        IsRecording = true;
+        RecordingStatus = "REC";
+    }
+
+    public void StopRecording()
+    {
+        if (!IsRecording)
+            return;
+
+        if (_multimeter is not null)
+        {
+            _multimeter.Logger.Stop();
+            RecordedFrames = _multimeter.Logger.FrameCount;
+        }
+
+        IsRecording = false;
+        HasRecording = RecordedFrames > 0;
+        RecordingStatus = HasRecording ? "SAVED" : "READY";
+    }
+
+    public void RefreshRecordingCounter()
+    {
+        if (IsRecording && _multimeter is not null)
+            RecordedFrames = _multimeter.Logger.FrameCount;
+    }
+
+
     private void UpdateReading(MultimeterReading reading)
     {
         DisplayValue = reading.DisplayValue;
@@ -274,6 +342,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     private void Disconnect()
     {
+        StopRecording();
+
         _multimeter?.Dispose();
         _multimeter = null;
     }

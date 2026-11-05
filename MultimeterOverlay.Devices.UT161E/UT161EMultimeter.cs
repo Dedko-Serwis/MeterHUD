@@ -14,6 +14,7 @@ public sealed class UT161EMultimeter : IMultimeter
     private bool _disposed;
 
     public string Name => "UNI-T UT161E";
+    public UT161EHidLogger Logger => _reader.Logger;
 
     public bool IsConnected => !_disposed;
 
