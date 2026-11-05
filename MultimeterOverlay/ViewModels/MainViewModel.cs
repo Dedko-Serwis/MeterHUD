@@ -80,6 +80,56 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         _readingTask = RunAsync(_cts.Token);
     }
 
+
+    public bool IsAutoRange => Range == "AUTO";
+
+    public bool IsManualRange => Range == "MANUAL";
+
+    public bool IsDC =>
+        Function.Contains("DC", StringComparison.OrdinalIgnoreCase);
+
+    public bool IsAC =>
+        Function.Contains("AC", StringComparison.OrdinalIgnoreCase);
+
+    public bool IsMin => false; // Do ustalenia w protokole HID
+    public bool IsMax => false; // Do ustalenia w protokole HID
+
+    public string MeasurementType
+    {
+        get
+        {
+            if (Function.Contains("Napięcie", StringComparison.OrdinalIgnoreCase))
+                return "Napięcie";
+
+            if (Function.Contains("Prąd", StringComparison.OrdinalIgnoreCase))
+                return "Prąd";
+
+            if (Function.Contains("Rezystancja", StringComparison.OrdinalIgnoreCase))
+                return "Rezystancja";
+
+            if (Function.Contains("Pojemność", StringComparison.OrdinalIgnoreCase))
+                return "Pojemność";
+
+            if (Function.Contains("Częstotliwość", StringComparison.OrdinalIgnoreCase))
+                return "Częstotliwość";
+
+            return Function;
+        }
+    }
+
+    public string OverlayUnit
+    {
+        get
+        {
+            return Unit
+                .Replace("AC", "", StringComparison.OrdinalIgnoreCase)
+                .Replace("DC", "", StringComparison.OrdinalIgnoreCase)
+                .Trim();
+        }
+    }
+
+
+
     private async Task RunAsync(CancellationToken token)
     {
         try
@@ -265,5 +315,34 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         PropertyChanged?.Invoke(
             this,
             new PropertyChangedEventArgs(propertyName));
+
+
+        if (propertyName == nameof(Range))
+        {
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(IsAutoRange)));
+
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(IsManualRange)));
+        }
+
+        if (propertyName == nameof(Function))
+        {
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(IsDC)));
+
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(IsAC)));
+
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(MeasurementType)));
+        }
+
+        if (propertyName == nameof(Unit))
+        {
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(OverlayUnit)));
+        }
+
     }
 }
