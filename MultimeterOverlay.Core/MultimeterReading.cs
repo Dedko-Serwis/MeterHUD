@@ -40,6 +40,16 @@ public sealed record MultimeterReading
     public bool IsHold { get; init; }
 
     /// <summary>
+    /// Aktywny tryb wartości minimalnej.
+    /// </summary>
+    public bool IsMin { get; init; }
+
+    /// <summary>
+    /// Aktywny tryb wartości maksymalnej.
+    /// </summary>
+    public bool IsMax { get; init; }
+
+    /// <summary>
     /// Automatyczny wybór zakresu.
     /// </summary>
     public bool IsAutoRange { get; init; }

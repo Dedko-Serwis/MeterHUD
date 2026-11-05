@@ -24,6 +24,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private string _range = "";
     private string _status = "Niepołączono";
     private bool _isHold;
+    private bool _isMin;
+    private bool _isMax;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -69,6 +71,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _isHold, value);
     }
 
+
     public void Start()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -95,8 +98,17 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         || Function.Contains("przemienny", StringComparison.OrdinalIgnoreCase);
 
 
-    public bool IsMin => false; // Do ustalenia w protokole HID
-    public bool IsMax => false; // Do ustalenia w protokole HID
+    public bool IsMin
+    {
+        get => _isMin;
+        private set => SetField(ref _isMin, value);
+    }
+
+    public bool IsMax
+    {
+        get => _isMax;
+        private set => SetField(ref _isMax, value);
+    }
 
     public string MeasurementType
     {
@@ -243,7 +255,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         Unit = reading.Unit;
         Function = reading.Function;
         Range = reading.IsAutoRange ? "AUTO" : "MANUAL";
+
         IsHold = reading.IsHold;
+        IsMin = reading.IsMin;
+        IsMax = reading.IsMax;
     }
 
     private void ClearReading()
@@ -251,7 +266,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         DisplayValue = "----";
         Unit = "";
         Range = "";
+
         IsHold = false;
+        IsMin = false;
+        IsMax = false;
     }
 
     private void Disconnect()

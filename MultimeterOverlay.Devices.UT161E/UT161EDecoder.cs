@@ -11,8 +11,10 @@ public sealed record UT161EMeasurement(
     byte RangeCode,
     byte UnitCode,
     byte ScaleCode,
-    bool Hold,
-    bool ManualRange,
+bool Hold,
+bool IsMin,
+bool IsMax,
+bool ManualRange,
     bool Negative,
     bool Overload,
     string Hex);
@@ -98,6 +100,9 @@ public static class UT161EDecoder
             // Ich interpretację można rozszerzyć
             // po sprawdzeniu kolejnych kombinacji.
             bool hold = (frame[14] & 0x02) != 0;
+            bool isMin = (frame[14] & 0x04) != 0;
+            bool isMax = (frame[14] & 0x08) != 0;
+
             bool manual = (frame[15] & 0x04) != 0;
             bool negative = (frame[16] & 0x01) != 0;
 
@@ -109,6 +114,8 @@ public static class UT161EDecoder
                 UnitCode: frame[12],
                 ScaleCode: frame[13],
                 Hold: hold,
+                IsMin: isMin,
+                IsMax: isMax,
                 ManualRange: manual,
                 Negative: negative,
                 Overload: overload,
