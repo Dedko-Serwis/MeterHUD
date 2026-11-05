@@ -44,6 +44,9 @@ public static class UT161EUnits
         Add(0x02, 0x32, "V DC", 1, 2);
         Add(0x02, 0x33, "V DC", 1, 1);
 
+        // mV AC
+        Add(0x01, 0x30, "mV AC", 1e-3, 2);
+
         // mV DC
         Add(0x03, 0x30, "mV DC", 1e-3);
 
@@ -145,18 +148,36 @@ public static class UT161EUnits
             return range.Unit;
 
         // Dotychczasowe mapowanie prądu.
+
         return m.FunctionCode switch
         {
-            0x0C => "Prąd µA DC",
-            0x0D => "Prąd µA AC",
-            0x0E => "Prąd mA DC",
-            0x0F => "Prąd mA AC",
-            0x10 => "Prąd A DC",
-            0x11 => "Prąd A AC",
-            0x12 => "Wzmocnienie tranzystora hFE",
+            0x00 => "V AC",
+            0x01 => "mV AC",
+            0x02 => "V DC",
+            0x03 => "mV DC",
+
+            0x04 => "Hz",
+            0x05 => "%",
+
+            0x06 or 0x07 => "Ω",
+            0x08 => "V",
+
+            0x0C => "µA DC",
+            0x0D => "µA AC",
+            0x0E => "mA DC",
+            0x0F => "mA AC",
+            0x10 => "A DC",
+            0x11 => "A AC",
+
+            //0x12 => "hFE",
+            0x12 => "β",
+
+            0x18 => "V AC",
+            0x19 => "V AC+DC",
 
             _ => "?"
         };
+
     }
 
     /// <summary>

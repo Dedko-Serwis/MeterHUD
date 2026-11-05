@@ -73,7 +73,9 @@ public static class UT161EDecoder
             string functionName = function switch
             {
                 0x00 => "Napięcie AC",
+                0x01 => "Napięcie AC",
                 0x02 => "Napięcie DC",
+                0x03 => "Napięcie DC",
                 0x06 => "Rezystancja",
                 0x07 => "Ciągłość",
                 0x08 => "Dioda",

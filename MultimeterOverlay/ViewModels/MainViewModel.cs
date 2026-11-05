@@ -85,11 +85,15 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public bool IsManualRange => Range == "MANUAL";
 
+
     public bool IsDC =>
-        Function.Contains("DC", StringComparison.OrdinalIgnoreCase);
+        Function.Contains("DC", StringComparison.OrdinalIgnoreCase)
+        || Function.Contains("stały", StringComparison.OrdinalIgnoreCase);
 
     public bool IsAC =>
-        Function.Contains("AC", StringComparison.OrdinalIgnoreCase);
+        Function.Contains("AC", StringComparison.OrdinalIgnoreCase)
+        || Function.Contains("przemienny", StringComparison.OrdinalIgnoreCase);
+
 
     public bool IsMin => false; // Do ustalenia w protokole HID
     public bool IsMax => false; // Do ustalenia w protokole HID
