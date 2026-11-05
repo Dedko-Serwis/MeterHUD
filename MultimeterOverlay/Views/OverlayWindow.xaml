@@ -23,53 +23,59 @@
             BorderBrush="#555555"
             BorderThickness="1"
             CornerRadius="10"
-            Padding="14">
+            Padding="10">
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <Viewbox Stretch="Uniform"
+                 StretchDirection="Both">
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
+            <Grid Width="400" Height="120">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="90"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
 
-                <TextBlock Text="{Binding DisplayValue}"
-                           Foreground="White"
-                           FontFamily="Consolas"
-                           FontWeight="SemiBold"
-                           FontSize="64"
-                           VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
 
-                <TextBlock Text="{Binding Unit}"
-                           Foreground="White"
-                           FontSize="22"
-                           Margin="10,18,0,0"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
+                    <TextBlock Text="{Binding DisplayValue}"
+                               Foreground="White"
+                               FontFamily="Consolas"
+                               FontWeight="SemiBold"
+                               FontSize="64"
+                               VerticalAlignment="Center"/>
 
-            <StackPanel Grid.Row="1"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Unit}"
+                               Foreground="White"
+                               FontSize="22"
+                               Margin="10,18,0,0"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <TextBlock Text="{Binding Function}"
-                           Foreground="#CCCCCC"
-                           FontSize="14"
-                           Margin="0,0,14,0"/>
+                <StackPanel Grid.Row="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
 
-                <TextBlock Text="{Binding Range}"
-                           Foreground="#AAAAAA"
-                           FontSize="14"
-                           Margin="0,0,14,0"/>
+                    <TextBlock Text="{Binding Function}"
+                               Foreground="#CCCCCC"
+                               FontSize="14"
+                               Margin="0,0,14,0"/>
 
-                <TextBlock Text="HOLD"
-                           Foreground="Orange"
-                           FontSize="14"
-                           FontWeight="Bold"
-                           Visibility="{Binding IsHold,
-                               Converter={StaticResource BooleanToVisibilityConverter}}"/>
-            </StackPanel>
-        </Grid>
+                    <TextBlock Text="{Binding Range}"
+                               Foreground="#AAAAAA"
+                               FontSize="14"
+                               Margin="0,0,14,0"/>
+
+                    <TextBlock Text="HOLD"
+                               Foreground="Orange"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               Visibility="{Binding IsHold,
+                                   Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
+            </Grid>
+        </Viewbox>
     </Border>
 </Window>
