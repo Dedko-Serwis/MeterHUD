@@ -33,6 +33,8 @@
                 <Separator/>
                 <MenuItem x:Name="SimulationMenuItem"          Header="Tryb symulacji"          IsCheckable="True"          IsChecked="False"          Click="SimulationMenuItem_Click"/>
                 <Separator/>
+                <MenuItem x:Name="DisplayTestMenuItem"          Header="Test wyświetlacza"          IsCheckable="True"          IsChecked="False"          Click="DisplayTestMenuItem_Click"/>
+                <Separator/>
                 <MenuItem Header="Resetuj ustawienia..."                      Click="ResetSettings_Click"/>
             </MenuItem>
         </Menu>

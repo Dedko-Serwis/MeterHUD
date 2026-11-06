@@ -18,6 +18,7 @@ public partial class MainWindow : Window
     private OverlayWindow? _overlayWindow;
     private readonly AppSettings _settings = AppSettings.Load();
     private bool _simulationSwitchInProgress;
+    private bool _displayTestSwitchInProgress;
     private readonly DispatcherTimer _recordingTimer = new()
     {
         Interval = TimeSpan.FromMilliseconds(500)
@@ -39,13 +40,61 @@ public partial class MainWindow : Window
         Closed += MainWindow_Closed;
     }
 
+
+    private async void DisplayTestMenuItem_Click(
+        object sender, RoutedEventArgs e)
+    {
+        if (_displayTestSwitchInProgress)
+            return;
+
+        _displayTestSwitchInProgress = true;
+
+        DisplayTestMenuItem.IsEnabled = false;
+        SimulationMenuItem.IsEnabled = false;
+
+        try
+        {
+            if (DisplayTestMenuItem.IsChecked)
+            {
+                await _viewModel.EnableDisplayTestAsync();
+            }
+            else
+            {
+                _viewModel.DisableDisplayTest();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Błąd testu wyświetlacza:\n{ex.Message}",
+                "MultimeterOverlay",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+        finally
+        {
+            DisplayTestMenuItem.IsChecked =
+                _viewModel.IsDisplayTestMode;
+
+            SimulationMenuItem.IsChecked =
+                _viewModel.IsSimulationMode &&
+                !_viewModel.IsDisplayTestMode;
+
+            SimulationMenuItem.IsEnabled = true;
+            DisplayTestMenuItem.IsEnabled = true;
+
+            _displayTestSwitchInProgress = false;
+        }
+    }
+
+
     private async void SimulationMenuItem_Click(
         object sender, RoutedEventArgs e)
     {
+        if (_viewModel.IsDisplayTestMode)            return;
         if (_simulationSwitchInProgress)
         {
-            SimulationMenuItem.IsChecked =
-                _viewModel.IsSimulationMode;
+            SimulationMenuItem.IsChecked = _viewModel.IsSimulationMode;
             return;
         }
 
@@ -281,6 +330,7 @@ public partial class MainWindow : Window
         SaveSettings();
         _overlayWindow?.Close();
 
+        if (_viewModel.IsDisplayTestMode) _viewModel.DisableDisplayTest();
         if (_viewModel.IsSimulationMode) _viewModel.DisableSimulation(restartDevice: false);
 
         await _viewModel.StopAsync();

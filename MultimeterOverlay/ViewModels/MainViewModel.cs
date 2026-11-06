@@ -97,7 +97,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public bool IsHold
     {
-        get => _isHold;
+        get => _isHold || IsDisplayTestMode;
         private set => SetField(ref _isHold, value);
     }
 
@@ -146,6 +146,132 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         get => _acDcUnit;
         private set => SetField(ref _acDcUnit, value);
+    }
+
+    private readonly DispatcherTimer _displayTestTimer = new()
+    {
+        Interval = TimeSpan.FromSeconds(2)
+    };
+
+    private bool _isDisplayTestMode;
+    private bool _testStartedSimulation;
+    private int _displayTestStep;
+
+    public bool IsDisplayTestMode
+    {
+        get => _isDisplayTestMode;
+        private set
+        {
+            if (_isDisplayTestMode == value)
+                return;
+
+            SetField(ref _isDisplayTestMode, value);
+
+            // Odświeżamy kontrolki korzystające
+            // z właściwości obliczanych.
+            OnIndicatorsChanged();
+        }
+    }
+
+
+    public async Task EnableDisplayTestAsync()
+    {
+        if (IsDisplayTestMode)
+            return;
+
+        _testStartedSimulation = !IsSimulationMode;
+
+        if (_testStartedSimulation)
+            await EnableSimulationAsync();
+
+        _simulationTimer.Stop();
+
+        IsDisplayTestMode = true;
+        _displayTestStep = 0;
+
+        DeviceName = "UNI-T UT161E [TEST]";
+
+
+        DisplayValue = "-8888.8";
+        Unit = "mV";
+        Function = "Napięcie AC+DC";
+        Range = "AUTO";
+
+        IsAcDcMode = false;
+        AcDisplayValue = "888.88";
+        DcDisplayValue = "-888.88";
+        AcDcUnit = "mV";
+
+
+        _displayTestTimer.Tick += DisplayTestTimer_Tick;
+        _displayTestTimer.Start();
+
+        DisplayTestTimer_Tick(this, EventArgs.Empty);
+    }
+
+    public void DisableDisplayTest()
+    {
+        if (!IsDisplayTestMode)
+            return;
+
+        _displayTestTimer.Stop();
+        _displayTestTimer.Tick -= DisplayTestTimer_Tick;
+
+        IsDisplayTestMode = false;
+
+        if (_testStartedSimulation)
+        {
+            DisableSimulation();
+        }
+        else
+        {
+            DeviceName = "UNI-T UT161E [SYMULACJA]";
+            _simulationTimer.Start();
+            SimulationTimer_Tick(this, EventArgs.Empty);
+        }
+
+        _testStartedSimulation = false;
+    }
+
+    private void DisplayTestTimer_Tick(
+        object? sender, EventArgs e)
+    {
+        if (!IsDisplayTestMode)
+            return;
+
+        // Kolejne fazy testu.
+        int step = _displayTestStep++ % 6;
+
+        IsAcDcMode = step >= 3;
+
+
+        Status = (step % 3) switch
+        {
+            0 => "Brak komunikacji",
+            1 => "Połączono",
+            _ => "Oczekiwanie na miernik"
+        };
+
+    }
+
+
+    private void OnIndicatorsChanged()
+    {
+        foreach (string name in new[]
+        {
+        nameof(IsAutoRange),
+        nameof(IsManualRange),
+        nameof(IsAC),
+        nameof(IsDC),
+        nameof(IsMin),
+        nameof(IsMax),
+        nameof(IsHold)
+    })
+        {
+            PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(name));
+        }
     }
 
 
@@ -219,29 +345,32 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     }
 
 
-    public bool IsAutoRange => Range == "AUTO";
+    public bool IsAutoRange =>
+        IsDisplayTestMode || Range == "AUTO";
 
-    public bool IsManualRange => Range == "MANUAL";
-
+    public bool IsManualRange =>
+        IsDisplayTestMode || Range == "MANUAL";
 
     public bool IsDC =>
-        Function.Contains("DC", StringComparison.OrdinalIgnoreCase)
-        || Function.Contains("stały", StringComparison.OrdinalIgnoreCase);
+        IsDisplayTestMode ||
+        Function.Contains("DC", StringComparison.OrdinalIgnoreCase) ||
+        Function.Contains("stały", StringComparison.OrdinalIgnoreCase);
 
     public bool IsAC =>
-        Function.Contains("AC", StringComparison.OrdinalIgnoreCase)
-        || Function.Contains("przemienny", StringComparison.OrdinalIgnoreCase);
+        IsDisplayTestMode ||
+        Function.Contains("AC", StringComparison.OrdinalIgnoreCase) ||
+        Function.Contains("przemienny", StringComparison.OrdinalIgnoreCase);
 
 
     public bool IsMin
     {
-        get => _isMin;
+        get => _isMin || IsDisplayTestMode;
         private set => SetField(ref _isMin, value);
     }
 
     public bool IsMax
     {
-        get => _isMax;
+        get => _isMax || IsDisplayTestMode;
         private set => SetField(ref _isMax, value);
     }
 
@@ -407,7 +536,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public void ToggleRecording()
     {
-        if (IsSimulationMode) return;
+        if (IsSimulationMode || IsDisplayTestMode)            return;
 
         if (IsRecording)
         {
@@ -587,6 +716,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         Disconnect();
         _simulationTimer.Stop();
         _simulationTimer.Tick -= SimulationTimer_Tick;
+        _displayTestTimer.Stop();
+        _displayTestTimer.Tick -= DisplayTestTimer_Tick;
         GC.SuppressFinalize(this);
     }
 
