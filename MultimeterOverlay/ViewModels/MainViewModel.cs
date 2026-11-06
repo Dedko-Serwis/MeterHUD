@@ -2,6 +2,8 @@
 using MultimeterOverlay.Core;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using MultimeterOverlay.Services;
+using System.Windows.Threading;
 using UT161EReader;
 
 namespace MultimeterOverlay.ViewModels;
@@ -38,6 +40,22 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private const int MaxConsecutiveTimeouts = 3;
     private int _consecutiveTimeouts;
     private bool _hasReceivedReading;
+
+    private readonly MultimeterSimulator _simulator = new();
+
+    private readonly DispatcherTimer _simulationTimer = new()
+    {
+        Interval = TimeSpan.FromSeconds(2)
+    };
+
+    private bool _isSimulationMode;
+
+    public bool IsSimulationMode
+    {
+        get => _isSimulationMode;
+        private set => SetField(ref _isSimulationMode, value);
+    }
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -128,6 +146,65 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         get => _acDcUnit;
         private set => SetField(ref _acDcUnit, value);
+    }
+
+
+    public async Task EnableSimulationAsync()
+    {
+        if (IsSimulationMode)
+            return;
+
+        // Najpierw zatrzymujemy rzeczywisty miernik.
+        await StopAsync();
+
+        StopRecording();
+
+        _simulator.Reset();
+
+        IsSimulationMode = true;
+        DeviceName = "UNI-T UT161E [SYMULACJA]";
+
+        _simulationTimer.Tick -= SimulationTimer_Tick;
+        _simulationTimer.Tick += SimulationTimer_Tick;
+
+        _simulationTimer.Start();
+
+        // Pierwszy pomiar bez czekania dwóch sekund.
+        SimulationTimer_Tick(this, EventArgs.Empty);
+    }
+
+        public void DisableSimulation(bool restartDevice = true)
+    {
+        if (!IsSimulationMode)
+            return;
+
+        _simulationTimer.Stop();
+        _simulationTimer.Tick -= SimulationTimer_Tick;
+
+        IsSimulationMode = false;
+
+        ClearReading();
+
+        DeviceName = "UNI-T UT161E";
+        Function = "Oczekiwanie na pomiar";
+        Status = "Brak komunikacji";
+
+        if (restartDevice)
+            Start();
+    }
+
+
+    private void SimulationTimer_Tick(
+        object? sender, EventArgs e)
+    {
+        if (!IsSimulationMode)
+            return;
+
+        MultimeterReading reading = _simulator.Next();
+
+        UpdateReading(reading);
+
+        Status = "Połączono";
     }
 
     public void Start()
@@ -330,6 +407,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public void ToggleRecording()
     {
+        if (IsSimulationMode) return;
+
         if (IsRecording)
         {
             StopRecording();
@@ -506,7 +585,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         _disposed = true;
         _cts?.Dispose();
         Disconnect();
-
+        _simulationTimer.Stop();
+        _simulationTimer.Tick -= SimulationTimer_Tick;
         GC.SuppressFinalize(this);
     }
 

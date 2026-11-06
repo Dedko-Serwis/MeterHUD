@@ -14,195 +14,47 @@
         <BooleanToVisibilityConverter
         x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
-        <TextBlock x:Name="DeviceNameText"
-                   Text="{Binding DeviceName}"
-                   FontSize="18"
-                   Foreground="#AAAAAA"/>
+    <DockPanel LastChildFill="True">
 
-        <Grid Grid.Row="1"
-      VerticalAlignment="Center"
-      HorizontalAlignment="Center">
+        <!-- Menu główne -->
 
+        <Menu DockPanel.Dock="Top"               Background="#252525"              Foreground="White">
+            <Menu.Resources>
+                <Style TargetType="{x:Type MenuItem}">
+                    <Setter Property="Foreground" Value="Black"/>
+                </Style>
+            </Menu.Resources>
 
-            <!-- Zwykły pojedynczy pomiar -->
-            <Grid HorizontalAlignment="Center"
-      VerticalAlignment="Center">
+            <MenuItem Header="_Opcje" Foreground="White">
+                <MenuItem x:Name="ShowOverlayMenuItem"                      Header="Pokaż okno OBS"                      IsCheckable="True"                      IsChecked="True"                      Click="ShowOverlayMenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="Otwórz folder nagrań CSV"                    Click="OpenCsvFolder_Click"/>
+                <Separator/>
+                <MenuItem x:Name="SimulationMenuItem"          Header="Tryb symulacji"          IsCheckable="True"          IsChecked="False"          Click="SimulationMenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="Resetuj ustawienia..."                      Click="ResetSettings_Click"/>
+            </MenuItem>
+        </Menu>
 
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsAcDcMode}"
-                             Value="True">
-                                <Setter Property="Visibility"
-                            Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-
-                <Grid.ColumnDefinitions>
-                    <!-- Wartość pomiaru -->
-                    <ColumnDefinition Width="340"/>
-
-                    <!-- Jednostka -->
-                    <ColumnDefinition Width="100"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Wartość wyrównana do prawej -->
-                <TextBlock x:Name="ValueText"
-               Grid.Column="0"
-               Text="{Binding DisplayValue}"
-               FontSize="76"
-               FontWeight="SemiBold"
-               FontFamily="Consolas"
-               Foreground="White"
-               TextAlignment="Right"
-               VerticalAlignment="Center"
-               TextWrapping="NoWrap"/>
-
-                <!-- Jednostka w stałej kolumnie -->
-                <TextBlock x:Name="UnitText"
-               Grid.Column="1"
-               Text="{Binding Unit}"
-               FontSize="24"
-               Margin="12,20,0,0"
-               VerticalAlignment="Center"
-               TextWrapping="NoWrap"/>
-            </Grid>
-
-
-            <!-- Dwa pomiary AC+DC -->
-            <StackPanel HorizontalAlignment="Center">
-
-                <StackPanel.Style>
-                    <Style TargetType="StackPanel">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsAcDcMode}"
-                                 Value="True">
-                                <Setter Property="Visibility"
-                                Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StackPanel.Style>
-
-
-
-                <!-- AC -->
-                <Grid HorizontalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="210"/>
-                        <ColumnDefinition Width="38"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0"
-               Text="{Binding AcDisplayValue}"
-               FontFamily="Consolas"
-               FontSize="42"
-               Foreground="White"
-               TextAlignment="Right"/>
-
-                    <TextBlock Grid.Column="1"
-               Text="~"
-               Foreground="#F4D35E"
-               FontSize="30"
-               TextAlignment="Center"
-               VerticalAlignment="Center"/>
-
-                    <TextBlock Grid.Column="2"
-               Text="{Binding AcDcUnit}"
-               FontSize="22"
-               Foreground="White"
-               VerticalAlignment="Center"/>
-                </Grid>
-
-                <!-- DC -->
-                <Grid HorizontalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="210"/>
-                        <ColumnDefinition Width="38"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0"
-               Text="{Binding DcDisplayValue}"
-               FontFamily="Consolas"
-               FontSize="42"
-               Foreground="White"
-               TextAlignment="Right"/>
-
-                    <TextBlock Grid.Column="1"
-               Text="⎓"
-               Foreground="#62D989"
-               FontSize="30"
-               TextAlignment="Center"
-               VerticalAlignment="Center"/>
-
-                    <TextBlock Grid.Column="2"
-               Text="{Binding AcDcUnit}"
-               FontSize="22"
-               Foreground="White"
-               VerticalAlignment="Center"/>
-                </Grid>
-
-
-
-            </StackPanel>
-        </Grid>
-
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center">
-
-            <TextBlock x:Name="FunctionText"
-                       Text="{Binding Function}" 
-                       FontSize="17"
-                       Margin="0,0,20,0"/>
-
-            <TextBlock x:Name="RangeText"
-                       Text="{Binding Range}"
-                       Foreground="#AAAAAA"
-                       FontSize="15"
-                       Margin="0,0,20,0"/>
-
-            <TextBlock x:Name="HoldText"
-                       Text="HOLD"
-                       Foreground="Orange"
-                       FontWeight="Bold"
-                       Visibility="{Binding IsHold, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        </StackPanel>
-
-        <StatusBar Grid.Row="3"
-           Margin="0,12,0,0"
-           Background="#252525"
-           Foreground="#DDDDDD">
+        <!-- StatusBar przeniesiemy tutaj -->
+        <StatusBar DockPanel.Dock="Bottom"  Background="#252525" Foreground="#DDDDDD">
 
             <StatusBarItem>
                 <TextBlock Text="F12"
-                   Foreground="#888888"/>
+           Foreground="#888888"/>
             </StatusBarItem>
-            
+
             <StatusBarItem>
                 <TextBlock x:Name="RecordingIndicator" Text="{Binding RecordingStatus}" FontWeight="Bold" Foreground="#999999" Width="50"/>
             </StatusBarItem>
-            
+
             <Separator/>
-            
+
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Ramki: "
-                       Foreground="#AAAAAA" />
+               Foreground="#AAAAAA" />
                     <TextBlock Text="{Binding RecordedFrames}" Width="50"/>
                 </StackPanel>
             </StatusBarItem>
@@ -217,21 +69,21 @@
                         <Style TargetType="TextBlock">
                             <!-- Domyślnie szary -->
                             <Setter Property="Foreground"
-                        Value="#999999"/>
+                Value="#999999"/>
 
                             <Style.Triggers>
                                 <!-- Poprawna komunikacja -->
                                 <DataTrigger Binding="{Binding Status}"
-                                 Value="Połączono">
+                         Value="Połączono">
                                     <Setter Property="Foreground"
-                                Value="#39C875"/>
+                        Value="#39C875"/>
                                 </DataTrigger>
 
                                 <!-- Chwilowy brak odpowiedzi -->
                                 <DataTrigger Binding="{Binding Status}"
-                                 Value="Oczekiwanie na miernik">
+                         Value="Oczekiwanie na miernik">
                                     <Setter Property="Foreground"
-                                Value="#F4D35E"/>
+                        Value="#F4D35E"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -241,5 +93,177 @@
 
 
         </StatusBar>
-    </Grid>
+
+        <!-- Obszar pomiarów -->
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+
+            <TextBlock x:Name="DeviceNameText"
+                   Text="{Binding DeviceName}"
+                   FontSize="18"
+                   Foreground="#AAAAAA"/>
+
+            <Grid Grid.Row="1"
+      VerticalAlignment="Center"
+      HorizontalAlignment="Center">
+
+
+                <!-- Zwykły pojedynczy pomiar -->
+                <Grid HorizontalAlignment="Center"
+      VerticalAlignment="Center">
+
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAcDcMode}"
+                             Value="True">
+                                    <Setter Property="Visibility"
+                            Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+
+                    <Grid.ColumnDefinitions>
+                        <!-- Wartość pomiaru -->
+                        <ColumnDefinition Width="340"/>
+
+                        <!-- Jednostka -->
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Wartość wyrównana do prawej -->
+                    <TextBlock x:Name="ValueText"
+               Grid.Column="0"
+               Text="{Binding DisplayValue}"
+               FontSize="76"
+               FontWeight="SemiBold"
+               FontFamily="Consolas"
+               Foreground="White"
+               TextAlignment="Right"
+               VerticalAlignment="Center"
+               TextWrapping="NoWrap"/>
+
+                    <!-- Jednostka w stałej kolumnie -->
+                    <TextBlock x:Name="UnitText"
+               Grid.Column="1"
+               Text="{Binding Unit}"
+               FontSize="24"
+               Margin="12,20,0,0"
+               VerticalAlignment="Center"
+               TextWrapping="NoWrap"/>
+                </Grid>
+
+
+                <!-- Dwa pomiary AC+DC -->
+                <StackPanel HorizontalAlignment="Center">
+
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAcDcMode}"
+                                 Value="True">
+                                    <Setter Property="Visibility"
+                                Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
+
+
+                    <!-- AC -->
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="210"/>
+                            <ColumnDefinition Width="38"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+               Text="{Binding AcDisplayValue}"
+               FontFamily="Consolas"
+               FontSize="42"
+               Foreground="White"
+               TextAlignment="Right"/>
+
+                        <TextBlock Grid.Column="1"
+               Text="~"
+               Foreground="#F4D35E"
+               FontSize="30"
+               TextAlignment="Center"
+               VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Column="2"
+               Text="{Binding AcDcUnit}"
+               FontSize="22"
+               Foreground="White"
+               VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- DC -->
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="210"/>
+                            <ColumnDefinition Width="38"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+               Text="{Binding DcDisplayValue}"
+               FontFamily="Consolas"
+               FontSize="42"
+               Foreground="White"
+               TextAlignment="Right"/>
+
+                        <TextBlock Grid.Column="1"
+               Text="⎓"
+               Foreground="#62D989"
+               FontSize="30"
+               TextAlignment="Center"
+               VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Column="2"
+               Text="{Binding AcDcUnit}"
+               FontSize="22"
+               Foreground="White"
+               VerticalAlignment="Center"/>
+                    </Grid>
+
+
+
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+
+                <TextBlock x:Name="FunctionText"
+                       Text="{Binding Function}" 
+                       FontSize="17"
+                       Margin="0,0,20,0"/>
+
+                <TextBlock x:Name="RangeText"
+                       Text="{Binding Range}"
+                       Foreground="#AAAAAA"
+                       FontSize="15"
+                       Margin="0,0,20,0"/>
+
+                <TextBlock x:Name="HoldText"
+                       Text="HOLD"
+                       Foreground="Orange"
+                       FontWeight="Bold"
+                       Visibility="{Binding IsHold, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </StackPanel>
+
+        </Grid>
+    </DockPanel>
 </Window>
