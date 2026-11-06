@@ -37,6 +37,10 @@
                 <Separator/>
                 <MenuItem Header="Resetuj ustawienia..."                      Click="ResetSettings_Click"/>
             </MenuItem>
+            <Separator/>
+            <MenuItem Header="Ustawienia..."  Foreground="White" Click="SettingsMenuItem_Click"/>
+            <Separator/>
+
         </Menu>
 
         <!-- StatusBar przeniesiemy tutaj -->

@@ -337,6 +337,17 @@ public partial class MainWindow : Window
         _viewModel.Dispose();
     }
 
+    private void SettingsMenuItem_Click(
+        object sender, RoutedEventArgs e)
+    {
+        var window = new SettingsWindow(_settings)
+        {
+            Owner = this
+        };
+
+        window.ShowDialog();
+    }
+
     private void RestoreMainWindow()
     {
         double width = _settings.MainWidth;

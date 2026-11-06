@@ -25,6 +25,8 @@ public sealed class AppSettings
     public double MainHeight { get; set; }
     public bool MainMaximized { get; set; }
 
+    public string Language { get; set; } = "pl";
+
 
     public static AppSettings Load()
     {
