@@ -10,7 +10,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 {
     private const int ReconnectDelayMs = 2000;
     private const int ReadDelayMs = 200;
-    private const int MaxConsecutiveTimeouts = 3;
+    private static readonly TimeSpan NoDataTimeout =  TimeSpan.FromSeconds(5);
+
 
     private UT161EMultimeter? _multimeter;
     private CancellationTokenSource? _cts;
@@ -200,6 +201,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
 
 
+
     private async Task RunAsync(CancellationToken token)
     {
         try
@@ -214,26 +216,29 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                     {
                         _multimeter = new UT161EMultimeter();
                         DeviceName = _multimeter.Name;
-                        Status = "Połączono";
+
+                        // Otwarcie HID nie oznacza jeszcze,
+                        // że miernik odpowiada.
+                        Status = "Oczekiwanie na miernik...";
                     }
                     catch (Exception ex)
                     {
                         Status = "Miernik niedostępny";
                         Function = ex.Message;
 
-                        await Task.Delay(
-                            ReconnectDelayMs, token);
-
+                        await Task.Delay(ReconnectDelayMs, token);
                         continue;
                     }
                 }
 
-                int timeoutCount = 0;
                 bool reconnect = false;
+                bool receivedMeasurement = false;
 
-                while (!token.IsCancellationRequested &&
-                       !reconnect)
+                DateTime lastMeasurementTime = DateTime.UtcNow;
+
+                while (!token.IsCancellationRequested && !reconnect)
                 {
+
                     try
                     {
                         MultimeterReading? reading =
@@ -242,32 +247,41 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                         if (token.IsCancellationRequested)
                             break;
 
-                        timeoutCount = 0;
-
                         if (reading is not null)
                         {
+                            receivedMeasurement = true;
+                            lastMeasurementTime = DateTime.UtcNow;
+
                             UpdateReading(reading);
                             Status = "Połączono";
                         }
-                        else
+                        else if (DateTime.UtcNow - lastMeasurementTime >= NoDataTimeout)
                         {
-                            Status = "Brak danych";
+                            ClearReading();
+
+                            Status = receivedMeasurement
+                                ? "Brak odpowiedzi miernika"
+                                : "Miernik wyłączony / brak danych";
                         }
 
                         await Task.Delay(ReadDelayMs, token);
                     }
                     catch (TimeoutException)
                     {
-                        timeoutCount++;
-
-                        Status = "Oczekiwanie na miernik...";
-
-                        if (timeoutCount >= MaxConsecutiveTimeouts)
+                        // Krótkie opóźnienia są normalne podczas
+                        // zmiany funkcji i pomiaru pojemności.
+                        if (DateTime.UtcNow - lastMeasurementTime >= NoDataTimeout)
                         {
-                            Status = "Brak odpowiedzi miernika";
-                            reconnect = true;
+                            ClearReading();
+
+                            Status = receivedMeasurement
+                                ? "Brak odpowiedzi miernika"
+                                : "Miernik wyłączony / brak danych";
                         }
+
+                        await Task.Delay(ReadDelayMs, token);
                     }
+
                     catch (OperationCanceledException)
                         when (token.IsCancellationRequested)
                     {
@@ -275,7 +289,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                     }
                     catch (Exception ex)
                     {
-                        Status = "Utracono połączenie";
+                        Status = receivedMeasurement
+                            ? "Utracono połączenie"
+                            : "Miernik niedostępny";
+
                         Function = ex.Message;
                         reconnect = true;
                     }
@@ -286,6 +303,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                 if (!token.IsCancellationRequested)
                 {
                     ClearReading();
+
+                    Status = "Oczekiwanie na miernik";
 
                     await Task.Delay(
                         ReconnectDelayMs, token);
@@ -303,6 +322,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
+
+
     public void ToggleRecording()
     {
         if (IsRecording)
@@ -314,11 +335,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         if (_multimeter is null)
             return;
 
-        _multimeter.Logger.Start();
+        var logger = _multimeter.Logger;
+        logger.Start();
 
-        RecordedFrames = 0;
-        IsRecording = true;
-        RecordingStatus = "REC";
+        RecordedFrames = logger.FrameCount;
+        IsRecording = logger.IsRecording;
+
+        if (logger.LastError is not null)
+        {
+            RecordingStatus = "ERROR";
+            HasRecording = false;
+            return;
+        }
+
+        HasRecording = false;
+        RecordingStatus = IsRecording ? "REC" : "READY";
     }
 
     public void StopRecording()
@@ -328,8 +359,17 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         if (_multimeter is not null)
         {
-            _multimeter.Logger.Stop();
-            RecordedFrames = _multimeter.Logger.FrameCount;
+            var logger = _multimeter.Logger;
+            logger.Stop();
+            RecordedFrames = logger.FrameCount;
+
+            if (logger.LastError is not null)
+            {
+                IsRecording = false;
+                HasRecording = false;
+                RecordingStatus = "ERROR";
+                return;
+            }
         }
 
         IsRecording = false;
@@ -339,9 +379,23 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public void RefreshRecordingCounter()
     {
-        if (IsRecording && _multimeter is not null)
-            RecordedFrames = _multimeter.Logger.FrameCount;
+        if (!IsRecording || _multimeter is null)
+            return;
+
+        var logger = _multimeter.Logger;
+
+        RecordedFrames = logger.FrameCount;
+
+        if (logger.IsRecording)
+            return;
+
+        IsRecording = false;
+        HasRecording = false;
+        RecordingStatus = logger.LastError is not null
+            ? "ERROR"
+            : "READY";
     }
+
 
 
     private void UpdateReading(MultimeterReading reading)

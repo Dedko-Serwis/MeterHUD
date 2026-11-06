@@ -355,60 +355,66 @@
                             </Grid.RowDefinitions>
 
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="195"/>
                                 <ColumnDefinition Width="35"/>
-                                <ColumnDefinition Width="160"/>
-                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="45"/>
                             </Grid.ColumnDefinitions>
+
+
 
                             <!-- AC -->
                             <TextBlock Grid.Row="0"
-                   Grid.Column="0"
-                   Text="~"
-                   Foreground="#F4D35E"
-                   FontSize="25"
-                   VerticalAlignment="Center"/>
+           Grid.Column="0"
+           Text="{Binding AcDisplayValue}"
+           FontFamily="Consolas"
+           FontSize="31"
+           Foreground="White"
+           TextAlignment="Right"
+           VerticalAlignment="Center"/>
 
                             <TextBlock Grid.Row="0"
-                   Grid.Column="1"
-                   Text="{Binding AcDisplayValue}"
-                   FontFamily="Consolas"
-                   FontSize="31"
-                   Foreground="White"
-                   TextAlignment="Right"
-                   VerticalAlignment="Center"/>
+           Grid.Column="1"
+           Text="~"
+           Foreground="#F4D35E"
+           FontSize="25"
+           TextAlignment="Center"
+           VerticalAlignment="Center"/>
 
                             <TextBlock Grid.Row="0"
-                   Grid.Column="2"
-                   Text="{Binding AcDcUnit}"
-                   FontSize="21"
-                   Foreground="White"
-                   TextAlignment="Center"
-                   VerticalAlignment="Center"/>
+           Grid.Column="2"
+           Text="{Binding AcDcUnit}"
+           FontSize="21"
+           Foreground="White"
+           TextAlignment="Left"
+           VerticalAlignment="Center"/>
 
                             <!-- DC -->
                             <TextBlock Grid.Row="1"
-                   Grid.Column="0"
-                   Text="⎓"
-                   Foreground="#62D989"
-                   FontSize="25"
-                   VerticalAlignment="Center"/>
+           Grid.Column="0"
+           Text="{Binding DcDisplayValue}"
+           FontFamily="Consolas"
+           FontSize="31"
+           Foreground="White"
+           TextAlignment="Right"
+           VerticalAlignment="Center"/>
 
                             <TextBlock Grid.Row="1"
-                   Grid.Column="1"
-                   Text="{Binding DcDisplayValue}"
-                   FontFamily="Consolas"
-                   FontSize="31"
-                   Foreground="White"
-                   TextAlignment="Right"
-                   VerticalAlignment="Center"/>
+           Grid.Column="1"
+           Text="⎓"
+           Foreground="#62D989"
+           FontSize="25"
+           TextAlignment="Center"
+           VerticalAlignment="Center"/>
 
                             <TextBlock Grid.Row="1"
-                   Grid.Column="2"
-                   Text="{Binding AcDcUnit}"
-                   FontSize="21"
-                   Foreground="White"
-                   TextAlignment="Center"
-                   VerticalAlignment="Center"/>
+           Grid.Column="2"
+           Text="{Binding AcDcUnit}"
+           FontSize="21"
+           Foreground="White"
+           TextAlignment="Left"
+           VerticalAlignment="Center"/>
+
+
                         </Grid>
 
                     </Grid>

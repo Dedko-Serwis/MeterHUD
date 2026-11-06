@@ -31,36 +31,54 @@
       VerticalAlignment="Center"
       HorizontalAlignment="Center">
 
-            <!-- Zwykły pojedynczy pomiar -->
-            <StackPanel Orientation="Horizontal"
-                HorizontalAlignment="Center">
 
-                <StackPanel.Style>
-                    <Style TargetType="StackPanel">
+            <!-- Zwykły pojedynczy pomiar -->
+            <Grid HorizontalAlignment="Center"
+      VerticalAlignment="Center">
+
+                <Grid.Style>
+                    <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsAcDcMode}"
-                                 Value="True">
+                             Value="True">
                                 <Setter Property="Visibility"
-                                Value="Collapsed"/>
+                            Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </StackPanel.Style>
+                </Grid.Style>
 
+                <Grid.ColumnDefinitions>
+                    <!-- Wartość pomiaru -->
+                    <ColumnDefinition Width="340"/>
+
+                    <!-- Jednostka -->
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Wartość wyrównana do prawej -->
                 <TextBlock x:Name="ValueText"
-                   Text="{Binding DisplayValue}"
-                   FontSize="76"
-                   FontWeight="SemiBold"
-                   FontFamily="Consolas"
-                   VerticalAlignment="Center"/>
+               Grid.Column="0"
+               Text="{Binding DisplayValue}"
+               FontSize="76"
+               FontWeight="SemiBold"
+               FontFamily="Consolas"
+               Foreground="White"
+               TextAlignment="Right"
+               VerticalAlignment="Center"
+               TextWrapping="NoWrap"/>
 
+                <!-- Jednostka w stałej kolumnie -->
                 <TextBlock x:Name="UnitText"
-                   Text="{Binding Unit}"
-                   FontSize="24"
-                   Margin="12,20,0,0"
-                   VerticalAlignment="Center"/>
-            </StackPanel>
+               Grid.Column="1"
+               Text="{Binding Unit}"
+               FontSize="24"
+               Margin="12,20,0,0"
+               VerticalAlignment="Center"
+               TextWrapping="NoWrap"/>
+            </Grid>
+
 
             <!-- Dwa pomiary AC+DC -->
             <StackPanel HorizontalAlignment="Center">
@@ -78,39 +96,67 @@
                     </Style>
                 </StackPanel.Style>
 
-                <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center">
-                    <TextBlock Text="~"
-                       Foreground="#F4D35E"
-                       FontSize="32"
-                       Width="45"/>
 
-                    <TextBlock Text="{Binding AcDisplayValue}"
-                       FontFamily="Consolas"
-                       FontSize="42"
-                       Foreground="White"/>
 
-                    <TextBlock Text="{Binding AcDcUnit}"
-                       FontSize="22"
-                       Margin="12,12,0,0"/>
-                </StackPanel>
+                <!-- AC -->
+                <Grid HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="210"/>
+                        <ColumnDefinition Width="38"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center">
-                    <TextBlock Text="⎓"
-                       Foreground="#62D989"
-                       FontSize="32"
-                       Width="45"/>
+                    <TextBlock Grid.Column="0"
+               Text="{Binding AcDisplayValue}"
+               FontFamily="Consolas"
+               FontSize="42"
+               Foreground="White"
+               TextAlignment="Right"/>
 
-                    <TextBlock Text="{Binding DcDisplayValue}"
-                       FontFamily="Consolas"
-                       FontSize="42"
-                       Foreground="White"/>
+                    <TextBlock Grid.Column="1"
+               Text="~"
+               Foreground="#F4D35E"
+               FontSize="30"
+               TextAlignment="Center"
+               VerticalAlignment="Center"/>
 
-                    <TextBlock Text="{Binding AcDcUnit}"
-                       FontSize="22"
-                       Margin="12,12,0,0"/>
-                </StackPanel>
+                    <TextBlock Grid.Column="2"
+               Text="{Binding AcDcUnit}"
+               FontSize="22"
+               Foreground="White"
+               VerticalAlignment="Center"/>
+                </Grid>
+
+                <!-- DC -->
+                <Grid HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="210"/>
+                        <ColumnDefinition Width="38"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+               Text="{Binding DcDisplayValue}"
+               FontFamily="Consolas"
+               FontSize="42"
+               Foreground="White"
+               TextAlignment="Right"/>
+
+                    <TextBlock Grid.Column="1"
+               Text="⎓"
+               Foreground="#62D989"
+               FontSize="30"
+               TextAlignment="Center"
+               VerticalAlignment="Center"/>
+
+                    <TextBlock Grid.Column="2"
+               Text="{Binding AcDcUnit}"
+               FontSize="22"
+               Foreground="White"
+               VerticalAlignment="Center"/>
+                </Grid>
+
+
 
             </StackPanel>
         </Grid>

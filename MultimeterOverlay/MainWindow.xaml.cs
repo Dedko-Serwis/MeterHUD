@@ -58,8 +58,7 @@ public partial class MainWindow : Window
     {
         if (_viewModel.IsRecording)
         {
-            RecordingIndicator.Foreground =
-                Brushes.OrangeRed;
+            RecordingIndicator.Foreground = Brushes.OrangeRed;
 
             RecordingIndicator.Opacity =
                 _blinkVisible ? 1.0 : 0.15;
@@ -69,9 +68,11 @@ public partial class MainWindow : Window
             RecordingIndicator.Opacity = 1.0;
 
             RecordingIndicator.Foreground =
-                _viewModel.HasRecording
-                    ? Brushes.LimeGreen
-                    : Brushes.Gray;
+                _viewModel.RecordingStatus == "ERROR"
+                    ? Brushes.Red
+                    : _viewModel.HasRecording
+                        ? Brushes.LimeGreen
+                        : Brushes.Gray;
         }
     }
 

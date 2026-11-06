@@ -35,8 +35,8 @@ public sealed class UT161EHidReader : IDisposable
         }
 
         _stream = stream;
-        _stream.ReadTimeout = 1000;
-        _stream.WriteTimeout = 1000;
+        _stream.ReadTimeout = 3000;
+        _stream.WriteTimeout = 3000;
 
         _input = new byte[
             device.GetMaxInputReportLength()];
