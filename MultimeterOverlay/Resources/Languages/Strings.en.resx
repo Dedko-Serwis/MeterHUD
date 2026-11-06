@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="MenuOptions" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="MenuSettings" xml:space="preserve">
+    <value>Settings...</value>
+  </data>
+  <data name="MenuShowOverlay" xml:space="preserve">
+    <value>Show OBS window</value>
+  </data>
+  <data name="MenuOpenCsvFolder" xml:space="preserve">
+    <value>Open CSV recordings folder</value>
+  </data>
+  <data name="MenuSimulation" xml:space="preserve">
+    <value>Simulation mode</value>
+  </data>
+  <data name="MenuDisplayTest" xml:space="preserve">
+    <value>Display test</value>
+  </data>
+  <data name="MenuResetSettings" xml:space="preserve">
+    <value>Reset settings...</value>
+  </data>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="SettingsLanguage" xml:space="preserve">
+    <value>Application language:</value>
+  </data>
+  <data name="SettingsDisplay" xml:space="preserve">
+    <value>OBS display</value>
+  </data>
+  <data name="SettingsDisplayComingSoon" xml:space="preserve">
+    <value>Display options will be added in a later update.</value>
+  </data>
+  <data name="SettingsColors" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="SettingsRecording" xml:space="preserve">
+    <value>Recording</value>
+  </data>
+  <data name="SettingsPaths" xml:space="preserve">
+    <value>Paths</value>
+  </data>
+  <data name="SettingsCsvFolder" xml:space="preserve">
+    <value>CSV recordings folder</value>
+  </data>
+  <data name="SettingsDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="SettingsBrowse" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="SettingsShowIndicators" xml:space="preserve">
+    <value>Show indicators</value>
+  </data>
+  <data name="SettingsBackgroundColor" xml:space="preserve">
+    <value>Background color</value>
+  </data>
+  <data name="SettingsTextColor" xml:space="preserve">
+    <value>Text color</value>
+  </data>
+  <data name="SettingsFontSize" xml:space="preserve">
+    <value>Font size</value>
+  </data>
+  <data name="ButtonSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ButtonReset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="ButtonYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="ButtonNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="StatusConnected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="StatusNoConnection" xml:space="preserve">
+    <value>No communication</value>
+  </data>
+  <data name="StatusWaitingForMeter" xml:space="preserve">
+    <value>Waiting for meter</value>
+  </data>
+  <data name="StatusDisconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="StatusWaitingForMeasurement" xml:space="preserve">
+    <value>Waiting for measurement</value>
+  </data>
+  <data name="StatusFrames" xml:space="preserve">
+    <value>Frames:</value>
+  </data>
+  <data name="StatusReady" xml:space="preserve">
+    <value>READY</value>
+  </data>
+  <data name="StatusRecording" xml:space="preserve">
+    <value>REC</value>
+  </data>
+  <data name="StatusSaved" xml:space="preserve">
+    <value>SAVED</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>ERROR</value>
+  </data>
+  <data name="MeasurementVoltage" xml:space="preserve">
+    <value>Voltage</value>
+  </data>
+  <data name="MeasurementVoltageAC" xml:space="preserve">
+    <value>AC voltage</value>
+  </data>
+  <data name="MeasurementVoltageDC" xml:space="preserve">
+    <value>DC voltage</value>
+  </data>
+  <data name="MeasurementVoltageACDC" xml:space="preserve">
+    <value>AC+DC voltage</value>
+  </data>
+  <data name="MeasurementCurrent" xml:space="preserve">
+    <value>Current</value>
+  </data>
+  <data name="MeasurementCurrentAC" xml:space="preserve">
+    <value>AC current</value>
+  </data>
+  <data name="MeasurementCurrentDC" xml:space="preserve">
+    <value>DC current</value>
+  </data>
+  <data name="MeasurementResistance" xml:space="preserve">
+    <value>Resistance</value>
+  </data>
+  <data name="MeasurementCapacitance" xml:space="preserve">
+    <value>Capacitance</value>
+  </data>
+  <data name="MeasurementFrequency" xml:space="preserve">
+    <value>Frequency</value>
+  </data>
+  <data name="MeasurementTemperature" xml:space="preserve">
+    <value>Temperature</value>
+  </data>
+  <data name="MeasurementContinuity" xml:space="preserve">
+    <value>Continuity</value>
+  </data>
+  <data name="MeasurementDiode" xml:space="preserve">
+    <value>Diode test</value>
+  </data>
+  <data name="MeasurementDutyCycle" xml:space="preserve">
+    <value>Duty cycle</value>
+  </data>
+  <data name="DeviceSimulationSuffix" xml:space="preserve">
+    <value>[SIMULATION]</value>
+  </data>
+  <data name="DeviceDisplayTestSuffix" xml:space="preserve">
+    <value>[TEST]</value>
+  </data>
+  <data name="ErrorSettingsSave" xml:space="preserve">
+    <value>Could not save settings:
+{0}</value>
+  </data>
+  <data name="ErrorSimulationSwitch" xml:space="preserve">
+    <value>Could not switch simulation mode:
+{0}</value>
+  </data>
+  <data name="ErrorDisplayTest" xml:space="preserve">
+    <value>Display test error:
+{0}</value>
+  </data>
+  <data name="ErrorOpenCsvFolder" xml:space="preserve">
+    <value>Could not open recordings folder:
+{0}</value>
+  </data>
+  <data name="ErrorResetSettings" xml:space="preserve">
+    <value>Could not reset settings:
+{0}</value>
+  </data>
+  <data name="ResetSettingsTitle" xml:space="preserve">
+    <value>Reset settings</value>
+  </data>
+  <data name="ResetSettingsQuestion" xml:space="preserve">
+    <value>Restore default application settings?
+
+CSV files will not be deleted.</value>
+  </data>
+</root>

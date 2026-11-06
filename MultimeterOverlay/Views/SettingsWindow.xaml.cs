@@ -27,10 +27,14 @@ public partial class SettingsWindow : Window
 
         try
         {
+
             _settings.Language = _viewModel.Language;
             _settings.Save();
 
+            LocalizationService.Instance.SetLanguage(_settings.Language);
+
             DialogResult = true;
+
         }
         catch (Exception ex)
         {

@@ -1,9 +1,9 @@
-﻿
-using MultimeterOverlay.Core;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using MultimeterOverlay.Services;
 using System.Windows.Threading;
+using MultimeterOverlay.Services;
+using MultimeterOverlay.Core;
+using MultimeterOverlay.Models;
 using UT161EReader;
 
 namespace MultimeterOverlay.ViewModels;
@@ -24,8 +24,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private string _displayValue = "----";
     private string _unit = "";
     private string _function = "Oczekiwanie na pomiar";
-    private string _range = "";
-    private string _status = "Brak komunikacji";
+    private string _range = "";    
     private bool _isHold;
     private int _recordedFrames;
     private string _recordingStatus = "READY";
@@ -89,11 +88,42 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _range, value);
     }
 
-    public string Status
+
+    private ConnectionState _connectionState =
+        ConnectionState.Disconnected;
+
+    public ConnectionState ConnectionState
     {
-        get => _status;
-        private set => SetField(ref _status, value);
+        get => _connectionState;
+        private set
+        {
+            if (_connectionState == value)
+                return;
+
+            _connectionState = value;
+
+            PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nameof(ConnectionState)));
+
+            PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nameof(Status)));
+        }
     }
+
+    public string Status => ConnectionState switch
+    {
+        ConnectionState.Connected =>
+            LocalizationService.Instance["StatusConnected"],
+
+        ConnectionState.Waiting =>
+            LocalizationService.Instance["StatusWaiting"],
+
+        _ =>
+            LocalizationService.Instance["StatusDisconnected"]
+    };
+
 
     public bool IsHold
     {
@@ -156,6 +186,25 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private bool _isDisplayTestMode;
     private bool _testStartedSimulation;
     private int _displayTestStep;
+
+
+    public MainViewModel()
+    {
+        LocalizationService.Instance.PropertyChanged +=
+            Localization_PropertyChanged;
+    }
+
+    private void Localization_PropertyChanged(
+        object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is "Item[]" or nameof(LocalizationService.Language))
+        {
+            PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nameof(Status)));
+        }
+    }
+
 
     public bool IsDisplayTestMode
     {
@@ -233,25 +282,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         _testStartedSimulation = false;
     }
 
-    private void DisplayTestTimer_Tick(
-        object? sender, EventArgs e)
+    private void DisplayTestTimer_Tick(object? sender, EventArgs e)
     {
-        if (!IsDisplayTestMode)
-            return;
+        if (!IsDisplayTestMode) return;
 
         // Kolejne fazy testu.
         int step = _displayTestStep++ % 6;
 
         IsAcDcMode = step >= 3;
 
-
-        Status = (step % 3) switch
+        ConnectionState = (step % 3) switch
         {
-            0 => "Brak komunikacji",
-            1 => "Połączono",
-            _ => "Oczekiwanie na miernik"
+            0 => ConnectionState.Disconnected,
+            1 => ConnectionState.Connected,
+            _ => ConnectionState.Waiting
         };
-
     }
 
 
@@ -313,7 +358,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         DeviceName = "UNI-T UT161E";
         Function = "Oczekiwanie na pomiar";
-        Status = "Brak komunikacji";
+        ConnectionState = ConnectionState.Disconnected;
 
         if (restartDevice)
             Start();
@@ -330,7 +375,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         UpdateReading(reading);
 
-        Status = "Połączono";
+        ConnectionState = ConnectionState.Connected;
     }
 
     public void Start()
@@ -414,7 +459,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     private async Task RunAsync(CancellationToken token)
     {
-        Status = "Brak komunikacji";
+        ConnectionState = ConnectionState.Disconnected;
 
         try
         {
@@ -431,7 +476,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                     {
                         // Urządzenie HID jest niedostępne.
                         // Nie zmieniamy statusu na "Połączono".
-                        Status = "Brak komunikacji";
+                        ConnectionState = ConnectionState.Disconnected;
 
                         await Task.Delay(ReconnectDelayMs, token);
                         continue;
@@ -456,7 +501,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                             _hasReceivedReading = true;
 
                             UpdateReading(reading);
-                            Status = "Połączono";
+                            ConnectionState = ConnectionState.Connected;
                         }
                         else
                         {
@@ -486,7 +531,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                         _consecutiveTimeouts = 0;
                         _hasReceivedReading = false;
 
-                        Status = "Brak komunikacji";
+                        ConnectionState = ConnectionState.Disconnected;
                         reconnect = true;
                     }
                 }
@@ -520,15 +565,15 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             ClearReading();
 
             _hasReceivedReading = false;
-            Status = "Brak komunikacji";
+            ConnectionState = ConnectionState.Disconnected;
         }
         else if (_hasReceivedReading)
         {
-            Status = "Oczekiwanie na miernik";
+            ConnectionState = ConnectionState.Waiting;
         }
         else
         {
-            Status = "Brak komunikacji";
+            ConnectionState = ConnectionState.Disconnected;
         }
     }
 
@@ -536,7 +581,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public void ToggleRecording()
     {
-        if (IsSimulationMode || IsDisplayTestMode)            return;
+        if (IsSimulationMode || IsDisplayTestMode) return;
 
         if (IsRecording)
         {
@@ -544,8 +589,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             return;
         }
 
-        if (_multimeter is null || Status != "Połączono")
-            return;
+        if (_multimeter is null || ConnectionState != ConnectionState.Connected) return;
 
         var logger = _multimeter.Logger;
         logger.Start();
@@ -697,7 +741,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         _cts = null;
 
         ClearReading();
-        Status = "Rozłączono";
+        ConnectionState = ConnectionState.Disconnected;
     }
 
     public void Dispose()
@@ -718,6 +762,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         _simulationTimer.Tick -= SimulationTimer_Tick;
         _displayTestTimer.Stop();
         _displayTestTimer.Tick -= DisplayTestTimer_Tick;
+        LocalizationService.Instance.PropertyChanged -= Localization_PropertyChanged;
         GC.SuppressFinalize(this);
     }
 

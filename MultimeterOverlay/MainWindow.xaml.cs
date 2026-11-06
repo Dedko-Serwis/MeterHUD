@@ -29,6 +29,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        LocalizationService.Instance.SetLanguage(_settings.Language);
         RestoreMainWindow();
         PreviewKeyDown += MainWindow_PreviewKeyDown;
         _recordingTimer.Tick += RecordingTimer_Tick;
