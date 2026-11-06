@@ -105,8 +105,8 @@ public static class UT161EDecoder
             bool isMax = (frame[14] & 0x08) != 0;
 
             bool manual = (frame[15] & 0x04) != 0;
-            bool negative = (frame[16] & 0x01) != 0;
-            
+            bool negative = value.StartsWith('-');
+
             // AC+DC: bit 3 bajtu 16 rozróżnia dwie składowe.
             // Przypisanie bitu do AC wymaga jeszcze potwierdzenia.
             bool isAcDcAcComponent =
