@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="MultimeterOverlay.Core/MultimeterOverlay.Core.csproj" />
   <Project Path="MultimeterOverlay.Devices.UT161E/MultimeterOverlay.Devices.UT161E.csproj" />
+  <Project Path="MultimeterOverlay.Tests/MultimeterOverlay.Tests.csproj" Id="a06b46b9-2f44-4ec3-b491-7b2d39b1c5ae" />
   <Project Path="MultimeterOverlay/MultimeterOverlay.csproj" />
 </Solution>
