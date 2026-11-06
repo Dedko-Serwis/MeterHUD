@@ -2,18 +2,21 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Multimeter OBS Overlay"
-        Width="360"
-        Height="160"
-        MinWidth="260"
+        Width="500"
+        Height="220"
+        MinWidth="250"
         MinHeight="110"
         WindowStyle="None"
         AllowsTransparency="False"
         Background="#181818"
+        BorderThickness="0"
         ShowInTaskbar="False"
         Topmost="True"
         ResizeMode="CanResizeWithGrip"
-        WindowStartupLocation="CenterScreen"
-        UseLayoutRounding="True"
+        WindowStartupLocation="Manual"
+        Left="0"
+        Top="0"
+        UseLayoutRounding="False"
         SnapsToDevicePixels="True">
 
     <Window.Resources>
@@ -227,12 +230,12 @@
 
                     <Border Style="{StaticResource AutoStyle}">
                         <TextBlock Text="AUTO"
-                                   Style="{StaticResource ActiveTextStyle}"/>
+                                   Style="{StaticResource ActiveTextStyle}" VerticalAlignment="Center" Width="35" TextAlignment="Center"/>
                     </Border>
 
                     <Border Style="{StaticResource ManualStyle}">
                         <TextBlock Text="MANUAL"
-                                   Style="{StaticResource ManualTextStyle}"/>
+                                   Style="{StaticResource ManualTextStyle}" VerticalAlignment="Center" Width="55" TextAlignment="Center"/>
                     </Border>
                 </StackPanel>
 
@@ -241,15 +244,14 @@
                             Orientation="Horizontal"
                             HorizontalAlignment="Right">
 
+                    <Border Style="{StaticResource ACStyle}">
+                        <TextBlock Text="AC" Style="{StaticResource ACTextStyle}" VerticalAlignment="Center"/>
+                    </Border>
                     <Border Style="{StaticResource DCStyle}">
-                        <TextBlock Text="DC"
-                                   Style="{StaticResource DCTextStyle}"/>
+                        <TextBlock Text="DC" Style="{StaticResource DCTextStyle}" VerticalAlignment="Center"/>
                     </Border>
 
-                    <Border Style="{StaticResource ACStyle}">
-                        <TextBlock Text="AC"
-                                   Style="{StaticResource ACTextStyle}"/>
-                    </Border>
+
                 </StackPanel>
 
                 <!-- GŁÓWNA CZĘŚĆ -->
@@ -269,21 +271,21 @@
                                 HorizontalAlignment="Left"
                                 Margin="0,2">
                             <TextBlock Text="MIN"
-                                       Style="{StaticResource MinTextStyle}"/>
+                                       Style="{StaticResource MinTextStyle}" VerticalAlignment="Center" Width="35" TextAlignment="Center"/>
                         </Border>
 
                         <Border Style="{StaticResource MaxStyle}"
                                 HorizontalAlignment="Left"
                                 Margin="0,2">
                             <TextBlock Text="MAX"
-                                       Style="{StaticResource MaxTextStyle}"/>
+                                       Style="{StaticResource MaxTextStyle}" VerticalAlignment="Center" Width="35" TextAlignment="Center"/>
                         </Border>
 
                         <Border Style="{StaticResource HoldStyle}"
                                 HorizontalAlignment="Left"
                                 Margin="0,2">
                             <TextBlock Text="HOLD"
-                                       Style="{StaticResource HoldTextStyle}"/>
+                                       Style="{StaticResource HoldTextStyle}" VerticalAlignment="Center" Width="35" TextAlignment="Center"/>
                         </Border>
                     </StackPanel>
 
