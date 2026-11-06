@@ -177,34 +177,29 @@
             </Style.Triggers>
         </Style>
 
+
         <!-- Status komunikacji -->
         <Style x:Key="ConnectionStatusStyle"
-               TargetType="TextBlock">
+       TargetType="TextBlock">
+
             <Setter Property="Foreground" Value="#999999"/>
             <Setter Property="FontSize" Value="12"/>
+
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Status}"
-                             Value="Połączono">
-                    <Setter Property="Foreground" Value="#39C875"/>
+                     Value="Połączono">
+                    <Setter Property="Foreground"
+                    Value="#39C875"/>
                 </DataTrigger>
+
                 <DataTrigger Binding="{Binding Status}"
-                             Value="Miernik niedostępny">
-                    <Setter Property="Foreground" Value="#E05252"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Status}"
-                             Value="Utracono połączenie">
-                    <Setter Property="Foreground" Value="#E05252"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Status}"
-                             Value="Brak odpowiedzi miernika">
-                    <Setter Property="Foreground" Value="#E05252"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Status}"
-                             Value="Rozłączono">
-                    <Setter Property="Foreground" Value="#E05252"/>
+                     Value="Oczekiwanie na miernik">
+                    <Setter Property="Foreground"
+                    Value="#F4D35E"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
 
     </Window.Resources>
 

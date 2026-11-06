@@ -209,11 +209,36 @@
 
             <Separator/>
 
-            
+
+
             <StatusBarItem>
-                <TextBlock Text="{Binding Status}"
-                   Foreground="#55D980"/>
-            </StatusBarItem>            
+                <TextBlock Text="{Binding Status}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <!-- Domyślnie szary -->
+                            <Setter Property="Foreground"
+                        Value="#999999"/>
+
+                            <Style.Triggers>
+                                <!-- Poprawna komunikacja -->
+                                <DataTrigger Binding="{Binding Status}"
+                                 Value="Połączono">
+                                    <Setter Property="Foreground"
+                                Value="#39C875"/>
+                                </DataTrigger>
+
+                                <!-- Chwilowy brak odpowiedzi -->
+                                <DataTrigger Binding="{Binding Status}"
+                                 Value="Oczekiwanie na miernik">
+                                    <Setter Property="Foreground"
+                                Value="#F4D35E"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StatusBarItem>
+
 
         </StatusBar>
     </Grid>

@@ -23,7 +23,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private string _unit = "";
     private string _function = "Oczekiwanie na pomiar";
     private string _range = "";
-    private string _status = "Niepołączono";
+    private string _status = "Brak komunikacji";
     private bool _isHold;
     private int _recordedFrames;
     private string _recordingStatus = "READY";
@@ -35,6 +35,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private string _acDisplayValue = "----";
     private string _dcDisplayValue = "----";
     private string _acDcUnit = "V";
+    private const int MaxConsecutiveTimeouts = 3;
+    private int _consecutiveTimeouts;
+    private bool _hasReceivedReading;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -202,29 +205,27 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
 
 
+
     private async Task RunAsync(CancellationToken token)
     {
+        Status = "Brak komunikacji";
+
         try
         {
             while (!token.IsCancellationRequested)
             {
                 if (_multimeter is null)
                 {
-                    Status = "Łączenie...";
-
                     try
                     {
                         _multimeter = new UT161EMultimeter();
                         DeviceName = _multimeter.Name;
-
-                        // Otwarcie HID nie oznacza jeszcze,
-                        // że miernik odpowiada.
-                        Status = "Oczekiwanie na miernik...";
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        Status = "Miernik niedostępny";
-                        Function = ex.Message;
+                        // Urządzenie HID jest niedostępne.
+                        // Nie zmieniamy statusu na "Połączono".
+                        Status = "Brak komunikacji";
 
                         await Task.Delay(ReconnectDelayMs, token);
                         continue;
@@ -232,13 +233,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                 }
 
                 bool reconnect = false;
-                bool receivedMeasurement = false;
-
-                DateTime lastMeasurementTime = DateTime.UtcNow;
 
                 while (!token.IsCancellationRequested && !reconnect)
                 {
-
                     try
                     {
                         MultimeterReading? reading =
@@ -249,51 +246,41 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
                         if (reading is not null)
                         {
-                            receivedMeasurement = true;
-                            lastMeasurementTime = DateTime.UtcNow;
+                            _consecutiveTimeouts = 0;
+                            _hasReceivedReading = true;
 
                             UpdateReading(reading);
                             Status = "Połączono";
                         }
-                        else if (DateTime.UtcNow - lastMeasurementTime >= NoDataTimeout)
+                        else
                         {
-                            ClearReading();
-
-                            Status = receivedMeasurement
-                                ? "Brak odpowiedzi miernika"
-                                : "Miernik wyłączony / brak danych";
+                            HandleMissingReading();
                         }
 
                         await Task.Delay(ReadDelayMs, token);
                     }
                     catch (TimeoutException)
                     {
-                        // Krótkie opóźnienia są normalne podczas
-                        // zmiany funkcji i pomiaru pojemności.
-                        if (DateTime.UtcNow - lastMeasurementTime >= NoDataTimeout)
-                        {
-                            ClearReading();
+                        HandleMissingReading();
 
-                            Status = receivedMeasurement
-                                ? "Brak odpowiedzi miernika"
-                                : "Miernik wyłączony / brak danych";
-                        }
-
-                        await Task.Delay(ReadDelayMs, token);
+                        if (_consecutiveTimeouts >= MaxConsecutiveTimeouts)
+                            reconnect = true;
                     }
-
                     catch (OperationCanceledException)
                         when (token.IsCancellationRequested)
                     {
                         break;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        Status = receivedMeasurement
-                            ? "Utracono połączenie"
-                            : "Miernik niedostępny";
+                        // Błąd komunikacji lub odłączenie urządzenia HID.
+                        StopRecording();
+                        ClearReading();
 
-                        Function = ex.Message;
+                        _consecutiveTimeouts = 0;
+                        _hasReceivedReading = false;
+
+                        Status = "Brak komunikacji";
                         reconnect = true;
                     }
                 }
@@ -302,23 +289,40 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
                 if (!token.IsCancellationRequested)
                 {
-                    ClearReading();
-
-                    Status = "Oczekiwanie na miernik";
-
-                    await Task.Delay(
-                        ReconnectDelayMs, token);
+                    await Task.Delay(ReconnectDelayMs, token);
                 }
             }
         }
         catch (OperationCanceledException)
             when (token.IsCancellationRequested)
         {
-            // Normalne zatrzymanie.
+            // Normalne zatrzymanie aplikacji.
         }
         finally
         {
             Disconnect();
+        }
+    }
+
+    private void HandleMissingReading()
+    {
+        _consecutiveTimeouts++;
+
+        if (_consecutiveTimeouts >= MaxConsecutiveTimeouts)
+        {
+            StopRecording();
+            ClearReading();
+
+            _hasReceivedReading = false;
+            Status = "Brak komunikacji";
+        }
+        else if (_hasReceivedReading)
+        {
+            Status = "Oczekiwanie na miernik";
+        }
+        else
+        {
+            Status = "Brak komunikacji";
         }
     }
 
@@ -332,7 +336,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             return;
         }
 
-        if (_multimeter is null)
+        if (_multimeter is null || Status != "Połączono")
             return;
 
         var logger = _multimeter.Logger;
