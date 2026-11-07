@@ -38,25 +38,25 @@
                 </Style>
             </Menu.Resources>
 
-            <MenuItem Header="Okno" Foreground="White">
+            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuWindow]}" Foreground="White">
                 <MenuItem x:Name="OverlayTopmostMenuItem"
-                          Header="Zawsze na wierzchu"
+                          Header="{Binding Source={StaticResource Loc}, Path=[MenuAlwaysOnTop]}"
                           IsCheckable="True"
                           Click="OverlayTopmostMenuItem_Click"/>
 
                 <MenuItem x:Name="LockOverlaySizeMenuItem"
-                          Header="Zablokuj rozmiar nakładki"
+                          Header="{Binding Source={StaticResource Loc}, Path=[MenuLockOverlaySize]}"
                           IsCheckable="True"
                           Click="LockOverlaySizeMenuItem_Click"/>
 
                 <MenuItem x:Name="ShowOverlayMenuItem"
-                          Header="Pokaż nakładkę OBS"
+                          Header="{Binding Source={StaticResource Loc}, Path=[MenuShowObsOverlay]}"
                           IsCheckable="True"
                           IsChecked="True"
                           Click="ShowOverlayMenuItem_Click"/>
             </MenuItem>
 
-            <MenuItem Header="Tryb" Foreground="White">
+            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuMode]}" Foreground="White">
                 <MenuItem x:Name="DisplayTestMenuItem"
                           Header="{Binding Source={StaticResource Loc}, Path=[MenuDisplayTest]}"
                           IsCheckable="True"
