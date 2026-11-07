@@ -385,7 +385,8 @@ public partial class MainWindow : Window
             Owner = this
         };
 
-        window.ShowDialog();
+        if (window.ShowDialog() == true)
+            _overlayWindow?.ApplyAppearance();
     }
 
     private void RestoreMainWindow()
