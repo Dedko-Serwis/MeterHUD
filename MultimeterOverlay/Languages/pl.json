@@ -103,5 +103,13 @@
   "MenuAlwaysOnTop": "Zawsze na wierzchu",
   "MenuLockOverlaySize": "Zablokuj rozmiar nakładki",
   "MenuShowObsOverlay": "Pokaż nakładkę OBS",
-  "MenuMode": "Tryb"
+  "MenuMode": "Tryb",
+  "MenuHelp": "Pomoc",
+  "MenuAbout": "O aplikacji...",
+  "AboutTitle": "O aplikacji MeterHUD",
+  "AboutDescription": "Monitor pomiarów multimetru z nakładką OBS",
+  "AboutCopyright": "© 2026 DEDKO Serwis. Wszelkie prawa autorskie zastrzeżone.",
+  "AboutLicense": "Licencja: GNU GPL v3.0",
+  "AboutRepository": "Repozytorium GitHub",
+  "AboutLicenseLink": "Treść licencji GNU GPL v3.0"
 }
