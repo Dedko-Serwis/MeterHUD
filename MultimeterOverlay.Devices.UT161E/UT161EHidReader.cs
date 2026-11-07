@@ -19,8 +19,9 @@ public sealed class UT161EHidReader : IDisposable
     private readonly UT161EHidLogger _logger = new();
     public UT161EHidLogger Logger => _logger;
 
-    public UT161EHidReader()
+    public UT161EHidReader(Func<string?>? logDirectoryProvider = null)
     {
+        _logger.LogDirectoryProvider = logDirectoryProvider;
         var device = DeviceList.Local
             .GetHidDevices(VendorId, ProductId)
             .FirstOrDefault()
