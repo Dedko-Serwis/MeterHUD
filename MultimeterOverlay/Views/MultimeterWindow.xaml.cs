@@ -399,7 +399,7 @@ public partial class MultimeterWindow : Window
     private void SettingsMenuItem_Click(
         object sender, RoutedEventArgs e)
     {
-        var window = new SettingsWindow(_settings)
+        var window = new SettingsWindow(_settings, () => _viewModel.IsRecording)
         {
             Owner = this
         };
