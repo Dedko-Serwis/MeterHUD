@@ -164,6 +164,11 @@
                         <Button Content="Otwórz folder" Padding="12,6"
                                 Click="OpenCsvDirectory_Click"/>
                     </StackPanel>
+                    <Button Content="Usuń zapisane pliki CSV" HorizontalAlignment="Left"
+                            Margin="0,18,0,0" Padding="12,6"
+                            Click="DeleteCsvFiles_Click"/>
+                    <TextBlock Text="Usuwane są tylko nagrania UT161E z wybranego folderu."
+                               Foreground="#AAAAAA" Margin="0,8,0,0"/>
                     <TextBlock Text="Zmiana lokalizacji obowiązuje od następnego nagrania."
                                Foreground="#AAAAAA" Margin="0,18,0,0"/>
                 </StackPanel>
