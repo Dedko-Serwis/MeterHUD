@@ -34,16 +34,16 @@ public sealed class AppSettings
         ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MultimeterOverlay", "Logs")
         : CsvDirectory;
 
-    public string OverlayBackgroundColor { get; set; } = "#181818";
-    public string OverlayTextColor { get; set; } = "#FFFFFF";
-    public string OverlayConnectedColor { get; set; } = "#39C875";
-    public string OverlayWaitingColor { get; set; } = "#F4D35E";
-    public string OverlayDisconnectedColor { get; set; } = "#777777";
-    public string OverlayRangeTextColor { get; set; } = "#D0D0D0";
-    public string OverlayMinMaxColor { get; set; } = "#2563B5";
-    public string OverlayAcColor { get; set; } = "#C49A16";
-    public string OverlayDcColor { get; set; } = "#228B50";
-    public string OverlayHoldColor { get; set; } = "#D97706";
+    public string OverlayBackgroundColor { get; set; } = AppColors.OverlayBackground;
+    public string OverlayTextColor { get; set; } = AppColors.OverlayText;
+    public string OverlayConnectedColor { get; set; } = AppColors.OverlayConnected;
+    public string OverlayWaitingColor { get; set; } = AppColors.OverlayWaiting;
+    public string OverlayDisconnectedColor { get; set; } = AppColors.OverlayDisconnected;
+    public string OverlayRangeTextColor { get; set; } = AppColors.OverlayRangeText;
+    public string OverlayMinMaxColor { get; set; } = AppColors.OverlayMinMax;
+    public string OverlayAcColor { get; set; } = AppColors.OverlayAc;
+    public string OverlayDcColor { get; set; } = AppColors.OverlayDc;
+    public string OverlayHoldColor { get; set; } = AppColors.OverlayHold;
 
 
     public static AppSettings Load()
