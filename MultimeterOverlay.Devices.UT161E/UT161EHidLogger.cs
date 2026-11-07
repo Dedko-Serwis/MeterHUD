@@ -6,7 +6,8 @@ namespace UT161EReader;
 
 public sealed class UT161EHidLogger(string? logDirectory = null) : IDisposable
 {
-    private readonly string _logDirectory = logDirectory ?? LogDirectory;
+    private readonly string? _logDirectory = logDirectory;
+    public Func<string?>? LogDirectoryProvider { get; set; }
     private readonly Lock _sync = new();
     private StreamWriter? _writer;
 
@@ -46,10 +47,14 @@ public sealed class UT161EHidLogger(string? logDirectory = null) : IDisposable
 
             try
             {
-                Directory.CreateDirectory(_logDirectory);
+                string directory = _logDirectory ?? LogDirectoryProvider?.Invoke();
+                if (string.IsNullOrWhiteSpace(directory))
+                    directory = LogDirectory;
+
+                Directory.CreateDirectory(directory);
 
                 string path = Path.Combine(
-                    _logDirectory,
+                    directory,
                     $"UT161E_{DateTime.Now:yyyyMMdd_HHmmss_fff}.csv");
 
 
