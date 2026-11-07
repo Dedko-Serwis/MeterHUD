@@ -11,6 +11,10 @@ public static class AppDefaults
     public const string EmptyRange = "";
     public const string AcDcUnit = "V";
 
+    public const string AutoRange = "AUTO";
+    public const string ManualRange = "MANUAL";
+
+
     // Komunikacja
     public const int MaxConsecutiveTimeouts = 3;
 }

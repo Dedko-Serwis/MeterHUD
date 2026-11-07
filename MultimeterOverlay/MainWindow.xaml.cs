@@ -253,7 +253,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Nie można otworzyć folderu nagrań:\n{ex.Message}",
+                string.Format(LocalizationService.Instance["ErrorOpenCsvFolder"], ex.Message),
                 "MultimeterOverlay",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
@@ -302,7 +302,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Nie można zresetować ustawień:\n{ex.Message}",
+                string.Format(LocalizationService.Instance["ErrorResetSettings"], ex.Message),
                 "MultimeterOverlay",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
@@ -320,7 +320,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Nie można zapisać ustawień:\n{ex.Message}", "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(string.Format(LocalizationService.Instance["ErrorSettingsSave"], ex.Message), "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 

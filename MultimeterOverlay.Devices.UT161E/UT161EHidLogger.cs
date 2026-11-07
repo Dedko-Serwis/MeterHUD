@@ -27,11 +27,19 @@ public sealed class UT161EHidLogger : IDisposable
             if (IsRecording)
                 return;
 
-            CloseWriter();
 
             LastError = null;
+            CloseWriter();
+
+            if (LastError is not null)
+            {
+                IsRecording = false;
+                return;
+            }
+
             FilePath = null;
             FrameCount = 0;
+
 
             try
             {
@@ -49,11 +57,10 @@ public sealed class UT161EHidLogger : IDisposable
                     AutoFlush = true
                 };
 
+                _writer.WriteLine("Timestamp;Direction;Length;Hex");
                 FilePath = path;
-                _writer.WriteLine(
-                    "Timestamp;Direction;Length;Hex");
-
                 IsRecording = true;
+
             }
             catch (Exception ex) when (IsFileError(ex))
             {

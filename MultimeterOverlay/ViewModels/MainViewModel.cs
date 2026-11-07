@@ -111,9 +111,23 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public string Status => ConnectionState switch
     {
         ConnectionState.Connected => LocalizationService.Instance["StatusConnected"],
-        ConnectionState.Waiting => LocalizationService.Instance["StatusWaiting"],
+        ConnectionState.Waiting => LocalizationService.Instance["StatusWaitingForMeter"],
         _ => LocalizationService.Instance["StatusDisconnected"]
     };
+
+
+    private string GetDeviceDisplayName()
+    {
+        string name = AppDefaults.DeviceName;
+
+        if (IsDisplayTestMode)
+            return $"{name} {LocalizationService.Instance["DeviceDisplayTestSuffix"]}";
+
+        if (IsSimulationMode)
+            return $"{name} {LocalizationService.Instance["DeviceSimulationSuffix"]}";
+
+        return name;
+    }
 
 
     public bool IsHold
@@ -202,26 +216,36 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             Localization_PropertyChanged;
     }
 
+
     private void Localization_PropertyChanged(
         object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is "Item[]" or nameof(LocalizationService.Language))
+        if (e.PropertyName is not ("Item[]" or nameof(LocalizationService.Language)))
+            return;
+
+        // Nazwa urządzenia
+        DeviceName = GetDeviceDisplayName();
+
+        // Nazwa funkcji pomiarowej
+        if (IsDisplayTestMode)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status)));
-
-            if (_lastReading is not null)
-            {
-                Function = MeasurementLocalizationService.GetFunctionName(_lastReading);
-            }
-            else if (!IsDisplayTestMode)
-            {
-                Function = LocalizationService.Instance["StatusWaitingForMeasurement"];
-            }
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecordingStatus)));
+            Function = LocalizationService.Instance["MeasurementVoltageACDC"];
         }
+        else if (_lastReading is not null)
+        {
+            Function = MeasurementLocalizationService.GetFunctionName(_lastReading);
+        }
+        else
+        {
+            Function = LocalizationService.Instance["StatusWaitingForMeasurement"];
+        }
+
+        // Odświeżenie pozostałych tłumaczeń
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecordingStatus)));
     }
+
 
 
     public bool IsDisplayTestMode
@@ -256,13 +280,13 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         IsDisplayTestMode = true;
         _displayTestStep = 0;
 
-        DeviceName = "UNI-T UT161E [TEST]";
+        DeviceName = GetDeviceDisplayName();
 
 
         DisplayValue = "-8888.8";
         Unit = "mV";
-        Function = "Napięcie AC+DC";
-        Range = "AUTO";
+        Function = LocalizationService.Instance["MeasurementVoltageACDC"];
+        Range = AppDefaults.AutoRange;
 
         IsAcDcMode = false;
         AcDisplayValue = "888.88";
@@ -292,7 +316,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         }
         else
         {
-            DeviceName = "UNI-T UT161E [SYMULACJA]";
+            DeviceName = GetDeviceDisplayName();
             _simulationTimer.Start();
             SimulationTimer_Tick(this, EventArgs.Empty);
         }
@@ -351,7 +375,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         _simulator.Reset();
 
         IsSimulationMode = true;
-        DeviceName = "UNI-T UT161E [SYMULACJA]";
+        DeviceName = GetDeviceDisplayName();
 
         _simulationTimer.Tick -= SimulationTimer_Tick;
         _simulationTimer.Tick += SimulationTimer_Tick;
@@ -374,7 +398,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         ClearReading();
 
-        DeviceName = "UNI-T UT161E";        
+        DeviceName = GetDeviceDisplayName();
         ConnectionState = ConnectionState.Disconnected;
 
         if (restartDevice)
@@ -408,10 +432,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
 
     public bool IsAutoRange =>
-        IsDisplayTestMode || Range == "AUTO";
+        IsDisplayTestMode || Range == AppDefaults.AutoRange;
 
     public bool IsManualRange =>
-        IsDisplayTestMode || Range == "MANUAL";
+        IsDisplayTestMode || Range == AppDefaults.ManualRange;
 
 
     public bool IsAC =>
@@ -534,12 +558,20 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                             UpdateReading(reading);
                             ConnectionState = ConnectionState.Connected;
                         }
+
                         else
                         {
                             HandleMissingReading();
+
+                            if (_consecutiveTimeouts >= AppDefaults.MaxConsecutiveTimeouts)
+                            {
+                                reconnect = true;
+                                break;
+                            }
                         }
 
                         await Task.Delay(ReadDelayMs, token);
+
                     }
                     catch (TimeoutException)
                     {
@@ -639,47 +671,73 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         RecordingState = IsRecording ? RecordingState.Recording : RecordingState.Ready;
     }
 
+
     public void StopRecording()
     {
-        if (!IsRecording)
-            return;
-
-        if (_multimeter is not null)
+        if (_multimeter is null)
         {
-            var logger = _multimeter.Logger;
-            logger.Stop();
-            RecordedFrames = logger.FrameCount;
-
-            if (logger.LastError is not null)
-            {
-                IsRecording = false;
-                HasRecording = false;
-                RecordingState = RecordingState.Error;
-                return;
-            }
+            IsRecording = false;
+            return;
         }
 
+        var logger = _multimeter.Logger;
+
+        if (!IsRecording && !logger.IsRecording)
+            return;
+
+        logger.Stop();
+
+        RecordedFrames = logger.FrameCount;
         IsRecording = false;
+
+        if (logger.LastError is not null)
+        {
+            HasRecording = false;
+            RecordingState = RecordingState.Error;
+            return;
+        }
+
         HasRecording = RecordedFrames > 0;
-        RecordingState = HasRecording ? RecordingState.Saved : RecordingState.Ready;
+        RecordingState = HasRecording
+            ? RecordingState.Saved
+            : RecordingState.Ready;
     }
+
+
 
     public void RefreshRecordingCounter()
     {
-        if (!IsRecording || _multimeter is null)
+        if (_multimeter is null)
             return;
 
         var logger = _multimeter.Logger;
+
+        if (!IsRecording && !logger.IsRecording)
+            return;
 
         RecordedFrames = logger.FrameCount;
 
         if (logger.IsRecording)
             return;
 
+        // Logger zakończył pracę, mimo że ViewModel
+        // nadal uważał rejestrację za aktywną.
         IsRecording = false;
-        HasRecording = false;
-        RecordingState = logger.LastError is not null ? RecordingState.Error : RecordingState.Ready;
+
+        if (logger.LastError is not null)
+        {
+            HasRecording = false;
+            RecordingState = RecordingState.Error;
+        }
+        else
+        {
+            HasRecording = RecordedFrames > 0;
+            RecordingState = HasRecording
+                ? RecordingState.Saved
+                : RecordingState.Ready;
+        }
     }
+
 
 
 
@@ -723,7 +781,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAC)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDC)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
-        Range = reading.IsAutoRange ? "AUTO" : "MANUAL";
+        Range = reading.IsAutoRange ? AppDefaults.AutoRange : AppDefaults.ManualRange;
         IsHold = reading.IsHold;
         IsMin = reading.IsMin;
         IsMax = reading.IsMax;

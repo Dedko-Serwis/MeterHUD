@@ -41,7 +41,7 @@ public partial class SettingsWindow : Window
             _settings.Language = previousLanguage;
 
             MessageBox.Show(
-                $"Nie można zapisać ustawień:\n{ex.Message}",
+                string.Format(LocalizationService.Instance["ErrorSettingsSave"], ex.Message),
                 "MultimeterOverlay",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
