@@ -4,6 +4,7 @@ using System.Windows.Threading;
 using MultimeterOverlay.Services;
 using MultimeterOverlay.Core;
 using MultimeterOverlay.Models;
+using MultimeterOverlay.Configuration;
 using UT161EReader;
 
 namespace MultimeterOverlay.ViewModels;
@@ -19,27 +20,28 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private CancellationTokenSource? _cts;
     private Task? _readingTask;
     private bool _disposed;
-
-    private string _deviceName = "UNI-T UT161E";
-    private string _displayValue = "-----";
-    private string _unit = "";
-    private string _function = "Oczekiwanie na pomiar";
-    private string _range = "";    
+    private string _deviceName = AppDefaults.DeviceName;
+    private string _displayValue = AppDefaults.EmptyDisplay;
+    private string _unit = AppDefaults.EmptyUnit;
+    private string _function =        LocalizationService.Instance["StatusWaitingForMeasurement"];
+    private string _range = AppDefaults.EmptyRange;
     private bool _isHold;
     private int _recordedFrames;
-    private string _recordingStatus = "READY";
+    private RecordingState _recordingState = RecordingState.Ready;
     private bool _isRecording;
     private bool _hasRecording;
     private bool _isMin;
     private bool _isMax;
     private bool _isAcDcMode;
-    private string _acDisplayValue = "-----";
-    private string _dcDisplayValue = "-----";
-    private string _acDcUnit = "V";
-    private const int MaxConsecutiveTimeouts = 3;
+
+    private string _acDisplayValue = AppDefaults.EmptyDisplay;
+    private string _dcDisplayValue = AppDefaults.EmptyDisplay;
+    private string _acDcUnit = AppDefaults.AcDcUnit;
+
     private int _consecutiveTimeouts;
     private bool _hasReceivedReading;
     private byte? _functionCode;
+    private MultimeterReading? _lastReading;
 
 
     private readonly MultimeterSimulator _simulator = new();
@@ -99,31 +101,18 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         get => _connectionState;
         private set
         {
-            if (_connectionState == value)
-                return;
-
+            if (_connectionState == value) return;
             _connectionState = value;
-
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(nameof(ConnectionState)));
-
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(nameof(Status)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ConnectionState)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status)));
         }
     }
 
     public string Status => ConnectionState switch
     {
-        ConnectionState.Connected =>
-            LocalizationService.Instance["StatusConnected"],
-
-        ConnectionState.Waiting =>
-            LocalizationService.Instance["StatusWaiting"],
-
-        _ =>
-            LocalizationService.Instance["StatusDisconnected"]
+        ConnectionState.Connected => LocalizationService.Instance["StatusConnected"],
+        ConnectionState.Waiting => LocalizationService.Instance["StatusWaiting"],
+        _ => LocalizationService.Instance["StatusDisconnected"]
     };
 
 
@@ -139,11 +128,28 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _recordedFrames, value);
     }
 
-    public string RecordingStatus
+
+
+    public RecordingState RecordingState
     {
-        get => _recordingStatus;
-        private set => SetField(ref _recordingStatus, value);
+        get => _recordingState;
+        private set
+        {
+            if (_recordingState == value) return;
+            SetField(ref _recordingState, value);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecordingStatus)));
+        }
     }
+
+
+    public string RecordingStatus => RecordingState switch
+    {
+        RecordingState.Recording => LocalizationService.Instance["StatusRecording"],
+        RecordingState.Saved => LocalizationService.Instance["StatusSaved"],
+        RecordingState.Error => LocalizationService.Instance["StatusError"],
+        _ => LocalizationService.Instance["StatusReady"]
+    };
+
 
     public bool IsRecording
     {
@@ -201,18 +207,19 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         if (e.PropertyName is "Item[]" or nameof(LocalizationService.Language))
         {
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(nameof(Status)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status)));
 
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(nameof(Function)));
+            if (_lastReading is not null)
+            {
+                Function = MeasurementLocalizationService.GetFunctionName(_lastReading);
+            }
+            else if (!IsDisplayTestMode)
+            {
+                Function = LocalizationService.Instance["StatusWaitingForMeasurement"];
+            }
 
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(nameof(MeasurementType)));
-
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecordingStatus)));
         }
     }
 
@@ -367,8 +374,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         ClearReading();
 
-        DeviceName = "UNI-T UT161E";
-        Function = "Oczekiwanie na pomiar";
+        DeviceName = "UNI-T UT161E";        
         ConnectionState = ConnectionState.Disconnected;
 
         if (restartDevice)
@@ -539,7 +545,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                     {
                         HandleMissingReading();
 
-                        if (_consecutiveTimeouts >= MaxConsecutiveTimeouts)
+                        if (_consecutiveTimeouts >= AppDefaults.MaxConsecutiveTimeouts)
                             reconnect = true;
                     }
                     catch (OperationCanceledException)
@@ -549,7 +555,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                     }
                     catch (Exception)
                     {
-                        // Błąd komunikacji lub odłączenie urządzenia HID.
+                        // Communication error or HID is disconnected.
                         StopRecording();
                         ClearReading();
 
@@ -584,7 +590,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         _consecutiveTimeouts++;
 
-        if (_consecutiveTimeouts >= MaxConsecutiveTimeouts)
+        if (_consecutiveTimeouts >= AppDefaults.MaxConsecutiveTimeouts)
         {
             StopRecording();
             ClearReading();
@@ -624,13 +630,13 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         if (logger.LastError is not null)
         {
-            RecordingStatus = "ERROR";
+            RecordingState = RecordingState.Error;
             HasRecording = false;
             return;
         }
 
         HasRecording = false;
-        RecordingStatus = IsRecording ? "REC" : "READY";
+        RecordingState = IsRecording ? RecordingState.Recording : RecordingState.Ready;
     }
 
     public void StopRecording()
@@ -648,14 +654,14 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             {
                 IsRecording = false;
                 HasRecording = false;
-                RecordingStatus = "ERROR";
+                RecordingState = RecordingState.Error;
                 return;
             }
         }
 
         IsRecording = false;
         HasRecording = RecordedFrames > 0;
-        RecordingStatus = HasRecording ? "SAVED" : "READY";
+        RecordingState = HasRecording ? RecordingState.Saved : RecordingState.Ready;
     }
 
     public void RefreshRecordingCounter()
@@ -672,9 +678,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         IsRecording = false;
         HasRecording = false;
-        RecordingStatus = logger.LastError is not null
-            ? "ERROR"
-            : "READY";
+        RecordingState = logger.LastError is not null ? RecordingState.Error : RecordingState.Ready;
     }
 
 
@@ -686,8 +690,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             // Przy wejściu do AC+DC usuwamy stare wskazania.
             if (!IsAcDcMode)
             {
-                AcDisplayValue = "-----";
-                DcDisplayValue = "-----";
+                AcDisplayValue = AppDefaults.EmptyDisplay;
+                DcDisplayValue = AppDefaults.EmptyDisplay;
             }
 
             IsAcDcMode = true;
@@ -713,6 +717,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         DisplayValue = reading.DisplayValue;
         Unit = reading.Unit;
 
+        _lastReading = reading;
         _functionCode = reading.FunctionCode;
         Function = MeasurementLocalizationService.GetFunctionName(reading);
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAC)));
@@ -724,19 +729,35 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         IsMax = reading.IsMax;
     }
 
+
     private void ClearReading()
     {
-        IsAcDcMode = false;
-        AcDisplayValue = "-----";
-        DcDisplayValue = "-----";
-        DisplayValue = "-----";
-        Unit = "";
-        Range = "";
+        // Usunięcie informacji o poprzednim pomiarze
+        _lastReading = null;
+        _functionCode = null;
 
+        // Wyświetlacz
+        IsAcDcMode = false;
+        AcDisplayValue = AppDefaults.EmptyDisplay;
+        DcDisplayValue = AppDefaults.EmptyDisplay;
+        DisplayValue = AppDefaults.EmptyDisplay;
+
+        Unit = AppDefaults.EmptyUnit;
+        Range = AppDefaults.EmptyRange;
+        AcDcUnit = AppDefaults.AcDcUnit;
+
+        Function = LocalizationService.Instance["StatusWaitingForMeasurement"];
+
+        // Wskaźniki
         IsHold = false;
         IsMin = false;
         IsMax = false;
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAC)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDC)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
     }
+
 
     private void Disconnect()
     {

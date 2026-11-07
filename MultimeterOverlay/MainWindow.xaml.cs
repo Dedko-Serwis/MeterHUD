@@ -1,13 +1,14 @@
 ﻿
+using MultimeterOverlay.Models;
+using MultimeterOverlay.Services;
 using MultimeterOverlay.ViewModels;
 using MultimeterOverlay.Views;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using MultimeterOverlay.Services;
-using System.Diagnostics;
-using System.IO;
 using UT161EReader;
 
 namespace MultimeterOverlay;
@@ -67,7 +68,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Błąd testu wyświetlacza:\n{ex.Message}",
+                string.Format(LocalizationService.Instance["ErrorDisplayTest"], ex.Message),
                 "MultimeterOverlay",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
@@ -118,7 +119,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Błąd przełączania symulacji:\n{ex.Message}",
+                string.Format(LocalizationService.Instance["ErrorSimulationSwitch"], ex.Message),
                 "MultimeterOverlay",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
@@ -187,7 +188,7 @@ public partial class MainWindow : Window
             RecordingIndicator.Opacity = 1.0;
 
             RecordingIndicator.Foreground =
-                _viewModel.RecordingStatus == "ERROR"
+                _viewModel.RecordingState == RecordingState.Error
                     ? Brushes.Red
                     : _viewModel.HasRecording
                         ? Brushes.LimeGreen
@@ -275,12 +276,13 @@ public partial class MainWindow : Window
     private void ResetSettings_Click(
     object sender, RoutedEventArgs e)
     {
+
         MessageBoxResult result = MessageBox.Show(
-            "Przywrócić domyślne ustawienia aplikacji?\n\n" +
-            "Pliki CSV nie zostaną usunięte.",
-            "Reset ustawień",
+            LocalizationService.Instance["ResetSettingsQuestion"],
+            LocalizationService.Instance["ResetSettingsTitle"],
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
+
 
         if (result != MessageBoxResult.Yes)
             return;
