@@ -19,6 +19,9 @@ public partial class MainWindow : Window
     private OverlayWindow? _overlayWindow;
     private readonly AppSettings _settings = AppSettings.Load();
     private bool _simulationSwitchInProgress;
+
+    private bool _shutdownCompleted;
+
     private bool _displayTestSwitchInProgress;
     private readonly DispatcherTimer _recordingTimer = new()
     {
@@ -39,7 +42,7 @@ public partial class MainWindow : Window
 
         DataContext = _viewModel;
         Loaded += MainWindow_Loaded;
-        Closed += MainWindow_Closed;
+        Closing += MainWindow_Closing;
     }
 
 
@@ -326,19 +329,53 @@ public partial class MainWindow : Window
 
 
 
-    private async void MainWindow_Closed(
-        object? sender, EventArgs e)
+
+
+    private async void MainWindow_Closing(
+        object? sender,
+        System.ComponentModel.CancelEventArgs e)
     {
-        _recordingTimer.Stop();
-        SaveSettings();
-        _overlayWindow?.Close();
+        if (_shutdownCompleted)
+            return;
 
-        if (_viewModel.IsDisplayTestMode) _viewModel.DisableDisplayTest();
-        if (_viewModel.IsSimulationMode) _viewModel.DisableSimulation(restartDevice: false);
+        e.Cancel = true;
 
-        await _viewModel.StopAsync();
-        _viewModel.Dispose();
+        try
+        {
+            _recordingTimer.Stop();
+
+            if (_viewModel.IsDisplayTestMode)
+                _viewModel.DisableDisplayTest();
+
+            if (_viewModel.IsSimulationMode)
+                _viewModel.DisableSimulation(restartDevice: false);
+
+            await _viewModel.StopAsync();
+
+            SaveSettings();
+            _overlayWindow?.Close();
+
+            _viewModel.Dispose();
+
+            _shutdownCompleted = true;
+
+
+            _ = Dispatcher.BeginInvoke(
+                new Action(Close),
+                DispatcherPriority.Background);
+
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                ex.Message,
+                "MultimeterOverlay",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
     }
+
+
 
     private void SettingsMenuItem_Click(
         object sender, RoutedEventArgs e)

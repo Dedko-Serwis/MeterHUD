@@ -6,7 +6,7 @@ namespace UT161EReader;
 /// <summary>
 /// Adapter multimetru UNI-T UT161E do wspólnego interfejsu.
 /// </summary>
-public sealed class UT161EMultimeter : IMultimeter
+public sealed class UT161EMultimeter : IMultimeter, IHidRecordingDevice
 {
     private readonly UT161EHidReader _reader;
     private readonly SemaphoreSlim _readLock = new(1, 1);
@@ -87,14 +87,38 @@ public sealed class UT161EMultimeter : IMultimeter
         }
     }
 
+
     public void Dispose()
     {
         if (_disposed)
             return;
 
         _disposed = true;
-        _reader.Dispose();
 
-        GC.SuppressFinalize(this);
+        try
+        {
+            _reader.Dispose();
+        }
+        finally
+        {
+            _readLock.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
+
+
+    public void StopRecording()
+    {
+        Logger.Stop();
+    }
+
+
+    public RecordingStoppedEventArgs GetRecordingResult()
+    {
+        return new RecordingStoppedEventArgs(
+            Logger.WasSavedSuccessfully,
+            Logger.FrameCount,
+            Logger.LastError);
+    }
+
 }

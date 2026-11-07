@@ -4,21 +4,17 @@ using System.Text;
 
 namespace UT161EReader;
 
-public sealed class UT161EHidLogger : IDisposable
+public sealed class UT161EHidLogger(string? logDirectory = null) : IDisposable
 {
-    private readonly string _logDirectory;
-    public UT161EHidLogger(string? logDirectory = null)
-    {
-        _logDirectory = logDirectory ?? LogDirectory;
-    }
-
-    private readonly object _sync = new();
+    private readonly string _logDirectory = logDirectory ?? LogDirectory;
+    private readonly Lock _sync = new();
     private StreamWriter? _writer;
 
     public string? FilePath { get; private set; }
     public int FrameCount { get; private set; }
     public bool IsRecording { get; private set; }
     public string? LastError { get; private set; }
+    public bool WasSavedSuccessfully { get; private set; }
 
     public static string LogDirectory => Path.Combine(
         Environment.GetFolderPath(
@@ -35,6 +31,7 @@ public sealed class UT161EHidLogger : IDisposable
 
 
             LastError = null;
+            WasSavedSuccessfully = false;
             CloseWriter();
 
             if (LastError is not null)
@@ -78,14 +75,24 @@ public sealed class UT161EHidLogger : IDisposable
         }
     }
 
+
     public void Stop()
     {
         lock (_sync)
         {
+            bool wasRecording = IsRecording;
+
             IsRecording = false;
             CloseWriter();
+
+            if (wasRecording)
+            {
+                WasSavedSuccessfully =
+                    LastError is null && FrameCount > 0;
+            }
         }
     }
+
 
     public void Log(string direction, ReadOnlySpan<byte> data)
     {

@@ -34,34 +34,44 @@ public sealed class UT161EHidReader : IDisposable
                 "Nie można otworzyć urządzenia HID.");
         }
 
+
         _stream = stream;
-        _stream.ReadTimeout = 3000;
-        _stream.WriteTimeout = 3000;
 
-        _input = new byte[
-            device.GetMaxInputReportLength()];
+        try
+        {
+            _stream.ReadTimeout = 3000;
+            _stream.WriteTimeout = 3000;
 
-        _output = new byte[
-            device.GetMaxOutputReportLength()];
+            _input = new byte[
+                device.GetMaxInputReportLength()];
 
-        if (_input.Length < 19 ||
-            _output.Length < Command.Length + 2)
+            _output = new byte[
+                device.GetMaxOutputReportLength()];
+
+            if (_input.Length < 19 ||
+                _output.Length < Command.Length + 2)
+            {
+                throw new InvalidOperationException(
+                    "Nieprawidłowe rozmiary raportów HID.");
+            }
+
+            // Bajt 0: Report ID
+            // Bajt 1: długość polecenia
+            // Bajty 2-7: polecenie UT161E
+            _output[0] = 0x00;
+            _output[1] = 0x06;
+
+            Array.Copy(
+                Command, 0,
+                _output, 2,
+                Command.Length);
+        }
+        catch
         {
             _stream.Dispose();
-            throw new InvalidOperationException(
-                "Nieprawidłowe rozmiary raportów HID.");
+            throw;
         }
 
-        // Bajt 0: Report ID
-        // Bajt 1: długość polecenia
-        // Bajty 2-7: polecenie UT161E
-        _output[0] = 0x00;
-        _output[1] = 0x06;
-
-        Array.Copy(
-            Command, 0,
-            _output, 2,
-            Command.Length);
     }
 
     public UT161EMeasurement? ReadMeasurement()

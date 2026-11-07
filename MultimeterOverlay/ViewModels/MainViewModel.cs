@@ -1,29 +1,27 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Threading;
-using MultimeterOverlay.Services;
+﻿using MultimeterOverlay.Configuration;
 using MultimeterOverlay.Core;
 using MultimeterOverlay.Models;
-using MultimeterOverlay.Configuration;
+using MultimeterOverlay.Services;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Windows.Threading;
 using UT161EReader;
+using System.Windows;
 
 namespace MultimeterOverlay.ViewModels;
 
 public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 {
-    private const int ReconnectDelayMs = 2000;
-    private const int ReadDelayMs = 200;
-    private static readonly TimeSpan NoDataTimeout =  TimeSpan.FromSeconds(5);
-
-
-    private UT161EMultimeter? _multimeter;
+    private readonly IMultimeterFactory _multimeterFactory;
+    private IMultimeterConnectionService? _connectionService;
     private CancellationTokenSource? _cts;
-    private Task? _readingTask;
+
     private bool _disposed;
     private string _deviceName = AppDefaults.DeviceName;
     private string _displayValue = AppDefaults.EmptyDisplay;
     private string _unit = AppDefaults.EmptyUnit;
-    private string _function =        LocalizationService.Instance["StatusWaitingForMeasurement"];
+    private string _function = LocalizationService.Instance["StatusWaitingForMeasurement"];
     private string _range = AppDefaults.EmptyRange;
     private bool _isHold;
     private int _recordedFrames;
@@ -38,7 +36,6 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private string _dcDisplayValue = AppDefaults.EmptyDisplay;
     private string _acDcUnit = AppDefaults.AcDcUnit;
 
-    private int _consecutiveTimeouts;
     private bool _hasReceivedReading;
     private byte? _functionCode;
     private MultimeterReading? _lastReading;
@@ -58,7 +55,6 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         get => _isSimulationMode;
         private set => SetField(ref _isSimulationMode, value);
     }
-
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -92,10 +88,76 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _range, value);
     }
 
+        private void ConnectionService_ConnectionChanged(
+        object? sender,
+        bool connected)
+    {
+        if (Application.Current?.Dispatcher is not { } dispatcher)
+            return;
 
-    private ConnectionState _connectionState =
-        ConnectionState.Disconnected;
+        _ = dispatcher.BeginInvoke(() =>
+        {
+            if (_disposed || IsSimulationMode || IsDisplayTestMode)
+                return;
 
+            if (!connected)
+            {
+                // Wynik zapisu CSV obsługuje RecordingStopped.
+                // Nie wywołujemy tutaj StopRecording().
+                ClearReading();
+                _hasReceivedReading = false;
+            }
+
+            ConnectionState = connected
+                ? ConnectionState.Connected
+                : ConnectionState.Disconnected;
+        });
+    }
+
+
+    private void ConnectionService_ReadingMissing(
+        object? sender,
+        EventArgs e)
+    {
+        if (Application.Current?.Dispatcher is not { } dispatcher)
+            return;
+
+        _ = dispatcher.BeginInvoke(() =>
+        {
+            if (_disposed || IsSimulationMode || IsDisplayTestMode)
+                return;
+
+            if (_connectionService?.IsConnected == true &&
+                _hasReceivedReading)
+            {
+                ConnectionState = ConnectionState.Waiting;
+            }
+        });
+    }
+
+
+    private void ConnectionService_ReadingReceived(
+        object? sender,
+        MultimeterReading reading)
+    {
+        if (Application.Current?.Dispatcher is not { } dispatcher)
+            return;
+
+        _ = dispatcher.BeginInvoke(() =>
+        {
+            if (_disposed || IsSimulationMode || IsDisplayTestMode)
+                return;
+
+            _hasReceivedReading = true;
+
+            UpdateReading(reading);
+            ConnectionState = ConnectionState.Connected;
+
+            RefreshRecordingCounter();
+        });
+    }
+    private IHidRecordingDevice? RecordingDevice => _connectionService?.CurrentDevice as IHidRecordingDevice;
+    private ConnectionState _connectionState = ConnectionState.Disconnected;
     public ConnectionState ConnectionState
     {
         get => _connectionState;
@@ -210,10 +272,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private int _displayTestStep;
 
 
-    public MainViewModel()
+    public MainViewModel() : this(new UT161EMultimeterFactory())
     {
-        LocalizationService.Instance.PropertyChanged +=
-            Localization_PropertyChanged;
+    }
+
+    public MainViewModel(IMultimeterFactory multimeterFactory)
+    {
+        _multimeterFactory = multimeterFactory ?? throw new ArgumentNullException(nameof(multimeterFactory));
+
+        LocalizationService.Instance.PropertyChanged += Localization_PropertyChanged;
+
+        _connectionService = new MultimeterConnectionService(_multimeterFactory, maxConsecutiveFailures: AppDefaults.MaxConsecutiveTimeouts);
+        _connectionService.ConnectionChanged += ConnectionService_ConnectionChanged;
+        _connectionService.ReadingReceived += ConnectionService_ReadingReceived;
+        _connectionService.ReadingMissing += ConnectionService_ReadingMissing;
+        _connectionService.RecordingStopped +=    ConnectionService_RecordingStopped;
     }
 
 
@@ -387,7 +460,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         SimulationTimer_Tick(this, EventArgs.Empty);
     }
 
-        public void DisableSimulation(bool restartDevice = true)
+    public void DisableSimulation(bool restartDevice = true)
     {
         if (!IsSimulationMode)
             return;
@@ -420,16 +493,19 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         ConnectionState = ConnectionState.Connected;
     }
 
+
     public void Start()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        if (_readingTask is not null)
-            return;
+        if (_connectionService is null)
+            throw new InvalidOperationException("Serwis połączenia nie został zainicjalizowany.");
 
-        _cts = new CancellationTokenSource();
-        _readingTask = RunAsync(_cts.Token);
+        _cts ??= new CancellationTokenSource();
+
+        _ = _connectionService.StartAsync(_cts.Token);
     }
+
 
 
     public bool IsAutoRange =>
@@ -509,139 +585,41 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
-
-
-
-
-    private async Task RunAsync(CancellationToken token)
+    private void ConnectionService_RecordingStopped(
+        object? sender,
+        RecordingStoppedEventArgs e)
     {
-        ConnectionState = ConnectionState.Disconnected;
+        if (Application.Current?.Dispatcher is not { } dispatcher)
+            return;
 
-        try
+        _ = dispatcher.BeginInvoke(() =>
         {
-            while (!token.IsCancellationRequested)
+            if (_disposed)             return;
+
+            
+            if (!IsRecording && RecordingState != RecordingState.Recording)
             {
-                if (_multimeter is null)
-                {
-                    try
-                    {
-                        _multimeter = new UT161EMultimeter();
-                        DeviceName = _multimeter.Name;
-                    }
-                    catch (Exception)
-                    {
-                        // Urządzenie HID jest niedostępne.
-                        // Nie zmieniamy statusu na "Połączono".
-                        ConnectionState = ConnectionState.Disconnected;
-
-                        await Task.Delay(ReconnectDelayMs, token);
-                        continue;
-                    }
-                }
-
-                bool reconnect = false;
-
-                while (!token.IsCancellationRequested && !reconnect)
-                {
-                    try
-                    {
-                        MultimeterReading? reading =
-                            await _multimeter.ReadAsync(token);
-
-                        if (token.IsCancellationRequested)
-                            break;
-
-                        if (reading is not null)
-                        {
-                            _consecutiveTimeouts = 0;
-                            _hasReceivedReading = true;
-
-                            UpdateReading(reading);
-                            ConnectionState = ConnectionState.Connected;
-                        }
-
-                        else
-                        {
-                            HandleMissingReading();
-
-                            if (_consecutiveTimeouts >= AppDefaults.MaxConsecutiveTimeouts)
-                            {
-                                reconnect = true;
-                                break;
-                            }
-                        }
-
-                        RefreshRecordingCounter();
-                        await Task.Delay(ReadDelayMs, token);
-
-                    }
-                    catch (TimeoutException)
-                    {
-                        HandleMissingReading();
-
-                        if (_consecutiveTimeouts >= AppDefaults.MaxConsecutiveTimeouts)
-                            reconnect = true;
-                    }
-                    catch (OperationCanceledException)
-                        when (token.IsCancellationRequested)
-                    {
-                        break;
-                    }
-                    catch (Exception)
-                    {
-                        // Communication error or HID is disconnected.
-                        StopRecording();
-                        ClearReading();
-
-                        _consecutiveTimeouts = 0;
-                        _hasReceivedReading = false;
-
-                        ConnectionState = ConnectionState.Disconnected;
-                        reconnect = true;
-                    }
-                }
-
-                Disconnect();
-
-                if (!token.IsCancellationRequested)
-                {
-                    await Task.Delay(ReconnectDelayMs, token);
-                }
+                return;
             }
-        }
-        catch (OperationCanceledException)
-            when (token.IsCancellationRequested)
-        {
-            // Normalne zatrzymanie aplikacji.
-        }
-        finally
-        {
-            Disconnect();
-        }
+
+            RecordedFrames = e.FrameCount;
+            IsRecording = false;
+
+            if (e.Error is not null)
+            {
+                HasRecording = false;
+                RecordingState = RecordingState.Error;
+            }
+            else
+            {
+                HasRecording = e.WasSavedSuccessfully;
+
+                RecordingState = HasRecording
+                    ? RecordingState.Saved
+                    : RecordingState.Ready;
+            }
+        });
     }
-
-    private void HandleMissingReading()
-    {
-        _consecutiveTimeouts++;
-
-        if (_consecutiveTimeouts >= AppDefaults.MaxConsecutiveTimeouts)
-        {
-            StopRecording();
-            ClearReading();
-
-            _hasReceivedReading = false;
-            ConnectionState = ConnectionState.Disconnected;
-        }
-        else if (_hasReceivedReading)
-        {
-            ConnectionState = ConnectionState.Waiting;
-        }
-        else
-        {
-            ConnectionState = ConnectionState.Disconnected;
-        }
-    }
-
 
 
     public void ToggleRecording()
@@ -654,9 +632,13 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             return;
         }
 
-        if (_multimeter is null || ConnectionState != ConnectionState.Connected) return;
+        var recordingDevice = RecordingDevice;
 
-        var logger = _multimeter.Logger;
+        if (recordingDevice is null ||
+            ConnectionState != ConnectionState.Connected)
+            return;
+
+        var logger = recordingDevice.Logger;
         logger.Start();
 
         RecordedFrames = logger.FrameCount;
@@ -677,18 +659,26 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public void StopRecording()
     {
 
-        if (_multimeter is null)
+        var recordingDevice = RecordingDevice;
+
+        if (recordingDevice is null)
         {
             IsRecording = false;
 
             if (RecordingState == RecordingState.Recording)
-                RecordingState = RecordingState.Error;
+            {
+                HasRecording = RecordedFrames > 0;
+
+                RecordingState = HasRecording
+                    ? RecordingState.Saved
+                    : RecordingState.Ready;
+            }
 
             return;
         }
 
 
-        var logger = _multimeter.Logger;
+        var logger = recordingDevice.Logger;
 
         if (!IsRecording && !logger.IsRecording)
             return;
@@ -715,10 +705,12 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public void RefreshRecordingCounter()
     {
-        if (_multimeter is null)
+        var recordingDevice = RecordingDevice;
+
+        if (recordingDevice is null)
             return;
 
-        var logger = _multimeter.Logger;
+        var logger = recordingDevice.Logger;
 
         if (!IsRecording && !logger.IsRecording)
             return;
@@ -824,41 +816,30 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
     }
 
-
-    private void Disconnect()
-    {
-        StopRecording();
-
-        _multimeter?.Dispose();
-        _multimeter = null;
-    }
-
     public async Task StopAsync()
     {
         if (_cts is null)
             return;
 
+        // Zatrzymujemy rejestrację, zanim serwis
+        // zwolni urządzenie HID.
+        StopRecording();
+
         _cts.Cancel();
 
-        if (_readingTask is not null)
+        try
         {
-            try
-            {
-                await _readingTask;
-            }
-            catch (OperationCanceledException)
-            {
-                // Normalne zatrzymanie.
-            }
+            if (_connectionService is not null)
+                await _connectionService.StopAsync();
         }
+        finally
+        {
+            _cts.Dispose();
+            _cts = null;
 
-        _readingTask = null;
-
-        _cts.Dispose();
-        _cts = null;
-
-        ClearReading();
-        ConnectionState = ConnectionState.Disconnected;
+            ClearReading();
+            ConnectionState = ConnectionState.Disconnected;
+        }
     }
 
     public void Dispose()
@@ -866,19 +847,27 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         if (_disposed)
             return;
 
-        if (_readingTask is not null)
-        {
-            throw new InvalidOperationException("Przed Dispose należy wywołać StopAsync.");
-        }
-
         _disposed = true;
         _cts?.Dispose();
-        Disconnect();
+
         _simulationTimer.Stop();
         _simulationTimer.Tick -= SimulationTimer_Tick;
+
         _displayTestTimer.Stop();
         _displayTestTimer.Tick -= DisplayTestTimer_Tick;
+
         LocalizationService.Instance.PropertyChanged -= Localization_PropertyChanged;
+
+        if (_connectionService is not null)
+        {
+            _connectionService.ConnectionChanged -= ConnectionService_ConnectionChanged;
+            _connectionService.ReadingReceived -= ConnectionService_ReadingReceived;
+            _connectionService.ReadingMissing -= ConnectionService_ReadingMissing;
+            _connectionService.RecordingStopped -=    ConnectionService_RecordingStopped;
+        }
+        _connectionService?.Dispose();
+        _connectionService = null;
+
         GC.SuppressFinalize(this);
     }
 
