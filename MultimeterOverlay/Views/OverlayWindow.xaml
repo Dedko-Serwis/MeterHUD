@@ -22,6 +22,9 @@
     <Window.Resources>
         <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="#181818"/>
         <SolidColorBrush x:Key="OverlayTextBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="OverlayConnectedBrush" Color="#39C875"/>
+        <SolidColorBrush x:Key="OverlayWaitingBrush" Color="#F4D35E"/>
+        <SolidColorBrush x:Key="OverlayDisconnectedBrush" Color="#777777"/>
 
         <Style x:Key="IndicatorStyle"
                TargetType="Border">
@@ -194,18 +197,18 @@
 
                 <!-- Domyślnie: brak komunikacji -->
                 <Setter Property="BorderBrush"
-                    Value="#777777"/>
+                    Value="{DynamicResource OverlayDisconnectedBrush}"/>
 
                 <Style.Triggers>
 
                     <!-- Połączono -->
                     <DataTrigger Binding="{Binding ConnectionState}"             Value="Connected">
-                        <Setter Property="BorderBrush" Value="#39C875"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource OverlayConnectedBrush}"/>
                     </DataTrigger>
                     
                     <!-- Oczekiwanie na miernik -->
                     <DataTrigger Binding="{Binding ConnectionState}"             Value="Waiting">
-                        <Setter Property="BorderBrush" Value="#F4D35E"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource OverlayWaitingBrush}"/>
                     </DataTrigger>
                     
                 </Style.Triggers>
