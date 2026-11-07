@@ -3,6 +3,7 @@ using MultimeterOverlay.Services;
 using MultimeterOverlay.ViewModels;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace MultimeterOverlay.Views;
 
@@ -18,6 +19,7 @@ public partial class OverlayWindow : Window
 
         DataContext = viewModel;
         _settings = settings;
+        ApplyAppearance();
 
         Loaded += OverlayWindow_Loaded;
         Closing += OverlayWindow_Closing;
@@ -34,6 +36,19 @@ public partial class OverlayWindow : Window
         System.ComponentModel.CancelEventArgs e)
     {
         SavePosition();
+    }
+
+    public void ApplyAppearance()
+    {
+        Resources["OverlayBackgroundBrush"] = ParseColor(_settings.OverlayBackgroundColor, "#181818");
+        Resources["OverlayTextBrush"] = ParseColor(_settings.OverlayTextColor, "#FFFFFF");
+    }
+
+    private static SolidColorBrush ParseColor(string? value, string fallback)
+    {
+        if (value is null || !System.Text.RegularExpressions.Regex.IsMatch(value, "^#[0-9a-fA-F]{6}$"))
+            value = fallback;
+        return new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
     }
 
     public void SavePosition()
