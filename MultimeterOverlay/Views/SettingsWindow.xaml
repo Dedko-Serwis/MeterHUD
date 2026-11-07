@@ -4,9 +4,9 @@
         xmlns:services="clr-namespace:MultimeterOverlay.Services"
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         Title="{Binding Source={StaticResource Loc}, Path=[SettingsTitle]}"        
-        Width="440"
-        Height="530"
-        MinWidth="420"
+        Width="750"
+        Height="500"
+        MinWidth="650"
         MinHeight="260"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
@@ -37,152 +37,140 @@
 
         <!-- Zakładki ustawień -->
         <TabControl>
-            <TabItem Header="Ogólne">
-                <StackPanel Margin="12,18,12,0">
-                    <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsLanguage]}"
-                               Margin="0,0,0,10"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="170"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0"
-                           Text="{Binding Source={StaticResource Loc}, Path=[SettingsLanguage]}"
-                           VerticalAlignment="Center"/>
-
-                <ComboBox Grid.Column="1"
-                          Height="28"
-                          SelectedValuePath="Tag"
-                          SelectedValue="{Binding Language,
-                              Mode=TwoWay,
-                              UpdateSourceTrigger=PropertyChanged}">
-
-                    <ComboBoxItem Content="Polski"
-                                  Tag="pl"/>
-
-                    <ComboBoxItem Content="English"
-                                  Tag="en"/>
-
-                </ComboBox>
-            </Grid>
+            <TabItem Header="Kolory">
+                <StackPanel Margin="12,16,12,0">
+                    <TextBlock Text="Kolory nakładki OBS"
+                               FontSize="18" FontWeight="SemiBold"
+                               Margin="0,0,0,18"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Wyświetlacz i ramka"
+                                       FontWeight="SemiBold" Foreground="#AAAAAA"
+                                       Margin="0,0,0,8"/>
+<Grid>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="175"/>
+        <ColumnDefinition Width="95"/>
+        <ColumnDefinition Width="40"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
+    <TextBlock Grid.Row="0" Text="Tło nakładki" VerticalAlignment="Center"/>
+    <TextBox x:Name="BackgroundColorTextBox" Grid.Row="0" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayBackgroundColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="BackgroundColorButton" Grid.Row="0" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="BackgroundColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="1" Text="Cyfry i jednostki" VerticalAlignment="Center"/>
+    <TextBox x:Name="TextColorTextBox" Grid.Row="1" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayTextColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="TextColorButton" Grid.Row="1" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="TextColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="2" Text="Ramka - połączono" VerticalAlignment="Center"/>
+    <TextBox x:Name="ConnectedColorTextBox" Grid.Row="2" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayConnectedColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="ConnectedColorButton" Grid.Row="2" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="ConnectedColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="3" Text="Ramka - oczekiwanie" VerticalAlignment="Center"/>
+    <TextBox x:Name="WaitingColorTextBox" Grid.Row="3" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayWaitingColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="WaitingColorButton" Grid.Row="3" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="WaitingColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="4" Text="Ramka - rozłączono" VerticalAlignment="Center"/>
+    <TextBox x:Name="DisconnectedColorTextBox" Grid.Row="4" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayDisconnectedColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="DisconnectedColorButton" Grid.Row="4" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="DisconnectedColor_Click" Padding="0"/>
+</Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Wskaźniki"
+                                       FontWeight="SemiBold" Foreground="#AAAAAA"
+                                       Margin="0,0,0,8"/>
+<Grid>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="175"/>
+        <ColumnDefinition Width="95"/>
+        <ColumnDefinition Width="40"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
+    <TextBlock Grid.Row="0" Text="AUTO / MANUAL (tekst)" VerticalAlignment="Center"/>
+    <TextBox x:Name="RangeTextColorTextBox" Grid.Row="0" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayRangeTextColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="RangeTextColorButton" Grid.Row="0" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="RangeTextColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="1" Text="MIN / MAX (tło)" VerticalAlignment="Center"/>
+    <TextBox x:Name="MinMaxColorTextBox" Grid.Row="1" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayMinMaxColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="MinMaxColorButton" Grid.Row="1" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="MinMaxColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="2" Text="AC (tło)" VerticalAlignment="Center"/>
+    <TextBox x:Name="AcColorTextBox" Grid.Row="2" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayAcColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="AcColorButton" Grid.Row="2" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="AcColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="3" Text="DC (tło)" VerticalAlignment="Center"/>
+    <TextBox x:Name="DcColorTextBox" Grid.Row="3" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayDcColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="DcColorButton" Grid.Row="3" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="DcColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="4" Text="HOLD (tło)" VerticalAlignment="Center"/>
+    <TextBox x:Name="HoldColorTextBox" Grid.Row="4" Grid.Column="1"
+                         Margin="0,3,6,3" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayHoldColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="HoldColorButton" Grid.Row="4" Grid.Column="2"
+                        Content="" ToolTip="Wybierz kolor" Click="HoldColor_Click" Padding="0"/>
+</Grid>
+                        </StackPanel>
+                    </Grid>
+                    <Button Content="Domyślne kolory"
+                            HorizontalAlignment="Left"
+                            Margin="0,16,0,0" Padding="10,5"
+                            Click="DefaultColors_Click"/>
                 </StackPanel>
             </TabItem>
 
-            <TabItem Header="Kolory">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="10,8,10,10">
-                        <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsDisplay]}"
-                                   Foreground="#AAAAAA"
-                                   FontWeight="SemiBold"
-                                   Margin="0,0,0,4"/>
-            <Grid Margin="0,12,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="175"/>
-                    <ColumnDefinition Width="95"/>
-                    <ColumnDefinition Width="40"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Text="Tło nakładki" VerticalAlignment="Center"/>
-                <TextBox x:Name="BackgroundColorTextBox" Grid.Row="0" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayBackgroundColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="BackgroundColorButton" Grid.Row="0" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="BackgroundColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="1" Text="Cyfry i jednostki" VerticalAlignment="Center"/>
-                <TextBox x:Name="TextColorTextBox" Grid.Row="1" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayTextColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="TextColorButton" Grid.Row="1" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="TextColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="2" Text="Ramka - połączono" VerticalAlignment="Center"/>
-                <TextBox x:Name="ConnectedColorTextBox" Grid.Row="2" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayConnectedColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="ConnectedColorButton" Grid.Row="2" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="ConnectedColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="3" Text="Ramka - oczekiwanie" VerticalAlignment="Center"/>
-                <TextBox x:Name="WaitingColorTextBox" Grid.Row="3" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayWaitingColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="WaitingColorButton" Grid.Row="3" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="WaitingColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="4" Text="Ramka - rozłączono" VerticalAlignment="Center"/>
-                <TextBox x:Name="DisconnectedColorTextBox" Grid.Row="4" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayDisconnectedColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="DisconnectedColorButton" Grid.Row="4" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="DisconnectedColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="5" Text="AUTO / MANUAL (tekst)" VerticalAlignment="Center"/>
-                <TextBox x:Name="RangeTextColorTextBox" Grid.Row="5" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayRangeTextColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="RangeTextColorButton" Grid.Row="5" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="RangeTextColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="6" Text="MIN / MAX (tło)" VerticalAlignment="Center"/>
-                <TextBox x:Name="MinMaxColorTextBox" Grid.Row="6" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayMinMaxColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="MinMaxColorButton" Grid.Row="6" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="MinMaxColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="7" Text="AC (tło)" VerticalAlignment="Center"/>
-                <TextBox x:Name="AcColorTextBox" Grid.Row="7" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayAcColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="AcColorButton" Grid.Row="7" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="AcColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="8" Text="DC (tło)" VerticalAlignment="Center"/>
-                <TextBox x:Name="DcColorTextBox" Grid.Row="8" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayDcColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="DcColorButton" Grid.Row="8" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="DcColor_Click" Padding="0"/>
-
-                <TextBlock Grid.Row="9" Text="HOLD (tło)" VerticalAlignment="Center"/>
-                <TextBox x:Name="HoldColorTextBox" Grid.Row="9" Grid.Column="1"
-                         Margin="0,3,6,3" VerticalContentAlignment="Center"
-                         Text="{Binding OverlayHoldColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="HoldColorButton" Grid.Row="9" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="HoldColor_Click" Padding="0"/>
-            </Grid>
-                        <Button Content="Domyślne kolory"
-                                HorizontalAlignment="Left"
-                                Margin="0,12,0,0"
-                                Padding="10,5"
-                                Click="DefaultColors_Click"/>
-                    </StackPanel>
-                </ScrollViewer>
+            <TabItem Header="Ścieżki">
+                <StackPanel Margin="12,16,12,0">
+                    <TextBlock Text="Ścieżki plików"
+                               FontSize="18" FontWeight="SemiBold"
+                               Margin="0,0,0,18"/>
+                    <TextBlock Text="Folder zapisu plików CSV" Margin="0,0,0,8"/>
+                    <TextBlock Text="Wybór folderu, przywracanie domyślnej ścieżki i opróżnianie katalogu dodamy w kolejnym etapie."
+                               Foreground="#AAAAAA" TextWrapping="Wrap"/>
+                </StackPanel>
             </TabItem>
 
-            <TabItem Header="Ścieżki">
-                <StackPanel Margin="12,18,12,0">
-                    <TextBlock Text="Folder zapisu plików CSV"
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,8"/>
-                    <TextBlock Text="Wybór folderu, przywracanie domyślnej ścieżki i opróżnianie katalogu dodamy w kolejnym etapie."
-                               Foreground="#AAAAAA"
-                               TextWrapping="Wrap"/>
+            <TabItem Header="Język">
+                <StackPanel Margin="12,16,12,0">
+                    <TextBlock Text="Język aplikacji"
+                               FontSize="18" FontWeight="SemiBold"
+                               Margin="0,0,0,18"/>
+                    <Grid HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="170"/>
+                            <ColumnDefinition Width="220"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsLanguage]}"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="1" Height="28"
+                                  SelectedValuePath="Tag"
+                                  SelectedValue="{Binding Language, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <ComboBoxItem Content="Polski" Tag="pl"/>
+                            <ComboBoxItem Content="English" Tag="en"/>
+                        </ComboBox>
+                    </Grid>
                 </StackPanel>
             </TabItem>
         </TabControl>
