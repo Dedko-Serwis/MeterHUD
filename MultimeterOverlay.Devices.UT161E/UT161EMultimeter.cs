@@ -18,9 +18,9 @@ public sealed class UT161EMultimeter : IMultimeter, IHidRecordingDevice
 
     public bool IsConnected => !_disposed;
 
-    public UT161EMultimeter()
+    public UT161EMultimeter(Func<string?>? logDirectoryProvider = null)
     {
-        _reader = new UT161EHidReader();
+        _reader = new UT161EHidReader(logDirectoryProvider);
     }
 
     public async Task<MultimeterReading?> ReadAsync(
