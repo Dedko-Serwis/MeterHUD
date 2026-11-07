@@ -47,7 +47,7 @@ public sealed class UT161EHidLogger(string? logDirectory = null) : IDisposable
 
             try
             {
-                string directory = _logDirectory ?? LogDirectoryProvider?.Invoke();
+                string directory = _logDirectory ?? LogDirectoryProvider?.Invoke() ?? LogDirectory;
                 if (string.IsNullOrWhiteSpace(directory))
                     directory = LogDirectory;
 
