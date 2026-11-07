@@ -8,6 +8,8 @@ namespace MultimeterOverlay.ViewModels;
 public sealed class SettingsViewModel : INotifyPropertyChanged
 {
     private string _language;
+    private string _overlayBackgroundColor;
+    private string _overlayTextColor;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -16,6 +18,8 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         _language = settings.Language is "pl" or "en"
             ? settings.Language
             : "pl";
+        _overlayBackgroundColor = settings.OverlayBackgroundColor;
+        _overlayTextColor = settings.OverlayTextColor;
     }
 
     public string Language
@@ -29,6 +33,18 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
             _language = value;
             OnPropertyChanged();
         }
+    }
+
+    public string OverlayBackgroundColor
+    {
+        get => _overlayBackgroundColor;
+        set { if (_overlayBackgroundColor == value) return; _overlayBackgroundColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayTextColor
+    {
+        get => _overlayTextColor;
+        set { if (_overlayTextColor == value) return; _overlayTextColor = value; OnPropertyChanged(); }
     }
 
     private void OnPropertyChanged(
