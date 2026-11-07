@@ -10,8 +10,8 @@
         MinHeight="260"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
-        Background="#181818"
-        Foreground="White">
+        Background="{x:Static services:AppColors.Ui181818Brush}"
+        Foreground="{x:Static services:AppColors.UiWhiteBrush}">
 
     <DockPanel Margin="20">
 
@@ -43,7 +43,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsDisplayFrame]}"
-                                       FontWeight="SemiBold" Foreground="#AAAAAA"
+                                       FontWeight="SemiBold" Foreground="{x:Static services:AppColors.UiAAAAAABrush}"
                                        Margin="0,0,0,8"/>
 <Grid>
     <Grid.ColumnDefinitions>
@@ -86,7 +86,7 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsIndicators]}"
-                                       FontWeight="SemiBold" Foreground="#AAAAAA"
+                                       FontWeight="SemiBold" Foreground="{x:Static services:AppColors.UiAAAAAABrush}"
                                        Margin="0,0,0,8"/>
 <Grid>
     <Grid.ColumnDefinitions>
@@ -162,9 +162,9 @@
                             Margin="0,18,0,0" Padding="12,6"
                             Click="DeleteCsvFiles_Click"/>
                     <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsDeleteCsvHint]}"
-                               Foreground="#AAAAAA" Margin="0,8,0,0"/>
+                               Foreground="{x:Static services:AppColors.UiAAAAAABrush}" Margin="0,8,0,0"/>
                     <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsPathChangeHint]}"
-                               Foreground="#AAAAAA" Margin="0,18,0,0"/>
+                               Foreground="{x:Static services:AppColors.UiAAAAAABrush}" Margin="0,18,0,0"/>
                 </StackPanel>
             </TabItem>
 
