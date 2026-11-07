@@ -103,5 +103,13 @@
   "MenuAlwaysOnTop": "Always on top",
   "MenuLockOverlaySize": "Lock overlay size",
   "MenuShowObsOverlay": "Show OBS overlay",
-  "MenuMode": "Mode"
+  "MenuMode": "Mode",
+  "MenuHelp": "Help",
+  "MenuAbout": "About...",
+  "AboutTitle": "About MeterHUD",
+  "AboutDescription": "Multimeter monitor with OBS overlay",
+  "AboutCopyright": "© 2026 DEDKO Serwis. All rights reserved.",
+  "AboutLicense": "License: GNU GPL v3.0",
+  "AboutRepository": "GitHub repository",
+  "AboutLicenseLink": "GNU GPL v3.0 license text"
 }
