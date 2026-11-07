@@ -1,21 +1,33 @@
+
 using System.Windows.Media;
 
 namespace MultimeterOverlay.Services;
 
-/// <summary>Single source for user-editable overlay defaults and read-only application theme colors.</summary>
+/// <summary>
+/// Centralna definicja kolorów nakładki i interfejsu aplikacji.
+/// </summary>
 public static class AppColors
 {
-    // User-editable overlay color defaults (saved custom colors remain in settings.json).
-    public const string OverlayBackground = "#181818";
-    public const string OverlayText = "#FFFFFF";
-    public const string OverlayConnected = "#00B72E";
-    public const string OverlayWaiting = "#E0D725";
-    public const string OverlayDisconnected = "#585858";
-    public const string OverlayRangeText = "#AAAAAA";
-    public const string OverlayMinMax = "#0071E1";
-    public const string OverlayAc = "#D96C00";
-    public const string OverlayDc = "#00C400";
-    public const string OverlayHold = "#FF8000";
+    // ============================================================
+    // KOLORY NAKŁADKI – MODYFIKOWANE PRZEZ UŻYTKOWNIKA
+    // Wartości domyślne. Własne ustawienia zapisane są w settings.json.
+    // ============================================================
+
+    public const string OverlayBackground = "#181818";    // Tło okna pomiarowego i nakładki OBS
+    public const string OverlayText = "#FFFFFF";          // Główne cyfry pomiaru i jednostki
+    public const string OverlayConnected = "#00B72E";     // Ramka informująca o połączeniu z miernikiem
+    public const string OverlayWaiting = "#E0D725";       // Ramka podczas oczekiwania na połączenie
+    public const string OverlayDisconnected = "#585858";  // Ramka przy braku połączenia
+    public const string OverlayRangeText = "#80FF80";     // Tekst zakresu pomiarowego
+    public const string OverlayMinMax = "#0071E1";        // Aktywne wskaźniki MIN i MAX
+    public const string OverlayAc = "#FF0000";            // Aktywny wskaźnik AC
+    public const string OverlayDc = "#00C400";            // Aktywny wskaźnik DC
+    public const string OverlayHold = "#FF8000";          // Aktywny wskaźnik HOLD
+
+    // ============================================================
+    // KONWERSJA DOMYŚLNYCH KOLORÓW NAKŁADKI NA TYP WPF COLOR
+    // Wykorzystywane przez zasoby aplikacji (App.xaml).
+    // ============================================================
 
     public static Color OverlayBackgroundValue => Parse(OverlayBackground);
     public static Color OverlayTextValue => Parse(OverlayText);
@@ -28,28 +40,40 @@ public static class AppColors
     public static Color OverlayDcValue => Parse(OverlayDc);
     public static Color OverlayHoldValue => Parse(OverlayHold);
 
-    // Read-only application UI colors.
-    public static SolidColorBrush Ui202020Brush { get; } = CreateBrush("#202020");
-    public static SolidColorBrush Ui777777Brush { get; } = CreateBrush("#777777");
-    public static SolidColorBrush Ui555555Brush { get; } = CreateBrush("#555555");
-    public static SolidColorBrush Ui252525Brush { get; } = CreateBrush("#252525");
-    public static SolidColorBrush UiDDDDDDBrush { get; } = CreateBrush("#DDDDDD");
-    public static SolidColorBrush Ui444444Brush { get; } = CreateBrush("#444444");
-    public static SolidColorBrush Ui333333Brush { get; } = CreateBrush("#333333");
-    public static SolidColorBrush UiAAAAAABrush { get; } = CreateBrush("#AAAAAA");
-    public static SolidColorBrush Ui27618ABrush { get; } = CreateBrush("#27618A");
-    public static SolidColorBrush Ui10304ABrush { get; } = CreateBrush("#10304A");
-    public static SolidColorBrush Ui888888Brush { get; } = CreateBrush("#888888");
-    public static SolidColorBrush Ui999999Brush { get; } = CreateBrush("#999999");
-    public static SolidColorBrush Ui666666Brush { get; } = CreateBrush("#666666");
-    public static SolidColorBrush Ui181818Brush { get; } = CreateBrush("#181818");
-    public static SolidColorBrush UiWhiteBrush { get; } = CreateBrush("#FFFFFF");
-    public static SolidColorBrush UiBlackBrush { get; } = CreateBrush("#000000");
-    public static SolidColorBrush UiOrangeRedBrush { get; } = CreateBrush("#FF4500");
-    public static SolidColorBrush UiRedBrush { get; } = CreateBrush("#FF0000");
-    public static SolidColorBrush UiLimeGreenBrush { get; } = CreateBrush("#32CD32");
-    public static SolidColorBrush UiGrayBrush { get; } = CreateBrush("#808080");
+    // ============================================================
+    // KOLORY INTERFEJSU APLIKACJI – STAŁE
+    // Nie są modyfikowane przez użytkownika w ustawieniach.
+    // ============================================================
 
+    public static SolidColorBrush Ui202020Brush { get; } = CreateBrush("#202020"); // Tło wskaźników AC/DC/MIN/MAX/HOLD oraz paneli informacyjnych
+    public static SolidColorBrush Ui777777Brush { get; } = CreateBrush("#777777"); // Tekst nieaktywnych wskaźników nakładki OBS
+    public static SolidColorBrush Ui555555Brush { get; } = CreateBrush("#555555"); // Tekst nieaktywnych wskaźników i obramowania paneli
+    public static SolidColorBrush Ui252525Brush { get; } = CreateBrush("#252525"); // Tło menu głównego i paska elementów sterujących
+    public static SolidColorBrush UiDDDDDDBrush { get; } = CreateBrush("#DDDDDD"); // Tekst na pasku elementów sterujących
+    public static SolidColorBrush Ui444444Brush { get; } = CreateBrush("#444444"); // Obramowania elementów oraz tło wybranych paneli
+    public static SolidColorBrush Ui333333Brush { get; } = CreateBrush("#333333"); // Kolor tekstu określonych elementów w zależności od stanu
+    public static SolidColorBrush UiAAAAAABrush { get; } = CreateBrush("#AAAAAA"); // Tekst pomocniczy, nagłówki sekcji i opisy w oknach
+    public static SolidColorBrush Ui27618ABrush { get; } = CreateBrush("#27618A"); // Obramowanie niebieskiego panelu informacyjnego
+    public static SolidColorBrush Ui10304ABrush { get; } = CreateBrush("#10304A"); // Tło niebieskiego panelu informacyjnego
+    public static SolidColorBrush Ui888888Brush { get; } = CreateBrush("#888888"); // Tekst pomocniczy w panelu informacyjnym
+    public static SolidColorBrush Ui999999Brush { get; } = CreateBrush("#999999"); // Tekst drugorzędny w panelu informacyjnym
+    public static SolidColorBrush Ui666666Brush { get; } = CreateBrush("#666666"); // Tekst elementów o obniżonym wyróżnieniu
+    public static SolidColorBrush Ui181818Brush { get; } = CreateBrush("#181818"); // Tło okna ustawień i okna O programie
+    public static SolidColorBrush UiWhiteBrush { get; } = CreateBrush("#FFFFFF");  // Biały tekst interfejsu i aktywnych wskaźników
+    public static SolidColorBrush UiBlackBrush { get; } = CreateBrush("#000000");  // Tekst pozycji rozwijanego menu
+    public static SolidColorBrush UiOrangeRedBrush { get; } = CreateBrush("#FF4500"); // Wskaźnik aktywnego nagrywania CSV
+    public static SolidColorBrush UiRedBrush { get; } = CreateBrush("#FF0000");    // Czerwony wskaźnik stanu połączenia
+    public static SolidColorBrush UiLimeGreenBrush { get; } = CreateBrush("#32CD32"); // Zielony wskaźnik stanu połączenia
+    public static SolidColorBrush UiGrayBrush { get; } = CreateBrush("#808080");   // Szary wskaźnik stanu połączenia
+
+    // ============================================================
+    // METODY POMOCNICZE
+    // ============================================================
+
+    /// <summary>
+    /// Sprawdza poprawność koloru HEX (#RRGGBB).
+    /// Jeśli kolor jest nieprawidłowy, używa wartości domyślnej.
+    /// </summary>
     public static SolidColorBrush ParseOverlayBrush(string? value, string fallback)
     {
         if (value is null || value.Length != 7 || value[0] != '#' ||
@@ -59,7 +83,15 @@ public static class AppColors
         return new SolidColorBrush(Parse(value));
     }
 
-    private static Color Parse(string hex) => (Color)ColorConverter.ConvertFromString(hex);
+    /// <summary>
+    /// Konwertuje zapis HEX na kolor WPF.
+    /// </summary>
+    private static Color Parse(string hex) =>
+        (Color)ColorConverter.ConvertFromString(hex);
+
+    /// <summary>
+    /// Tworzy pędzel WPF i blokuje jego modyfikację.
+    /// </summary>
     private static SolidColorBrush CreateBrush(string hex)
     {
         var brush = new SolidColorBrush(Parse(hex));
