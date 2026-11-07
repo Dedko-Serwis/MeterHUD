@@ -2,6 +2,8 @@
 using MultimeterOverlay.Services;
 using MultimeterOverlay.ViewModels;
 using System.Windows;
+using System.IO;
+using System.Diagnostics;
 using System.Windows.Media;
 using Forms = System.Windows.Forms;
 using DrawingColor = System.Drawing.Color;
@@ -53,6 +55,23 @@ public partial class SettingsWindow : Window
             return;
         }
 
+        string csvDirectory;
+        try
+        {
+            if (string.IsNullOrWhiteSpace(_viewModel.CsvDirectory))
+                throw new ArgumentException("Wskaż folder zapisu CSV.");
+
+            csvDirectory = Path.GetFullPath(
+                Environment.ExpandEnvironmentVariables(_viewModel.CsvDirectory.Trim()));
+        }
+        catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+        {
+            MessageBox.Show("Nieprawidłowa ścieżka katalogu CSV.", "MultimeterOverlay",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        string previousCsvDirectory = _settings.CsvDirectory;
         string previousLanguage = _settings.Language;
         string previousBackground = _settings.OverlayBackgroundColor;
         string previousForeground = _settings.OverlayTextColor;
@@ -68,6 +87,12 @@ public partial class SettingsWindow : Window
         try
         {
 
+            _settings.CsvDirectory = string.Equals(
+                Path.TrimEndingDirectorySeparator(csvDirectory),
+                Path.TrimEndingDirectorySeparator(UT161EReader.UT161EHidLogger.LogDirectory),
+                StringComparison.OrdinalIgnoreCase)
+                ? ""
+                : csvDirectory;
             _settings.Language = _viewModel.Language;
             _settings.OverlayBackgroundColor = background;
             _settings.OverlayTextColor = foreground;
@@ -88,6 +113,7 @@ public partial class SettingsWindow : Window
         }
         catch (Exception ex)
         {
+            _settings.CsvDirectory = previousCsvDirectory;
             _settings.Language = previousLanguage;
             _settings.OverlayBackgroundColor = previousBackground;
             _settings.OverlayTextColor = previousForeground;
@@ -197,6 +223,43 @@ public partial class SettingsWindow : Window
         _viewModel.OverlayAcColor = "#C49A16";
         _viewModel.OverlayDcColor = "#228B50";
         _viewModel.OverlayHoldColor = "#D97706";
+    }
+
+    private void BrowseCsvDirectory_Click(object sender, RoutedEventArgs e)
+    {
+        using var dialog = new Forms.FolderBrowserDialog
+        {
+            Description = "Wybierz folder zapisu plików CSV",
+            UseDescriptionForTitle = true,
+            SelectedPath = Directory.Exists(_viewModel.CsvDirectory)
+                ? _viewModel.CsvDirectory
+                : _settings.GetCsvDirectory()
+        };
+        if (dialog.ShowDialog() == Forms.DialogResult.OK)
+            _viewModel.CsvDirectory = dialog.SelectedPath;
+    }
+
+    private void DefaultCsvDirectory_Click(object sender, RoutedEventArgs e) =>
+        _viewModel.CsvDirectory = UT161EReader.UT161EHidLogger.LogDirectory;
+
+    private void OpenCsvDirectory_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            string directory = Path.GetFullPath(
+                Environment.ExpandEnvironmentVariables(_viewModel.CsvDirectory.Trim()));
+            Directory.CreateDirectory(directory);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = directory,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or System.ComponentModel.Win32Exception or NotSupportedException)
+        {
+            MessageBox.Show($"Nie można otworzyć folderu CSV: {ex.Message}",
+                "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void Cancel_Click(
