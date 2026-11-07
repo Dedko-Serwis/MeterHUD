@@ -357,7 +357,7 @@
                             <TextBlock Grid.Row="0"
            Grid.Column="1"
            Text="~"
-           Foreground="#F4D35E"
+           Foreground="{DynamicResource OverlayAcBrush}"
            FontSize="25"
            TextAlignment="Center"
            VerticalAlignment="Center"/>
@@ -383,7 +383,7 @@
                             <TextBlock Grid.Row="1"
            Grid.Column="1"
            Text="⎓"
-           Foreground="#62D989"
+           Foreground="{DynamicResource OverlayDcBrush}"
            FontSize="25"
            TextAlignment="Center"
            VerticalAlignment="Center"/>
