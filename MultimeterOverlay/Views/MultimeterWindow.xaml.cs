@@ -73,7 +73,7 @@ public partial class MultimeterWindow : Window
         {
             MessageBox.Show(
                 string.Format(LocalizationService.Instance["ErrorDisplayTest"], ex.Message),
-                "MultimeterOverlay",
+                "MeterHUD",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
@@ -124,7 +124,7 @@ public partial class MultimeterWindow : Window
         {
             MessageBox.Show(
                 string.Format(LocalizationService.Instance["ErrorSimulationSwitch"], ex.Message),
-                "MultimeterOverlay",
+                "MeterHUD",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
@@ -276,7 +276,7 @@ public partial class MultimeterWindow : Window
         {
             MessageBox.Show(
                 string.Format(LocalizationService.Instance["ErrorOpenCsvFolder"], ex.Message),
-                "MultimeterOverlay",
+                "MeterHUD",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
@@ -325,7 +325,7 @@ public partial class MultimeterWindow : Window
         {
             MessageBox.Show(
                 string.Format(LocalizationService.Instance["ErrorResetSettings"], ex.Message),
-                "MultimeterOverlay",
+                "MeterHUD",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
@@ -342,7 +342,7 @@ public partial class MultimeterWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(string.Format(LocalizationService.Instance["ErrorSettingsSave"], ex.Message), "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(string.Format(LocalizationService.Instance["ErrorSettingsSave"], ex.Message), "MeterHUD", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -388,7 +388,7 @@ public partial class MultimeterWindow : Window
         {
             MessageBox.Show(
                 ex.Message,
-                "MultimeterOverlay",
+                "MeterHUD",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
