@@ -7,10 +7,20 @@
         Height="360"
         MinWidth="650"
         MinHeight="310"
-        Background="#181818"
-        Foreground="White"
+        Background="{DynamicResource OverlayBackgroundBrush}"
+        Foreground="{DynamicResource OverlayTextBrush}"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="#181818"/>
+        <SolidColorBrush x:Key="OverlayTextBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="OverlayConnectedBrush" Color="#39C875"/>
+        <SolidColorBrush x:Key="OverlayWaitingBrush" Color="#F4D35E"/>
+        <SolidColorBrush x:Key="OverlayDisconnectedBrush" Color="#777777"/>
+        <SolidColorBrush x:Key="OverlayRangeTextBrush" Color="#D0D0D0"/>
+        <SolidColorBrush x:Key="OverlayMinMaxBrush" Color="#2563B5"/>
+        <SolidColorBrush x:Key="OverlayAcBrush" Color="#C49A16"/>
+        <SolidColorBrush x:Key="OverlayDcBrush" Color="#228B50"/>
+        <SolidColorBrush x:Key="OverlayHoldBrush" Color="#D97706"/>
         <BooleanToVisibilityConverter
         x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
@@ -95,13 +105,13 @@
                 <TextBlock Text="{Binding Status}" MinWidth="210" FontWeight="SemiBold">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="#999999"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OverlayDisconnectedBrush}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ConnectionState}" Value="Connected">
-                                    <Setter Property="Foreground" Value="#39C875"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource OverlayConnectedBrush}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding ConnectionState}" Value="Waiting">
-                                    <Setter Property="Foreground" Value="#F4D35E"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource OverlayWaitingBrush}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -120,7 +130,7 @@
                                     <Setter Property="Foreground" Value="#333333"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsAutoRange}" Value="True">
-                                            <Setter Property="Foreground" Value="#D0D0D0"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource OverlayRangeTextBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -134,7 +144,7 @@
                                     <Setter Property="Foreground" Value="#333333"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsMin}" Value="True">
-                                            <Setter Property="Foreground" Value="#579DFF"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource OverlayMinMaxBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -148,7 +158,7 @@
                                     <Setter Property="Foreground" Value="#333333"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsMax}" Value="True">
-                                            <Setter Property="Foreground" Value="#579DFF"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource OverlayMinMaxBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -186,7 +196,7 @@
                                Text="{Binding Function}"
                                FontSize="18"
                                FontWeight="SemiBold"
-                               Foreground="White"/>
+                               Foreground="{DynamicResource OverlayTextBrush}"/>
                 </StackPanel>
             </Border>
 
@@ -221,7 +231,7 @@
                                    FontSize="66"
                                    FontWeight="SemiBold"
                                    FontFamily="Consolas"
-                                   Foreground="White"
+                                   Foreground="{DynamicResource OverlayTextBrush}"
                                    TextAlignment="Right"
                                    VerticalAlignment="Center"
                                    TextWrapping="NoWrap" Padding="0,0,25,0"/>
@@ -235,6 +245,7 @@
                         <TextBlock x:Name="UnitText"
                                    Grid.Column="2"
                                    Text="{Binding Unit}"
+                                   Foreground="{DynamicResource OverlayTextBrush}"
                                    FontSize="30"
                                    Margin="12,0,0,0"                                   
                                    VerticalAlignment="Center"
@@ -262,11 +273,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding AcDisplayValue}" FontFamily="Consolas"
-                                       FontSize="43" Foreground="White" TextAlignment="Right"/>
-                            <TextBlock Grid.Column="1" Text="~" Foreground="#F4D35E"
+                                       FontSize="43" Foreground="{DynamicResource OverlayTextBrush}" TextAlignment="Right"/>
+                            <TextBlock Grid.Column="1" Text="~" Foreground="{DynamicResource OverlayAcBrush}"
                                        FontSize="30" TextAlignment="Center" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="2" Text="{Binding AcDcUnit}" FontSize="22"
-                                       Foreground="White" VerticalAlignment="Center"/>
+                                       Foreground="{DynamicResource OverlayTextBrush}" VerticalAlignment="Center"/>
                         </Grid>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -275,11 +286,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding DcDisplayValue}" FontFamily="Consolas"
-                                       FontSize="43" Foreground="White" TextAlignment="Right"/>
-                            <TextBlock Grid.Column="1" Text="⎓" Foreground="#62D989"
+                                       FontSize="43" Foreground="{DynamicResource OverlayTextBrush}" TextAlignment="Right"/>
+                            <TextBlock Grid.Column="1" Text="⎓" Foreground="{DynamicResource OverlayDcBrush}"
                                        FontSize="30" TextAlignment="Center" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="2" Text="{Binding AcDcUnit}" FontSize="22"
-                                       Foreground="White" VerticalAlignment="Center"/>
+                                       Foreground="{DynamicResource OverlayTextBrush}" VerticalAlignment="Center"/>
                         </Grid>
                     </StackPanel>
                 </Grid>
@@ -317,7 +328,7 @@
                                     <Setter Property="Foreground" Value="#666666"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsHold}" Value="True">
-                                            <Setter Property="Foreground" Value="#F4A340"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource OverlayHoldBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
