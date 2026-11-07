@@ -293,9 +293,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         DcDisplayValue = "-888.88";
         AcDcUnit = "mV";
 
-
+        _displayTestTimer.Tick -= DisplayTestTimer_Tick;
         _displayTestTimer.Tick += DisplayTestTimer_Tick;
         _displayTestTimer.Start();
+
 
         DisplayTestTimer_Tick(this, EventArgs.Empty);
     }
