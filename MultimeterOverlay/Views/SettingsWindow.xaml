@@ -37,9 +37,9 @@
 
         <!-- Zakładki ustawień -->
         <TabControl>
-            <TabItem Header="Kolory">
+            <TabItem Header="{Binding Source={StaticResource Loc}, Path=[SettingsColors]}">
                 <StackPanel Margin="12,16,12,0">
-                    <TextBlock Text="Kolory nakładki OBS"
+                    <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsOverlayColors]}"
                                FontSize="18" FontWeight="SemiBold"
                                Margin="0,0,0,18"/>
                     <Grid>
@@ -48,7 +48,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Wyświetlacz i ramka"
+                            <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsDisplayFrame]}"
                                        FontWeight="SemiBold" Foreground="#AAAAAA"
                                        Margin="0,0,0,8"/>
 <Grid>
@@ -58,40 +58,40 @@
         <ColumnDefinition Width="40"/>
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
-    <TextBlock Grid.Row="0" Text="Tło nakładki" VerticalAlignment="Center"/>
+    <TextBlock Grid.Row="0" Text="{Binding Source={StaticResource Loc}, Path=[SettingsOverlayBackground]}" VerticalAlignment="Center"/>
     <TextBox x:Name="BackgroundColorTextBox" Grid.Row="0" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayBackgroundColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="BackgroundColorButton" Grid.Row="0" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="BackgroundColor_Click" Padding="0"/>
-    <TextBlock Grid.Row="1" Text="Cyfry i jednostki" VerticalAlignment="Center"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="BackgroundColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="1" Text="{Binding Source={StaticResource Loc}, Path=[SettingsDigitsUnits]}" VerticalAlignment="Center"/>
     <TextBox x:Name="TextColorTextBox" Grid.Row="1" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayTextColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="TextColorButton" Grid.Row="1" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="TextColor_Click" Padding="0"/>
-    <TextBlock Grid.Row="2" Text="Ramka - połączono" VerticalAlignment="Center"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="TextColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="2" Text="{Binding Source={StaticResource Loc}, Path=[SettingsBorderConnected]}" VerticalAlignment="Center"/>
     <TextBox x:Name="ConnectedColorTextBox" Grid.Row="2" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayConnectedColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="ConnectedColorButton" Grid.Row="2" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="ConnectedColor_Click" Padding="0"/>
-    <TextBlock Grid.Row="3" Text="Ramka - oczekiwanie" VerticalAlignment="Center"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="ConnectedColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="3" Text="{Binding Source={StaticResource Loc}, Path=[SettingsBorderWaiting]}" VerticalAlignment="Center"/>
     <TextBox x:Name="WaitingColorTextBox" Grid.Row="3" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayWaitingColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="WaitingColorButton" Grid.Row="3" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="WaitingColor_Click" Padding="0"/>
-    <TextBlock Grid.Row="4" Text="Ramka - rozłączono" VerticalAlignment="Center"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="WaitingColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="4" Text="{Binding Source={StaticResource Loc}, Path=[SettingsBorderDisconnected]}" VerticalAlignment="Center"/>
     <TextBox x:Name="DisconnectedColorTextBox" Grid.Row="4" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayDisconnectedColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="DisconnectedColorButton" Grid.Row="4" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="DisconnectedColor_Click" Padding="0"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="DisconnectedColor_Click" Padding="0"/>
 </Grid>
                         </StackPanel>
                         <StackPanel Grid.Column="1">
-                            <TextBlock Text="Wskaźniki"
+                            <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsIndicators]}"
                                        FontWeight="SemiBold" Foreground="#AAAAAA"
                                        Margin="0,0,0,8"/>
 <Grid>
@@ -101,52 +101,52 @@
         <ColumnDefinition Width="40"/>
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
-    <TextBlock Grid.Row="0" Text="AUTO / MANUAL (tekst)" VerticalAlignment="Center"/>
+    <TextBlock Grid.Row="0" Text="{Binding Source={StaticResource Loc}, Path=[SettingsAutoManualText]}" VerticalAlignment="Center"/>
     <TextBox x:Name="RangeTextColorTextBox" Grid.Row="0" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayRangeTextColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="RangeTextColorButton" Grid.Row="0" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="RangeTextColor_Click" Padding="0"/>
-    <TextBlock Grid.Row="1" Text="MIN / MAX (tło)" VerticalAlignment="Center"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="RangeTextColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="1" Text="{Binding Source={StaticResource Loc}, Path=[SettingsMinMaxBackground]}" VerticalAlignment="Center"/>
     <TextBox x:Name="MinMaxColorTextBox" Grid.Row="1" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayMinMaxColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="MinMaxColorButton" Grid.Row="1" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="MinMaxColor_Click" Padding="0"/>
-    <TextBlock Grid.Row="2" Text="AC (tło)" VerticalAlignment="Center"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="MinMaxColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="2" Text="{Binding Source={StaticResource Loc}, Path=[SettingsAcBackground]}" VerticalAlignment="Center"/>
     <TextBox x:Name="AcColorTextBox" Grid.Row="2" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayAcColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="AcColorButton" Grid.Row="2" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="AcColor_Click" Padding="0"/>
-    <TextBlock Grid.Row="3" Text="DC (tło)" VerticalAlignment="Center"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="AcColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="3" Text="{Binding Source={StaticResource Loc}, Path=[SettingsDcBackground]}" VerticalAlignment="Center"/>
     <TextBox x:Name="DcColorTextBox" Grid.Row="3" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayDcColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="DcColorButton" Grid.Row="3" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="DcColor_Click" Padding="0"/>
-    <TextBlock Grid.Row="4" Text="HOLD (tło)" VerticalAlignment="Center"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="DcColor_Click" Padding="0"/>
+    <TextBlock Grid.Row="4" Text="{Binding Source={StaticResource Loc}, Path=[SettingsHoldBackground]}" VerticalAlignment="Center"/>
     <TextBox x:Name="HoldColorTextBox" Grid.Row="4" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
                          Text="{Binding OverlayHoldColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="HoldColorButton" Grid.Row="4" Grid.Column="2"
-                        Content="" ToolTip="Wybierz kolor" Click="HoldColor_Click" Padding="0"/>
+                        Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="HoldColor_Click" Padding="0"/>
 </Grid>
                         </StackPanel>
                     </Grid>
-                    <Button Content="Domyślne kolory"
+                    <Button Content="{Binding Source={StaticResource Loc}, Path=[SettingsDefaultColors]}"
                             HorizontalAlignment="Left"
                             Margin="0,16,0,0" Padding="10,5"
                             Click="DefaultColors_Click"/>
                 </StackPanel>
             </TabItem>
 
-            <TabItem Header="Ścieżki">
+            <TabItem Header="{Binding Source={StaticResource Loc}, Path=[SettingsPaths]}">
                 <StackPanel Margin="12,16,12,0">
-                    <TextBlock Text="Ścieżki plików"
+                    <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsFilePaths]}"
                                FontSize="18" FontWeight="SemiBold"
                                Margin="0,0,0,18"/>
-                    <TextBlock Text="Folder zapisu plików CSV" Margin="0,0,0,8"/>
+                    <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsCsvSaveFolder]}" Margin="0,0,0,8"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -155,28 +155,28 @@
                         <TextBox Grid.Column="0" Margin="0,0,10,0"
                                  VerticalContentAlignment="Center"
                                  Text="{Binding CsvDirectory, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Grid.Column="1" Height="30" Content="Przeglądaj..."
+                        <Button Grid.Column="1" Height="30" Content="{Binding Source={StaticResource Loc}, Path=[SettingsBrowse]}"
                                 Click="BrowseCsvDirectory_Click"/>
                     </Grid>
                     <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-                        <Button Content="Domyślna" Padding="12,6" Margin="0,0,10,0"
+                        <Button Content="{Binding Source={StaticResource Loc}, Path=[SettingsDefaultFolder]}" Padding="12,6" Margin="0,0,10,0"
                                 Click="DefaultCsvDirectory_Click"/>
-                        <Button Content="Otwórz folder" Padding="12,6"
+                        <Button Content="{Binding Source={StaticResource Loc}, Path=[SettingsOpenFolder]}" Padding="12,6"
                                 Click="OpenCsvDirectory_Click"/>
                     </StackPanel>
-                    <Button Content="Usuń zapisane pliki CSV" HorizontalAlignment="Left"
+                    <Button Content="{Binding Source={StaticResource Loc}, Path=[SettingsDeleteCsv]}" HorizontalAlignment="Left"
                             Margin="0,18,0,0" Padding="12,6"
                             Click="DeleteCsvFiles_Click"/>
-                    <TextBlock Text="Usuwane są tylko nagrania UT161E z wybranego folderu."
+                    <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsDeleteCsvHint]}"
                                Foreground="#AAAAAA" Margin="0,8,0,0"/>
-                    <TextBlock Text="Zmiana lokalizacji obowiązuje od następnego nagrania."
+                    <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsPathChangeHint]}"
                                Foreground="#AAAAAA" Margin="0,18,0,0"/>
                 </StackPanel>
             </TabItem>
 
-            <TabItem Header="Język">
+            <TabItem Header="{Binding Source={StaticResource Loc}, Path=[SettingsLanguageTab]}">
                 <StackPanel Margin="12,16,12,0">
-                    <TextBlock Text="Język aplikacji"
+                    <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsLanguageHeading]}"
                                FontSize="18" FontWeight="SemiBold"
                                Margin="0,0,0,18"/>
                     <Grid HorizontalAlignment="Left">
