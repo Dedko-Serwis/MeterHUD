@@ -98,5 +98,10 @@
   "SettingsDeleteConfirm": "Usunąć {0} plików CSV z folderu:\n{1}\n\nOperacji nie można cofnąć.",
   "SettingsRecordingActive": "Nagrywanie jest aktywne. Usuwanie anulowano.",
   "SettingsDeleteResult": "Usunięto: {0}. Nie udało się usunąć: {1}.",
-  "SettingsDeleteError": "Nie można usunąć plików CSV: {0}"
+  "SettingsDeleteError": "Nie można usunąć plików CSV: {0}",
+  "MenuWindow": "Okno",
+  "MenuAlwaysOnTop": "Zawsze na wierzchu",
+  "MenuLockOverlaySize": "Zablokuj rozmiar nakładki",
+  "MenuShowObsOverlay": "Pokaż nakładkę OBS",
+  "MenuMode": "Tryb"
 }
