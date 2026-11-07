@@ -16,10 +16,10 @@
             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[AboutCopyright]}" TextWrapping="Wrap" Margin="0,0,0,12"/>
             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[AboutLicense]}" Margin="0,0,0,8"/>
             <TextBlock Margin="0,0,0,8">
-                <Hyperlink Click="License_Click"><TextBlock Text="{Binding Source={StaticResource Loc}, Path=[AboutLicenseLink]}"/></Hyperlink>
+                <Hyperlink Click="License_Click"><Run Text="{Binding Source={StaticResource Loc}, Path=[AboutLicenseLink]}"/></Hyperlink>
             </TextBlock>
             <TextBlock>
-                <Hyperlink Click="Repository_Click"><TextBlock Text="{Binding Source={StaticResource Loc}, Path=[AboutRepository]}"/></Hyperlink>
+                <Hyperlink Click="Repository_Click"><Run Text="{Binding Source={StaticResource Loc}, Path=[AboutRepository]}"/></Hyperlink>
             </TextBlock>
         </StackPanel>
     </DockPanel>
