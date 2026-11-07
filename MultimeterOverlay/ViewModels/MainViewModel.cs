@@ -21,7 +21,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private bool _disposed;
 
     private string _deviceName = "UNI-T UT161E";
-    private string _displayValue = "----";
+    private string _displayValue = "-----";
     private string _unit = "";
     private string _function = "Oczekiwanie na pomiar";
     private string _range = "";    
@@ -33,12 +33,14 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private bool _isMin;
     private bool _isMax;
     private bool _isAcDcMode;
-    private string _acDisplayValue = "----";
-    private string _dcDisplayValue = "----";
+    private string _acDisplayValue = "-----";
+    private string _dcDisplayValue = "-----";
     private string _acDcUnit = "V";
     private const int MaxConsecutiveTimeouts = 3;
     private int _consecutiveTimeouts;
     private bool _hasReceivedReading;
+    private byte? _functionCode;
+
 
     private readonly MultimeterSimulator _simulator = new();
 
@@ -202,6 +204,15 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             PropertyChanged?.Invoke(
                 this,
                 new PropertyChangedEventArgs(nameof(Status)));
+
+            PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nameof(Function)));
+
+            PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(nameof(MeasurementType)));
+
         }
     }
 
@@ -396,15 +407,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public bool IsManualRange =>
         IsDisplayTestMode || Range == "MANUAL";
 
-    public bool IsDC =>
-        IsDisplayTestMode ||
-        Function.Contains("DC", StringComparison.OrdinalIgnoreCase) ||
-        Function.Contains("stały", StringComparison.OrdinalIgnoreCase);
 
     public bool IsAC =>
         IsDisplayTestMode ||
-        Function.Contains("AC", StringComparison.OrdinalIgnoreCase) ||
-        Function.Contains("przemienny", StringComparison.OrdinalIgnoreCase);
+        _functionCode is
+            0x00 or 0x01 or
+            0x0D or 0x0F or 0x11 or
+            0x18 or 0x19;
+
+    public bool IsDC =>
+        IsDisplayTestMode ||
+        _functionCode is
+            0x02 or 0x03 or
+            0x0C or 0x0E or 0x10 or
+            0x19;
+
 
 
     public bool IsMin
@@ -419,28 +436,36 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _isMax, value);
     }
 
+
     public string MeasurementType
     {
         get
         {
-            if (Function.Contains("Napięcie", StringComparison.OrdinalIgnoreCase))
-                return "Napięcie";
+            string? key = _functionCode switch
+            {
+                0x00 or 0x01 or 0x02 or 0x03 or
+                0x18 or 0x19 => "MeasurementVoltage",
 
-            if (Function.Contains("Prąd", StringComparison.OrdinalIgnoreCase))
-                return "Prąd";
+                0x0C or 0x0D or 0x0E or 0x0F or
+                0x10 or 0x11 => "MeasurementCurrent",
 
-            if (Function.Contains("Rezystancja", StringComparison.OrdinalIgnoreCase))
-                return "Rezystancja";
+                0x06 => "MeasurementResistance",
+                0x07 => "MeasurementContinuity",
+                0x08 => "MeasurementDiode",
+                0x09 => "MeasurementCapacitance",
+                0x04 => "MeasurementFrequency",
+                0x05 => "MeasurementDutyCycle",
+                0x12 => "MeasurementTransistor",
 
-            if (Function.Contains("Pojemność", StringComparison.OrdinalIgnoreCase))
-                return "Pojemność";
+                _ => null
+            };
 
-            if (Function.Contains("Częstotliwość", StringComparison.OrdinalIgnoreCase))
-                return "Częstotliwość";
-
-            return Function;
+            return key is null
+                ? Function
+                : LocalizationService.Instance[key];
         }
     }
+
 
     public string OverlayUnit
     {
@@ -661,8 +686,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             // Przy wejściu do AC+DC usuwamy stare wskazania.
             if (!IsAcDcMode)
             {
-                AcDisplayValue = "----";
-                DcDisplayValue = "----";
+                AcDisplayValue = "-----";
+                DcDisplayValue = "-----";
             }
 
             IsAcDcMode = true;
@@ -684,11 +709,16 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             IsAcDcMode = false;
         }
 
+
         DisplayValue = reading.DisplayValue;
         Unit = reading.Unit;
-        Function = reading.Function;
-        Range = reading.IsAutoRange ? "AUTO" : "MANUAL";
 
+        _functionCode = reading.FunctionCode;
+        Function = MeasurementLocalizationService.GetFunctionName(reading);
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAC)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDC)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
+        Range = reading.IsAutoRange ? "AUTO" : "MANUAL";
         IsHold = reading.IsHold;
         IsMin = reading.IsMin;
         IsMax = reading.IsMax;
@@ -697,9 +727,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private void ClearReading()
     {
         IsAcDcMode = false;
-        AcDisplayValue = "----";
-        DcDisplayValue = "----";
-        DisplayValue = "----";
+        AcDisplayValue = "-----";
+        DcDisplayValue = "-----";
+        DisplayValue = "-----";
         Unit = "";
         Range = "";
 
@@ -751,8 +781,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         if (_readingTask is not null)
         {
-            throw new InvalidOperationException(
-                "Przed Dispose należy wywołać StopAsync.");
+            throw new InvalidOperationException("Przed Dispose należy wywołać StopAsync.");
         }
 
         _disposed = true;

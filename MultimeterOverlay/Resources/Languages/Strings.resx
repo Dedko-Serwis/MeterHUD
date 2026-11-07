@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -201,5 +201,11 @@
     <value>Przywrócić domyślne ustawienia aplikacji?
 
 Pliki CSV nie zostaną usunięte.</value>
+  </data>
+  <data name="MeasurementVoltageACLPF" xml:space="preserve">
+    <value>Napięcie AC (LPF)</value>
+  </data>
+  <data name="MeasurementTransistor" xml:space="preserve">
+    <value>Wzmocnienie tranzystora</value>
   </data>
 </root>

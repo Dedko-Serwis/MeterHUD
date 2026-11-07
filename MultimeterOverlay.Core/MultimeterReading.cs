@@ -30,6 +30,12 @@ public sealed record MultimeterReading
     public string Function { get; init; } = "";
 
     /// <summary>
+    /// Kod funkcji przekazany przez sterownik urządzenia.
+    /// Null oznacza brak kodu lub urządzenie bez takiej informacji.
+    /// </summary>
+    public byte? FunctionCode { get; init; }
+
+    /// <summary>
     /// Przekroczenie zakresu pomiarowego.
     /// </summary>
     public bool IsOverload { get; init; }

@@ -59,7 +59,9 @@ public sealed class UT161EMultimeter : IMultimeter
 
                     Unit = UT161EUnits.GetUnit(measurement),
 
-                    Function = measurement.Function,                    
+                    Function = measurement.Function,
+
+                    FunctionCode = measurement.FunctionCode,
 
                     IsOverload = measurement.Overload,
 
