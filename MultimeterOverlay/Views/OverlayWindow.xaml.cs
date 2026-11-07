@@ -20,6 +20,7 @@ public partial class OverlayWindow : Window
         DataContext = viewModel;
         _settings = settings;
         ApplyAppearance();
+        ApplySizeLock();
 
         Loaded += OverlayWindow_Loaded;
         Closing += OverlayWindow_Closing;
@@ -50,6 +51,13 @@ public partial class OverlayWindow : Window
         Resources["OverlayAcBrush"] = ParseColor(_settings.OverlayAcColor, "#C49A16");
         Resources["OverlayDcBrush"] = ParseColor(_settings.OverlayDcColor, "#228B50");
         Resources["OverlayHoldBrush"] = ParseColor(_settings.OverlayHoldColor, "#D97706");
+    }
+
+    public void ApplySizeLock()
+    {
+        ResizeMode = _settings.OverlaySizeLocked
+            ? ResizeMode.NoResize
+            : ResizeMode.CanResizeWithGrip;
     }
 
     private static SolidColorBrush ParseColor(string? value, string fallback)
@@ -131,7 +139,8 @@ public partial class OverlayWindow : Window
     {
         base.OnMouseLeftButtonDown(e);
 
-        if (e.ButtonState == MouseButtonState.Pressed)
+        if (e.ButtonState == MouseButtonState.Pressed &&
+            Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
             DragMove();
         }
