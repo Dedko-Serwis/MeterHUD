@@ -28,6 +28,11 @@ public sealed class AppSettings
     public bool MainMaximized { get; set; }
 
     public string Language { get; set; } = "pl";
+    public string CsvDirectory { get; set; } = "";
+
+    public string GetCsvDirectory() => string.IsNullOrWhiteSpace(CsvDirectory)
+        ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MultimeterOverlay", "Logs")
+        : CsvDirectory;
 
     public string OverlayBackgroundColor { get; set; } = "#181818";
     public string OverlayTextColor { get; set; } = "#FFFFFF";
