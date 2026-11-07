@@ -52,7 +52,7 @@ public partial class SettingsWindow : Window
             !TryNormalizeColor(_viewModel.OverlayDcColor, out string dc) ||
             !TryNormalizeColor(_viewModel.OverlayHoldColor, out string hold))
         {
-            MessageBox.Show(LocalizationService.Instance["SettingsInvalidColor"], "MultimeterOverlay",
+            MessageBox.Show(LocalizationService.Instance["SettingsInvalidColor"], "MeterHUD",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -68,7 +68,7 @@ public partial class SettingsWindow : Window
         }
         catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
         {
-            MessageBox.Show(LocalizationService.Instance["SettingsInvalidCsvPath"], "MultimeterOverlay",
+            MessageBox.Show(LocalizationService.Instance["SettingsInvalidCsvPath"], "MeterHUD",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -130,7 +130,7 @@ public partial class SettingsWindow : Window
 
             MessageBox.Show(
                 string.Format(LocalizationService.Instance["ErrorSettingsSave"], ex.Message),
-                "MultimeterOverlay",
+                "MeterHUD",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
@@ -260,7 +260,7 @@ public partial class SettingsWindow : Window
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or System.ComponentModel.Win32Exception or NotSupportedException)
         {
             MessageBox.Show(string.Format(LocalizationService.Instance["SettingsCannotOpenCsv"], ex.Message),
-                "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Error);
+                "MeterHUD", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -269,7 +269,7 @@ public partial class SettingsWindow : Window
         if (_isRecording())
         {
             MessageBox.Show(LocalizationService.Instance["SettingsStopRecording"],
-                "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
+                "MeterHUD", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -283,7 +283,7 @@ public partial class SettingsWindow : Window
 
             if (!Directory.Exists(directory))
             {
-                MessageBox.Show(LocalizationService.Instance["SettingsFolderMissing"], "MultimeterOverlay",
+                MessageBox.Show(LocalizationService.Instance["SettingsFolderMissing"], "MeterHUD",
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
@@ -300,13 +300,13 @@ public partial class SettingsWindow : Window
             if (files.Length == 0)
             {
                 MessageBox.Show(LocalizationService.Instance["SettingsNoCsvFiles"],
-                    "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Information);
+                    "MeterHUD", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             if (MessageBox.Show(
                     string.Format(LocalizationService.Instance["SettingsDeleteConfirm"], files.Length, directory),
-                    "MultimeterOverlay", MessageBoxButton.YesNo,
+                    "MeterHUD", MessageBoxButton.YesNo,
                     MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
                 return;
 
@@ -314,7 +314,7 @@ public partial class SettingsWindow : Window
             if (_isRecording())
             {
                 MessageBox.Show(LocalizationService.Instance["SettingsRecordingActive"],
-                    "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    "MeterHUD", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -335,14 +335,14 @@ public partial class SettingsWindow : Window
             }
 
             MessageBox.Show(string.Format(LocalizationService.Instance["SettingsDeleteResult"], deleted, failed),
-                "MultimeterOverlay", MessageBoxButton.OK,
+                "MeterHUD", MessageBoxButton.OK,
                 failed > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
             or ArgumentException or NotSupportedException or System.Security.SecurityException)
         {
             MessageBox.Show(string.Format(LocalizationService.Instance["SettingsDeleteError"], ex.Message),
-                "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Error);
+                "MeterHUD", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
