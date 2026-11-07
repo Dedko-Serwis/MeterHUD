@@ -10,6 +10,9 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     private string _language;
     private string _overlayBackgroundColor;
     private string _overlayTextColor;
+    private string _overlayConnectedColor;
+    private string _overlayWaitingColor;
+    private string _overlayDisconnectedColor;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -20,6 +23,9 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
             : "pl";
         _overlayBackgroundColor = settings.OverlayBackgroundColor;
         _overlayTextColor = settings.OverlayTextColor;
+        _overlayConnectedColor = settings.OverlayConnectedColor;
+        _overlayWaitingColor = settings.OverlayWaitingColor;
+        _overlayDisconnectedColor = settings.OverlayDisconnectedColor;
     }
 
     public string Language
@@ -45,6 +51,24 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     {
         get => _overlayTextColor;
         set { if (_overlayTextColor == value) return; _overlayTextColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayConnectedColor
+    {
+        get => _overlayConnectedColor;
+        set { if (_overlayConnectedColor == value) return; _overlayConnectedColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayWaitingColor
+    {
+        get => _overlayWaitingColor;
+        set { if (_overlayWaitingColor == value) return; _overlayWaitingColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayDisconnectedColor
+    {
+        get => _overlayDisconnectedColor;
+        set { if (_overlayDisconnectedColor == value) return; _overlayDisconnectedColor = value; OnPropertyChanged(); }
     }
 
     private void OnPropertyChanged(
