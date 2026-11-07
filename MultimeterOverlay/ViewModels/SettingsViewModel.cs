@@ -8,6 +8,7 @@ namespace MultimeterOverlay.ViewModels;
 public sealed class SettingsViewModel : INotifyPropertyChanged
 {
     private string _language;
+    private string _csvDirectory;
     private string _overlayBackgroundColor;
     private string _overlayTextColor;
     private string _overlayConnectedColor;
@@ -26,6 +27,7 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         _language = settings.Language is "pl" or "en"
             ? settings.Language
             : "pl";
+        _csvDirectory = settings.GetCsvDirectory();
         _overlayBackgroundColor = settings.OverlayBackgroundColor;
         _overlayTextColor = settings.OverlayTextColor;
         _overlayConnectedColor = settings.OverlayConnectedColor;
@@ -36,6 +38,12 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         _overlayAcColor = settings.OverlayAcColor;
         _overlayDcColor = settings.OverlayDcColor;
         _overlayHoldColor = settings.OverlayHoldColor;
+    }
+
+    public string CsvDirectory
+    {
+        get => _csvDirectory;
+        set { if (_csvDirectory == value) return; _csvDirectory = value; OnPropertyChanged(); }
     }
 
     public string Language
