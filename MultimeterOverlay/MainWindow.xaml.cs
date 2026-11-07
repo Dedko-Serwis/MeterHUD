@@ -211,6 +211,7 @@ public partial class MainWindow : Window
         };
 
         ShowOverlayMenuItem.IsChecked = _settings.ShowOverlay;
+        LockOverlaySizeMenuItem.IsChecked = _settings.OverlaySizeLocked;
 
         if (_settings.ShowOverlay)
             _overlayWindow.Show();
@@ -235,6 +236,14 @@ public partial class MainWindow : Window
             _overlayWindow.Hide();
         }
 
+        SaveSettings();
+    }
+
+    private void LockOverlaySizeMenuItem_Click(
+        object sender, RoutedEventArgs e)
+    {
+        _settings.OverlaySizeLocked = LockOverlaySizeMenuItem.IsChecked;
+        _overlayWindow?.ApplySizeLock();
         SaveSettings();
     }
 
