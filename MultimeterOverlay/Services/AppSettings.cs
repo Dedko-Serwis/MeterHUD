@@ -27,6 +27,9 @@ public sealed class AppSettings
 
     public string Language { get; set; } = "pl";
 
+    public string OverlayBackgroundColor { get; set; } = "#181818";
+    public string OverlayTextColor { get; set; } = "#FFFFFF";
+
 
     public static AppSettings Load()
     {
