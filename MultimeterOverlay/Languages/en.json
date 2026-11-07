@@ -98,5 +98,10 @@
   "SettingsDeleteConfirm": "Delete {0} CSV files from folder:\n{1}\n\nThis cannot be undone.",
   "SettingsRecordingActive": "Recording is active. Deletion canceled.",
   "SettingsDeleteResult": "Deleted: {0}. Failed: {1}.",
-  "SettingsDeleteError": "Cannot delete CSV files: {0}"
+  "SettingsDeleteError": "Cannot delete CSV files: {0}",
+  "MenuWindow": "Window",
+  "MenuAlwaysOnTop": "Always on top",
+  "MenuLockOverlaySize": "Lock overlay size",
+  "MenuShowObsOverlay": "Show OBS overlay",
+  "MenuMode": "Mode"
 }
