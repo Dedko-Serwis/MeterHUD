@@ -52,7 +52,7 @@ public partial class SettingsWindow : Window
             !TryNormalizeColor(_viewModel.OverlayDcColor, out string dc) ||
             !TryNormalizeColor(_viewModel.OverlayHoldColor, out string hold))
         {
-            MessageBox.Show("Podaj kolory w formacie #RRGGBB.", "MultimeterOverlay",
+            MessageBox.Show(LocalizationService.Instance["SettingsInvalidColor"], "MultimeterOverlay",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -61,14 +61,14 @@ public partial class SettingsWindow : Window
         try
         {
             if (string.IsNullOrWhiteSpace(_viewModel.CsvDirectory))
-                throw new ArgumentException("Wskaż folder zapisu CSV.");
+                throw new ArgumentException(LocalizationService.Instance["SettingsSpecifyCsvFolder"]);
 
             csvDirectory = Path.GetFullPath(
                 Environment.ExpandEnvironmentVariables(_viewModel.CsvDirectory.Trim()));
         }
         catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
         {
-            MessageBox.Show("Nieprawidłowa ścieżka katalogu CSV.", "MultimeterOverlay",
+            MessageBox.Show(LocalizationService.Instance["SettingsInvalidCsvPath"], "MultimeterOverlay",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -231,7 +231,7 @@ public partial class SettingsWindow : Window
     {
         using var dialog = new Forms.FolderBrowserDialog
         {
-            Description = "Wybierz folder zapisu plików CSV",
+            Description = LocalizationService.Instance["SettingsChooseCsvFolder"],
             UseDescriptionForTitle = true,
             SelectedPath = Directory.Exists(_viewModel.CsvDirectory)
                 ? _viewModel.CsvDirectory
@@ -259,7 +259,7 @@ public partial class SettingsWindow : Window
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or System.ComponentModel.Win32Exception or NotSupportedException)
         {
-            MessageBox.Show($"Nie można otworzyć folderu CSV: {ex.Message}",
+            MessageBox.Show(string.Format(LocalizationService.Instance["SettingsCannotOpenCsv"], ex.Message),
                 "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -268,7 +268,7 @@ public partial class SettingsWindow : Window
     {
         if (_isRecording())
         {
-            MessageBox.Show("Zatrzymaj nagrywanie przed usunięciem plików CSV.",
+            MessageBox.Show(LocalizationService.Instance["SettingsStopRecording"],
                 "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -276,14 +276,14 @@ public partial class SettingsWindow : Window
         try
         {
             if (string.IsNullOrWhiteSpace(_viewModel.CsvDirectory))
-                throw new ArgumentException("Nie wskazano folderu.");
+                throw new ArgumentException(LocalizationService.Instance["SettingsNoFolder"]);
 
             string directory = Path.GetFullPath(
                 Environment.ExpandEnvironmentVariables(_viewModel.CsvDirectory.Trim()));
 
             if (!Directory.Exists(directory))
             {
-                MessageBox.Show("Wybrany folder nie istnieje.", "MultimeterOverlay",
+                MessageBox.Show(LocalizationService.Instance["SettingsFolderMissing"], "MultimeterOverlay",
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
@@ -299,13 +299,13 @@ public partial class SettingsWindow : Window
 
             if (files.Length == 0)
             {
-                MessageBox.Show("Nie znaleziono plików CSV programu.",
+                MessageBox.Show(LocalizationService.Instance["SettingsNoCsvFiles"],
                     "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             if (MessageBox.Show(
-                    $"Usunąć {files.Length} plików CSV z folderu:\n{directory}\n\nOperacji nie można cofnąć.",
+                    string.Format(LocalizationService.Instance["SettingsDeleteConfirm"], files.Length, directory),
                     "MultimeterOverlay", MessageBoxButton.YesNo,
                     MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
                 return;
@@ -313,7 +313,7 @@ public partial class SettingsWindow : Window
             // Ponowna kontrola po potwierdzeniu.
             if (_isRecording())
             {
-                MessageBox.Show("Nagrywanie jest aktywne. Usuwanie anulowano.",
+                MessageBox.Show(LocalizationService.Instance["SettingsRecordingActive"],
                     "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -334,14 +334,14 @@ public partial class SettingsWindow : Window
                 }
             }
 
-            MessageBox.Show($"Usunięto: {deleted}. Nie udało się usunąć: {failed}.",
+            MessageBox.Show(string.Format(LocalizationService.Instance["SettingsDeleteResult"], deleted, failed),
                 "MultimeterOverlay", MessageBoxButton.OK,
                 failed > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
             or ArgumentException or NotSupportedException or System.Security.SecurityException)
         {
-            MessageBox.Show($"Nie można usunąć plików CSV: {ex.Message}",
+            MessageBox.Show(string.Format(LocalizationService.Instance["SettingsDeleteError"], ex.Message),
                 "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
