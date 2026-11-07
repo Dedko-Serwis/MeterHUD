@@ -262,7 +262,7 @@ public partial class MultimeterWindow : Window
     {
         try
         {
-            string directory = UT161EHidLogger.LogDirectory;
+            string directory = _settings.GetCsvDirectory();
 
             Directory.CreateDirectory(directory);
 
