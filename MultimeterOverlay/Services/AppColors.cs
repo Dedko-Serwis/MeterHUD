@@ -50,6 +50,15 @@ public static class AppColors
     public static SolidColorBrush UiLimeGreenBrush { get; } = CreateBrush("#32CD32");
     public static SolidColorBrush UiGrayBrush { get; } = CreateBrush("#808080");
 
+    public static SolidColorBrush ParseOverlayBrush(string? value, string fallback)
+    {
+        if (value is null || value.Length != 7 || value[0] != '#' ||
+            !value.AsSpan(1).ToString().All(Uri.IsHexDigit))
+            value = fallback;
+
+        return new SolidColorBrush(Parse(value));
+    }
+
     private static Color Parse(string hex) => (Color)ColorConverter.ConvertFromString(hex);
     private static SolidColorBrush CreateBrush(string hex)
     {
