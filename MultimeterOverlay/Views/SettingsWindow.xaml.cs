@@ -257,16 +257,16 @@ public partial class SettingsWindow : Window
 
     private void DefaultColors_Click(object sender, RoutedEventArgs e)
     {
-        _viewModel.OverlayBackgroundColor = "#181818";
-        _viewModel.OverlayTextColor = "#FFFFFF";
-        _viewModel.OverlayConnectedColor = "#00B72E";
-        _viewModel.OverlayWaitingColor = "#E0D725";
-        _viewModel.OverlayDisconnectedColor = "#585858";
-        _viewModel.OverlayRangeTextColor = "#AAAAAA";
-        _viewModel.OverlayMinMaxColor = "#0071E1";
-        _viewModel.OverlayAcColor = "#D96C00";
-        _viewModel.OverlayDcColor = "#00C400";
-        _viewModel.OverlayHoldColor = "#FF8000";
+        _viewModel.OverlayBackgroundColor = AppColors.OverlayBackground;
+        _viewModel.OverlayTextColor = AppColors.OverlayText;
+        _viewModel.OverlayConnectedColor = AppColors.OverlayConnected;
+        _viewModel.OverlayWaitingColor = AppColors.OverlayWaiting;
+        _viewModel.OverlayDisconnectedColor = AppColors.OverlayDisconnected;
+        _viewModel.OverlayRangeTextColor = AppColors.OverlayRangeText;
+        _viewModel.OverlayMinMaxColor = AppColors.OverlayMinMax;
+        _viewModel.OverlayAcColor = AppColors.OverlayAc;
+        _viewModel.OverlayDcColor = AppColors.OverlayDc;
+        _viewModel.OverlayHoldColor = AppColors.OverlayHold;
     }
 
     private void BrowseCsvDirectory_Click(object sender, RoutedEventArgs e)
