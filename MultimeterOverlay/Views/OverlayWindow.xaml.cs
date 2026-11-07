@@ -45,6 +45,11 @@ public partial class OverlayWindow : Window
         Resources["OverlayConnectedBrush"] = ParseColor(_settings.OverlayConnectedColor, "#39C875");
         Resources["OverlayWaitingBrush"] = ParseColor(_settings.OverlayWaitingColor, "#F4D35E");
         Resources["OverlayDisconnectedBrush"] = ParseColor(_settings.OverlayDisconnectedColor, "#777777");
+        Resources["OverlayRangeTextBrush"] = ParseColor(_settings.OverlayRangeTextColor, "#D0D0D0");
+        Resources["OverlayMinMaxBrush"] = ParseColor(_settings.OverlayMinMaxColor, "#2563B5");
+        Resources["OverlayAcBrush"] = ParseColor(_settings.OverlayAcColor, "#C49A16");
+        Resources["OverlayDcBrush"] = ParseColor(_settings.OverlayDcColor, "#228B50");
+        Resources["OverlayHoldBrush"] = ParseColor(_settings.OverlayHoldColor, "#D97706");
     }
 
     private static SolidColorBrush ParseColor(string? value, string fallback)
