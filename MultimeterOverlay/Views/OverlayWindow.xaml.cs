@@ -42,6 +42,9 @@ public partial class OverlayWindow : Window
     {
         Resources["OverlayBackgroundBrush"] = ParseColor(_settings.OverlayBackgroundColor, "#181818");
         Resources["OverlayTextBrush"] = ParseColor(_settings.OverlayTextColor, "#FFFFFF");
+        Resources["OverlayConnectedBrush"] = ParseColor(_settings.OverlayConnectedColor, "#39C875");
+        Resources["OverlayWaitingBrush"] = ParseColor(_settings.OverlayWaitingColor, "#F4D35E");
+        Resources["OverlayDisconnectedBrush"] = ParseColor(_settings.OverlayDisconnectedColor, "#777777");
     }
 
     private static SolidColorBrush ParseColor(string? value, string fallback)
