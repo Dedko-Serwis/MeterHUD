@@ -21,6 +21,7 @@ public partial class OverlayWindow : Window
         _settings = settings;
         ApplyAppearance();
         ApplySizeLock();
+        ApplyTopmost();
 
         Loaded += OverlayWindow_Loaded;
         Closing += OverlayWindow_Closing;
@@ -58,6 +59,11 @@ public partial class OverlayWindow : Window
         ResizeMode = _settings.OverlaySizeLocked
             ? ResizeMode.NoResize
             : ResizeMode.CanResizeWithGrip;
+    }
+
+    public void ApplyTopmost()
+    {
+        Topmost = _settings.OverlayTopmost;
     }
 
     private static SolidColorBrush ParseColor(string? value, string fallback)
