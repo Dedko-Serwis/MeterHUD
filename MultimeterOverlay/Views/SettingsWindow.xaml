@@ -5,7 +5,7 @@
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         Title="{Binding Source={StaticResource Loc}, Path=[SettingsTitle]}"        
         Width="480"
-        Height="370"
+        Height="480"
         MinWidth="420"
         MinHeight="260"
         WindowStartupLocation="CenterOwner"
@@ -85,6 +85,9 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="36"/>
                     <RowDefinition Height="36"/>
+                    <RowDefinition Height="36"/>
+                    <RowDefinition Height="36"/>
+                    <RowDefinition Height="36"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="Tło nakładki" VerticalAlignment="Center"/>
@@ -100,6 +103,27 @@
                          Text="{Binding OverlayTextColor, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button x:Name="TextColorButton" Grid.Row="1" Grid.Column="2"
                         Content="RGB..." Click="TextColor_Click"/>
+
+                <TextBlock Grid.Row="2" Text="Ramka - połączono" VerticalAlignment="Center"/>
+                <TextBox x:Name="ConnectedColorTextBox" Grid.Row="2" Grid.Column="1"
+                         Margin="0,4,8,4" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayConnectedColor, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button x:Name="ConnectedColorButton" Grid.Row="2" Grid.Column="2"
+                        Content="RGB..." Click="ConnectedColor_Click"/>
+
+                <TextBlock Grid.Row="3" Text="Ramka - oczekiwanie" VerticalAlignment="Center"/>
+                <TextBox x:Name="WaitingColorTextBox" Grid.Row="3" Grid.Column="1"
+                         Margin="0,4,8,4" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayWaitingColor, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button x:Name="WaitingColorButton" Grid.Row="3" Grid.Column="2"
+                        Content="RGB..." Click="WaitingColor_Click"/>
+
+                <TextBlock Grid.Row="4" Text="Ramka - rozłączono" VerticalAlignment="Center"/>
+                <TextBox x:Name="DisconnectedColorTextBox" Grid.Row="4" Grid.Column="1"
+                         Margin="0,4,8,4" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayDisconnectedColor, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button x:Name="DisconnectedColorButton" Grid.Row="4" Grid.Column="2"
+                        Content="RGB..." Click="DisconnectedColor_Click"/>
             </Grid>
 
             <Button Content="Domyślne kolory" HorizontalAlignment="Left"
