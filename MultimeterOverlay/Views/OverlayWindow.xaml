@@ -25,6 +25,11 @@
         <SolidColorBrush x:Key="OverlayConnectedBrush" Color="#39C875"/>
         <SolidColorBrush x:Key="OverlayWaitingBrush" Color="#F4D35E"/>
         <SolidColorBrush x:Key="OverlayDisconnectedBrush" Color="#777777"/>
+        <SolidColorBrush x:Key="OverlayRangeTextBrush" Color="#D0D0D0"/>
+        <SolidColorBrush x:Key="OverlayMinMaxBrush" Color="#2563B5"/>
+        <SolidColorBrush x:Key="OverlayAcBrush" Color="#C49A16"/>
+        <SolidColorBrush x:Key="OverlayDcBrush" Color="#228B50"/>
+        <SolidColorBrush x:Key="OverlayHoldBrush" Color="#D97706"/>
 
         <Style x:Key="IndicatorStyle"
                TargetType="Border">
@@ -41,34 +46,12 @@
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
 
-        <Style x:Key="AutoStyle"
-               TargetType="Border"
-               BasedOn="{StaticResource IndicatorStyle}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsAutoRange}"
-                             Value="True">
-                    <Setter Property="Background" Value="#666666"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="ManualStyle"
-               TargetType="Border"
-               BasedOn="{StaticResource IndicatorStyle}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsManualRange}"
-                             Value="True">
-                    <Setter Property="Background" Value="#666666"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
         <Style x:Key="DCStyle"
                TargetType="Border"
                BasedOn="{StaticResource IndicatorStyle}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsDC}" Value="True">
-                    <Setter Property="Background" Value="#228B50"/>
+                    <Setter Property="Background" Value="{DynamicResource OverlayDcBrush}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -78,7 +61,7 @@
                BasedOn="{StaticResource IndicatorStyle}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsAC}" Value="True">
-                    <Setter Property="Background" Value="#C49A16"/>
+                    <Setter Property="Background" Value="{DynamicResource OverlayAcBrush}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -88,7 +71,7 @@
                BasedOn="{StaticResource IndicatorStyle}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMin}" Value="True">
-                    <Setter Property="Background" Value="#2563B5"/>
+                    <Setter Property="Background" Value="{DynamicResource OverlayMinMaxBrush}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -98,7 +81,7 @@
                BasedOn="{StaticResource IndicatorStyle}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMax}" Value="True">
-                    <Setter Property="Background" Value="#2563B5"/>
+                    <Setter Property="Background" Value="{DynamicResource OverlayMinMaxBrush}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -108,7 +91,7 @@
                BasedOn="{StaticResource IndicatorStyle}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsHold}" Value="True">
-                    <Setter Property="Background" Value="#D97706"/>
+                    <Setter Property="Background" Value="{DynamicResource OverlayHoldBrush}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -116,10 +99,11 @@
         <Style x:Key="ActiveTextStyle"
                TargetType="TextBlock"
                BasedOn="{StaticResource IndicatorTextStyle}">
+            <Setter Property="Foreground" Value="#555555"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsAutoRange}"
                              Value="True">
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Foreground" Value="{DynamicResource OverlayRangeTextBrush}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -127,10 +111,11 @@
         <Style x:Key="ManualTextStyle"
                TargetType="TextBlock"
                BasedOn="{StaticResource IndicatorTextStyle}">
+            <Setter Property="Foreground" Value="#555555"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsManualRange}"
                              Value="True">
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Foreground" Value="{DynamicResource OverlayRangeTextBrush}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -226,20 +211,17 @@
                     <RowDefinition Height="94"/>
                 </Grid.RowDefinitions>
 
-                <!-- AUTO / MANUAL -->
+                <!-- AUTO / MANUAL: sam tekst, bez tła i ramki -->
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal"
                             HorizontalAlignment="Left">
-
-                    <Border Style="{StaticResource AutoStyle}">
-                        <TextBlock Text="AUTO"
-                                   Style="{StaticResource ActiveTextStyle}" VerticalAlignment="Center" Width="35" TextAlignment="Center"/>
-                    </Border>
-
-                    <Border Style="{StaticResource ManualStyle}">
-                        <TextBlock Text="MANUAL"
-                                   Style="{StaticResource ManualTextStyle}" VerticalAlignment="Center" Width="55" TextAlignment="Center"/>
-                    </Border>
+                    <TextBlock Text="AUTO"
+                               Style="{StaticResource ActiveTextStyle}"
+                               VerticalAlignment="Center"
+                               Margin="6,0,12,0"/>
+                    <TextBlock Text="MANUAL"
+                               Style="{StaticResource ManualTextStyle}"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- AC / DC -->
