@@ -34,6 +34,7 @@ public partial class MultimeterWindow : Window
     {
         InitializeComponent();
         LocalizationService.Instance.SetLanguage(_settings.Language);
+        ApplyAppearance();
         RestoreMainWindow();
         PreviewKeyDown += MainWindow_PreviewKeyDown;
         _recordingTimer.Tick += RecordingTimer_Tick;
@@ -404,7 +405,31 @@ public partial class MultimeterWindow : Window
         };
 
         if (window.ShowDialog() == true)
+        {
             _overlayWindow?.ApplyAppearance();
+            ApplyAppearance();
+        }
+    }
+
+    private void ApplyAppearance()
+    {
+        Resources["OverlayBackgroundBrush"] = ParseColor(_settings.OverlayBackgroundColor, "#181818");
+        Resources["OverlayTextBrush"] = ParseColor(_settings.OverlayTextColor, "#FFFFFF");
+        Resources["OverlayConnectedBrush"] = ParseColor(_settings.OverlayConnectedColor, "#39C875");
+        Resources["OverlayWaitingBrush"] = ParseColor(_settings.OverlayWaitingColor, "#F4D35E");
+        Resources["OverlayDisconnectedBrush"] = ParseColor(_settings.OverlayDisconnectedColor, "#777777");
+        Resources["OverlayRangeTextBrush"] = ParseColor(_settings.OverlayRangeTextColor, "#D0D0D0");
+        Resources["OverlayMinMaxBrush"] = ParseColor(_settings.OverlayMinMaxColor, "#2563B5");
+        Resources["OverlayAcBrush"] = ParseColor(_settings.OverlayAcColor, "#C49A16");
+        Resources["OverlayDcBrush"] = ParseColor(_settings.OverlayDcColor, "#228B50");
+        Resources["OverlayHoldBrush"] = ParseColor(_settings.OverlayHoldColor, "#D97706");
+    }
+
+    private static SolidColorBrush ParseColor(string? value, string fallback)
+    {
+        if (value is null || !System.Text.RegularExpressions.Regex.IsMatch(value, "^#[0-9a-fA-F]{6}$"))
+            value = fallback;
+        return new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
     }
 
     private void RestoreMainWindow()
