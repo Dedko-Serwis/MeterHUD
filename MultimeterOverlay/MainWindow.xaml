@@ -37,6 +37,11 @@
                   IsChecked="True"
                   Click="ShowOverlayMenuItem_Click"/>
 
+                <MenuItem x:Name="LockOverlaySizeMenuItem"
+                          Header="Zablokuj rozmiar nakładki"
+                          IsCheckable="True"
+                          Click="LockOverlaySizeMenuItem_Click"/>
+
                 <Separator/>
 
                 <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuOpenCsvFolder]}"
