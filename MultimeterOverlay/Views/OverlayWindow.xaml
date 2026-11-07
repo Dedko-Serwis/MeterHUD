@@ -8,7 +8,7 @@
         MinHeight="90"
         WindowStyle="None"
         AllowsTransparency="False"
-        Background="#181818"
+        Background="{DynamicResource OverlayBackgroundBrush}"
         BorderThickness="0"
         ShowInTaskbar="False"
         Topmost="True"
@@ -20,6 +20,8 @@
         SnapsToDevicePixels="True">
 
     <Window.Resources>
+        <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="#181818"/>
+        <SolidColorBrush x:Key="OverlayTextBrush" Color="#FFFFFF"/>
 
         <Style x:Key="IndicatorStyle"
                TargetType="Border">
@@ -182,7 +184,7 @@
     </Window.Resources>
 
 
-    <Border Background="#181818"
+    <Border Background="{DynamicResource OverlayBackgroundBrush}"
         BorderThickness="5"
         CornerRadius="5"
         Padding="5">
@@ -315,7 +317,7 @@
                    FontFamily="Consolas"
                    FontSize="47"
                    FontWeight="SemiBold"
-                   Foreground="White"
+                   Foreground="{DynamicResource OverlayTextBrush}"
                    TextAlignment="Right"
                    VerticalAlignment="Center"
                    TextWrapping="NoWrap"/>
@@ -323,7 +325,7 @@
                             <TextBlock Grid.Column="1"
                    Text="{Binding OverlayUnit}"
                    FontSize="26"
-                   Foreground="White"
+                   Foreground="{DynamicResource OverlayTextBrush}"
                    TextAlignment="Center"
                    VerticalAlignment="Center"
                    TextWrapping="NoWrap"/>
@@ -363,7 +365,7 @@
            Text="{Binding AcDisplayValue}"
            FontFamily="Consolas"
            FontSize="31"
-           Foreground="White"
+           Foreground="{DynamicResource OverlayTextBrush}"
            TextAlignment="Right"
            VerticalAlignment="Center"/>
 
@@ -379,7 +381,7 @@
            Grid.Column="2"
            Text="{Binding AcDcUnit}"
            FontSize="21"
-           Foreground="White"
+           Foreground="{DynamicResource OverlayTextBrush}"
            TextAlignment="Left"
            VerticalAlignment="Center"/>
 
@@ -389,7 +391,7 @@
            Text="{Binding DcDisplayValue}"
            FontFamily="Consolas"
            FontSize="31"
-           Foreground="White"
+           Foreground="{DynamicResource OverlayTextBrush}"
            TextAlignment="Right"
            VerticalAlignment="Center"/>
 
@@ -405,7 +407,7 @@
            Grid.Column="2"
            Text="{Binding AcDcUnit}"
            FontSize="21"
-           Foreground="White"
+           Foreground="{DynamicResource OverlayTextBrush}"
            TextAlignment="Left"
            VerticalAlignment="Center"/>
 
