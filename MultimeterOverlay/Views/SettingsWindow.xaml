@@ -5,7 +5,7 @@
         xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         Title="{Binding Source={StaticResource Loc}, Path=[SettingsTitle]}"        
         Width="480"
-        Height="300"
+        Height="370"
         MinWidth="420"
         MinHeight="260"
         WindowStartupLocation="CenterOwner"
@@ -76,9 +76,34 @@
                        FontWeight="SemiBold"
                        Foreground="#AAAAAA"/>
 
-            <TextBlock Text="Opcje wyświetlacza dodamy w kolejnym etapie."
-                       Foreground="#777777"
-                       Margin="0,8,0,0"/>
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="65"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="36"/>
+                    <RowDefinition Height="36"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Tło nakładki" VerticalAlignment="Center"/>
+                <TextBox x:Name="BackgroundColorTextBox" Grid.Row="0" Grid.Column="1"
+                         Margin="0,4,8,4" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayBackgroundColor, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button x:Name="BackgroundColorButton" Grid.Row="0" Grid.Column="2"
+                        Content="RGB..." Click="BackgroundColor_Click"/>
+
+                <TextBlock Grid.Row="1" Text="Cyfry i jednostki" VerticalAlignment="Center"/>
+                <TextBox x:Name="TextColorTextBox" Grid.Row="1" Grid.Column="1"
+                         Margin="0,4,8,4" VerticalContentAlignment="Center"
+                         Text="{Binding OverlayTextColor, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button x:Name="TextColorButton" Grid.Row="1" Grid.Column="2"
+                        Content="RGB..." Click="TextColor_Click"/>
+            </Grid>
+
+            <Button Content="Domyślne kolory" HorizontalAlignment="Left"
+                    Margin="0,12,0,0" Padding="10,5" Click="DefaultColors_Click"/>
 
         </StackPanel>
 
