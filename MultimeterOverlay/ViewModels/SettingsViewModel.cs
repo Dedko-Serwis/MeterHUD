@@ -13,6 +13,11 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     private string _overlayConnectedColor;
     private string _overlayWaitingColor;
     private string _overlayDisconnectedColor;
+    private string _overlayRangeTextColor;
+    private string _overlayMinMaxColor;
+    private string _overlayAcColor;
+    private string _overlayDcColor;
+    private string _overlayHoldColor;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -26,6 +31,11 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         _overlayConnectedColor = settings.OverlayConnectedColor;
         _overlayWaitingColor = settings.OverlayWaitingColor;
         _overlayDisconnectedColor = settings.OverlayDisconnectedColor;
+        _overlayRangeTextColor = settings.OverlayRangeTextColor;
+        _overlayMinMaxColor = settings.OverlayMinMaxColor;
+        _overlayAcColor = settings.OverlayAcColor;
+        _overlayDcColor = settings.OverlayDcColor;
+        _overlayHoldColor = settings.OverlayHoldColor;
     }
 
     public string Language
@@ -69,6 +79,36 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     {
         get => _overlayDisconnectedColor;
         set { if (_overlayDisconnectedColor == value) return; _overlayDisconnectedColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayRangeTextColor
+    {
+        get => _overlayRangeTextColor;
+        set { if (_overlayRangeTextColor == value) return; _overlayRangeTextColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayMinMaxColor
+    {
+        get => _overlayMinMaxColor;
+        set { if (_overlayMinMaxColor == value) return; _overlayMinMaxColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayAcColor
+    {
+        get => _overlayAcColor;
+        set { if (_overlayAcColor == value) return; _overlayAcColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayDcColor
+    {
+        get => _overlayDcColor;
+        set { if (_overlayDcColor == value) return; _overlayDcColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayHoldColor
+    {
+        get => _overlayHoldColor;
+        set { if (_overlayHoldColor == value) return; _overlayHoldColor = value; OnPropertyChanged(); }
     }
 
     private void OnPropertyChanged(
