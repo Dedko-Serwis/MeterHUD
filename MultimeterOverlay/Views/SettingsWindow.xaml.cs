@@ -26,6 +26,11 @@ public partial class SettingsWindow : Window
         ConnectedColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
         WaitingColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
         DisconnectedColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
+        RangeTextColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
+        MinMaxColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
+        AcColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
+        DcColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
+        HoldColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
         RefreshColorPreviews();
     }
 
@@ -36,7 +41,12 @@ public partial class SettingsWindow : Window
             !TryNormalizeColor(_viewModel.OverlayTextColor, out string foreground) ||
             !TryNormalizeColor(_viewModel.OverlayConnectedColor, out string connected) ||
             !TryNormalizeColor(_viewModel.OverlayWaitingColor, out string waiting) ||
-            !TryNormalizeColor(_viewModel.OverlayDisconnectedColor, out string disconnected))
+            !TryNormalizeColor(_viewModel.OverlayDisconnectedColor, out string disconnected) ||
+            !TryNormalizeColor(_viewModel.OverlayRangeTextColor, out string rangeText)) ||
+            !TryNormalizeColor(_viewModel.OverlayMinMaxColor, out string minMax)) ||
+            !TryNormalizeColor(_viewModel.OverlayAcColor, out string ac)) ||
+            !TryNormalizeColor(_viewModel.OverlayDcColor, out string dc)) ||
+            !TryNormalizeColor(_viewModel.OverlayHoldColor, out string hold))
         {
             MessageBox.Show("Podaj kolory w formacie #RRGGBB.", "MultimeterOverlay",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -49,6 +59,11 @@ public partial class SettingsWindow : Window
         string previousConnected = _settings.OverlayConnectedColor;
         string previousWaiting = _settings.OverlayWaitingColor;
         string previousDisconnected = _settings.OverlayDisconnectedColor;
+        string previousRangeText = _settings.OverlayRangeTextColor;
+        string previousMinMax = _settings.OverlayMinMaxColor;
+        string previousAc = _settings.OverlayAcColor;
+        string previousDc = _settings.OverlayDcColor;
+        string previousHold = _settings.OverlayHoldColor;
 
         try
         {
@@ -59,6 +74,11 @@ public partial class SettingsWindow : Window
             _settings.OverlayConnectedColor = connected;
             _settings.OverlayWaitingColor = waiting;
             _settings.OverlayDisconnectedColor = disconnected;
+            _settings.OverlayRangeTextColor = rangeText;
+            _settings.OverlayMinMaxColor = minMax;
+            _settings.OverlayAcColor = ac;
+            _settings.OverlayDcColor = dc;
+            _settings.OverlayHoldColor = hold;
             _settings.Save();
 
             LocalizationService.Instance.SetLanguage(_settings.Language);
@@ -74,6 +94,11 @@ public partial class SettingsWindow : Window
             _settings.OverlayConnectedColor = previousConnected;
             _settings.OverlayWaitingColor = previousWaiting;
             _settings.OverlayDisconnectedColor = previousDisconnected;
+            _settings.OverlayRangeTextColor = previousRangeText;
+            _settings.OverlayMinMaxColor = previousMinMax;
+            _settings.OverlayAcColor = previousAc;
+            _settings.OverlayDcColor = previousDc;
+            _settings.OverlayHoldColor = previousHold;
 
             MessageBox.Show(
                 string.Format(LocalizationService.Instance["ErrorSettingsSave"], ex.Message),
@@ -106,6 +131,16 @@ public partial class SettingsWindow : Window
             WaitingColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(waiting));
         if (TryNormalizeColor(_viewModel.OverlayDisconnectedColor, out string disconnected))
             DisconnectedColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(disconnected));
+        if (TryNormalizeColor(_viewModel.OverlayRangeTextColor, out string rangeText))
+            RangeTextColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(rangeText));
+        if (TryNormalizeColor(_viewModel.OverlayMinMaxColor, out string minMax))
+            MinMaxColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(minMax));
+        if (TryNormalizeColor(_viewModel.OverlayAcColor, out string ac))
+            AcColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ac));
+        if (TryNormalizeColor(_viewModel.OverlayDcColor, out string dc))
+            DcColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dc));
+        if (TryNormalizeColor(_viewModel.OverlayHoldColor, out string hold))
+            HoldColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hold));
     }
 
     private void PickColor(string current, Action<string> setColor)
@@ -135,6 +170,21 @@ public partial class SettingsWindow : Window
     private void DisconnectedColor_Click(object sender, RoutedEventArgs e) =>
         PickColor(_viewModel.OverlayDisconnectedColor, value => _viewModel.OverlayDisconnectedColor = value);
 
+    private void RangeTextColor_Click(object sender, RoutedEventArgs e) =>
+        PickColor(_viewModel.OverlayRangeTextColor, value => _viewModel.OverlayRangeTextColor = value);
+
+    private void MinMaxColor_Click(object sender, RoutedEventArgs e) =>
+        PickColor(_viewModel.OverlayMinMaxColor, value => _viewModel.OverlayMinMaxColor = value);
+
+    private void AcColor_Click(object sender, RoutedEventArgs e) =>
+        PickColor(_viewModel.OverlayAcColor, value => _viewModel.OverlayAcColor = value);
+
+    private void DcColor_Click(object sender, RoutedEventArgs e) =>
+        PickColor(_viewModel.OverlayDcColor, value => _viewModel.OverlayDcColor = value);
+
+    private void HoldColor_Click(object sender, RoutedEventArgs e) =>
+        PickColor(_viewModel.OverlayHoldColor, value => _viewModel.OverlayHoldColor = value);
+
     private void DefaultColors_Click(object sender, RoutedEventArgs e)
     {
         _viewModel.OverlayBackgroundColor = "#181818";
@@ -142,6 +192,11 @@ public partial class SettingsWindow : Window
         _viewModel.OverlayConnectedColor = "#39C875";
         _viewModel.OverlayWaitingColor = "#F4D35E";
         _viewModel.OverlayDisconnectedColor = "#777777";
+        _viewModel.OverlayRangeTextColor = "#D0D0D0";
+        _viewModel.OverlayMinMaxColor = "#2563B5";
+        _viewModel.OverlayAcColor = "#C49A16";
+        _viewModel.OverlayDcColor = "#228B50";
+        _viewModel.OverlayHoldColor = "#D97706";
     }
 
     private void Cancel_Click(
