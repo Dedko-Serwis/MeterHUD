@@ -18,6 +18,7 @@ public sealed class AppSettings
     public double OverlayHeight { get; set; }
     public bool ShowOverlay { get; set; } = true;
     public bool OverlaySizeLocked { get; set; }
+    public bool OverlayTopmost { get; set; } = true;
 
 
     public double? MainLeft { get; set; }
