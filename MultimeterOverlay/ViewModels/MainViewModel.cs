@@ -570,6 +570,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
                             }
                         }
 
+                        RefreshRecordingCounter();
                         await Task.Delay(ReadDelayMs, token);
 
                     }
@@ -674,11 +675,17 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public void StopRecording()
     {
+
         if (_multimeter is null)
         {
             IsRecording = false;
+
+            if (RecordingState == RecordingState.Recording)
+                RecordingState = RecordingState.Error;
+
             return;
         }
+
 
         var logger = _multimeter.Logger;
 
