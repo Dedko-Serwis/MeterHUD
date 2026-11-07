@@ -438,27 +438,18 @@ public partial class MultimeterWindow : Window
 
     private void ApplyAppearance()
     {
-        Resources["OverlayBackgroundBrush"] = ParseColor(_settings.OverlayBackgroundColor, AppColors.OverlayBackground);
-        Resources["OverlayTextBrush"] = ParseColor(_settings.OverlayTextColor, AppColors.OverlayText);
-        Resources["OverlayConnectedBrush"] = ParseColor(_settings.OverlayConnectedColor, AppColors.OverlayConnected);
-        Resources["OverlayWaitingBrush"] = ParseColor(_settings.OverlayWaitingColor, AppColors.OverlayWaiting);
-        Resources["OverlayDisconnectedBrush"] = ParseColor(_settings.OverlayDisconnectedColor, AppColors.OverlayDisconnected);
-        Resources["OverlayRangeTextBrush"] = ParseColor(_settings.OverlayRangeTextColor, AppColors.OverlayRangeText);
-        Resources["OverlayMinMaxBrush"] = ParseColor(_settings.OverlayMinMaxColor, AppColors.OverlayMinMax);
-        Resources["OverlayAcBrush"] = ParseColor(_settings.OverlayAcColor, AppColors.OverlayAc);
-        Resources["OverlayDcBrush"] = ParseColor(_settings.OverlayDcColor, AppColors.OverlayDc);
-        Resources["OverlayHoldBrush"] = ParseColor(_settings.OverlayHoldColor, AppColors.OverlayHold);
+        Resources["OverlayBackgroundBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayBackgroundColor, AppColors.OverlayBackground);
+        Resources["OverlayTextBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayTextColor, AppColors.OverlayText);
+        Resources["OverlayConnectedBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayConnectedColor, AppColors.OverlayConnected);
+        Resources["OverlayWaitingBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayWaitingColor, AppColors.OverlayWaiting);
+        Resources["OverlayDisconnectedBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayDisconnectedColor, AppColors.OverlayDisconnected);
+        Resources["OverlayRangeTextBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayRangeTextColor, AppColors.OverlayRangeText);
+        Resources["OverlayMinMaxBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayMinMaxColor, AppColors.OverlayMinMax);
+        Resources["OverlayAcBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayAcColor, AppColors.OverlayAc);
+        Resources["OverlayDcBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayDcColor, AppColors.OverlayDc);
+        Resources["OverlayHoldBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayHoldColor, AppColors.OverlayHold);
     }
 
-    private static SolidColorBrush ParseColor(string? value, string fallback)
-    {
-        if (value is null || !System.Text.RegularExpressions.Regex.IsMatch(value, "^#[0-9a-fA-F]{6}$"))
-        {
-            value = fallback;
-        }
-
-        return new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
-    }
 
     private void RestoreMainWindow()
     {
