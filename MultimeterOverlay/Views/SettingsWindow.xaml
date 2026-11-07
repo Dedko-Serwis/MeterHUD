@@ -147,8 +147,25 @@
                                FontSize="18" FontWeight="SemiBold"
                                Margin="0,0,0,18"/>
                     <TextBlock Text="Folder zapisu plików CSV" Margin="0,0,0,8"/>
-                    <TextBlock Text="Wybór folderu, przywracanie domyślnej ścieżki i opróżnianie katalogu dodamy w kolejnym etapie."
-                               Foreground="#AAAAAA" TextWrapping="Wrap"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="110"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Margin="0,0,10,0"
+                                 VerticalContentAlignment="Center"
+                                 Text="{Binding CsvDirectory, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Column="1" Height="30" Content="Przeglądaj..."
+                                Click="BrowseCsvDirectory_Click"/>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                        <Button Content="Domyślna" Padding="12,6" Margin="0,0,10,0"
+                                Click="DefaultCsvDirectory_Click"/>
+                        <Button Content="Otwórz folder" Padding="12,6"
+                                Click="OpenCsvDirectory_Click"/>
+                    </StackPanel>
+                    <TextBlock Text="Zmiana lokalizacji obowiązuje od następnego nagrania."
+                               Foreground="#AAAAAA" Margin="0,18,0,0"/>
                 </StackPanel>
             </TabItem>
 
