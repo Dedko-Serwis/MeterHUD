@@ -92,7 +92,7 @@
             </StatusBar.Resources>
 
             <StatusBarItem>
-                <TextBlock Text="{Binding Status}" MinWidth="130" FontWeight="SemiBold">
+                <TextBlock Text="{Binding Status}" MinWidth="210" FontWeight="SemiBold">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="#999999"/>
@@ -197,7 +197,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <!-- Pojedynczy pomiar -->
+                    <!-- Stałe kolumny: wartość nie przesuwa się przy zmianie jednostki -->
                     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Grid.Style>
                             <Style TargetType="Grid">
@@ -210,10 +210,13 @@
                             </Style>
                         </Grid.Style>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="340"/>
+                            <ColumnDefinition Width="1"/>
+                            <ColumnDefinition Width="105"/>
                         </Grid.ColumnDefinitions>
+
                         <TextBlock x:Name="ValueText"
+                                   Grid.Column="0"
                                    Text="{Binding DisplayValue}"
                                    FontSize="66"
                                    FontWeight="SemiBold"
@@ -222,11 +225,19 @@
                                    TextAlignment="Right"
                                    VerticalAlignment="Center"
                                    TextWrapping="NoWrap"/>
+
+                        <Border Grid.Column="1"
+                                Background="#777777"
+                                Height="66"
+                                VerticalAlignment="Center"
+                                Margin="0,0,0,0"/>
+
                         <TextBlock x:Name="UnitText"
-                                   Grid.Column="1"
+                                   Grid.Column="2"
                                    Text="{Binding Unit}"
                                    FontSize="23"
-                                   Margin="10,12,0,0"
+                                   Margin="12,0,0,0"
+                                   TextAlignment="Left"
                                    VerticalAlignment="Center"
                                    TextWrapping="NoWrap"/>
                     </Grid>
