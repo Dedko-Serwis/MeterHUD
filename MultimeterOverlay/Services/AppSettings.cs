@@ -29,6 +29,9 @@ public sealed class AppSettings
 
     public string OverlayBackgroundColor { get; set; } = "#181818";
     public string OverlayTextColor { get; set; } = "#FFFFFF";
+    public string OverlayConnectedColor { get; set; } = "#39C875";
+    public string OverlayWaitingColor { get; set; } = "#F4D35E";
+    public string OverlayDisconnectedColor { get; set; } = "#777777";
 
 
     public static AppSettings Load()
