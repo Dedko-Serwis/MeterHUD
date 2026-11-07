@@ -42,10 +42,10 @@ public partial class SettingsWindow : Window
             !TryNormalizeColor(_viewModel.OverlayConnectedColor, out string connected) ||
             !TryNormalizeColor(_viewModel.OverlayWaitingColor, out string waiting) ||
             !TryNormalizeColor(_viewModel.OverlayDisconnectedColor, out string disconnected) ||
-            !TryNormalizeColor(_viewModel.OverlayRangeTextColor, out string rangeText)) ||
-            !TryNormalizeColor(_viewModel.OverlayMinMaxColor, out string minMax)) ||
-            !TryNormalizeColor(_viewModel.OverlayAcColor, out string ac)) ||
-            !TryNormalizeColor(_viewModel.OverlayDcColor, out string dc)) ||
+            !TryNormalizeColor(_viewModel.OverlayRangeTextColor, out string rangeText) ||
+            !TryNormalizeColor(_viewModel.OverlayMinMaxColor, out string minMax) ||
+            !TryNormalizeColor(_viewModel.OverlayAcColor, out string ac) ||
+            !TryNormalizeColor(_viewModel.OverlayDcColor, out string dc) ||
             !TryNormalizeColor(_viewModel.OverlayHoldColor, out string hold))
         {
             MessageBox.Show("Podaj kolory w formacie #RRGGBB.", "MultimeterOverlay",
