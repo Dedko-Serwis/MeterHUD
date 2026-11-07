@@ -396,6 +396,11 @@ public partial class MultimeterWindow : Window
 
 
 
+    private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        new AboutWindow { Owner = this }.ShowDialog();
+    }
+
     private void SettingsMenuItem_Click(
         object sender, RoutedEventArgs e)
     {
