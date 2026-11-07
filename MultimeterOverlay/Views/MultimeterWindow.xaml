@@ -1,5 +1,6 @@
 ﻿<Window x:Class="MultimeterOverlay.Views.MultimeterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:services="clr-namespace:MultimeterOverlay.Services"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:MultimeterOverlay.ViewModels"
         Title="MeterHUD by DEDKO Serwis"
@@ -11,16 +12,6 @@
         Foreground="{DynamicResource OverlayTextBrush}"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="#181818"/>
-        <SolidColorBrush x:Key="OverlayTextBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="OverlayConnectedBrush" Color="#39C875"/>
-        <SolidColorBrush x:Key="OverlayWaitingBrush" Color="#F4D35E"/>
-        <SolidColorBrush x:Key="OverlayDisconnectedBrush" Color="#777777"/>
-        <SolidColorBrush x:Key="OverlayRangeTextBrush" Color="#D0D0D0"/>
-        <SolidColorBrush x:Key="OverlayMinMaxBrush" Color="#2563B5"/>
-        <SolidColorBrush x:Key="OverlayAcBrush" Color="#C49A16"/>
-        <SolidColorBrush x:Key="OverlayDcBrush" Color="#228B50"/>
-        <SolidColorBrush x:Key="OverlayHoldBrush" Color="#FF00AA"/>
         <BooleanToVisibilityConverter
         x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
@@ -29,16 +20,16 @@
 
         <!-- Menu główne -->
         <Menu DockPanel.Dock="Top"
-              Background="#252525"
-              Foreground="White">
+              Background="{x:Static services:AppColors.Ui252525Brush}"
+              Foreground="{x:Static services:AppColors.UiWhiteBrush}">
 
             <Menu.Resources>
                 <Style TargetType="{x:Type MenuItem}">
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Foreground" Value="{x:Static services:AppColors.UiBlackBrush}"/>
                 </Style>
             </Menu.Resources>
 
-            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuWindow]}" Foreground="White">
+            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuWindow]}" Foreground="{x:Static services:AppColors.UiWhiteBrush}">
                 <MenuItem x:Name="OverlayTopmostMenuItem"
                           Header="{Binding Source={StaticResource Loc}, Path=[MenuAlwaysOnTop]}"
                           IsCheckable="True"
@@ -56,7 +47,7 @@
                           Click="ShowOverlayMenuItem_Click"/>
             </MenuItem>
 
-            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuMode]}" Foreground="White">
+            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuMode]}" Foreground="{x:Static services:AppColors.UiWhiteBrush}">
                 <MenuItem x:Name="DisplayTestMenuItem"
                           Header="{Binding Source={StaticResource Loc}, Path=[MenuDisplayTest]}"
                           IsCheckable="True"
@@ -69,7 +60,7 @@
             </MenuItem>
 
             <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuOptions]}"
-                      Foreground="White">
+                      Foreground="{x:Static services:AppColors.UiWhiteBrush}">
                 <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuResetSettings]}"
                           Click="ResetSettings_Click"/>
 
@@ -82,7 +73,7 @@
                           Click="SettingsMenuItem_Click"/>
             </MenuItem>
 
-            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuHelp]}" Foreground="White">
+            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuHelp]}" Foreground="{x:Static services:AppColors.UiWhiteBrush}">
                 <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuAbout]}" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
@@ -90,8 +81,8 @@
 
         <!-- Pasek stanu: połączenie, wskaźniki i nazwa miernika -->
         <StatusBar DockPanel.Dock="Bottom"
-                   Background="#252525"
-                   Foreground="#DDDDDD"
+                   Background="{x:Static services:AppColors.Ui252525Brush}"
+                   Foreground="{x:Static services:AppColors.UiDDDDDDBrush}"
                    Padding="8,3">
             <StatusBar.Resources>
                 <Style x:Key="IndicatorStyle" TargetType="Border">
@@ -99,9 +90,9 @@
                     <Setter Property="Height" Value="24"/>
                     <Setter Property="Margin" Value="3,0"/>
                     <Setter Property="CornerRadius" Value="4"/>
-                    <Setter Property="BorderBrush" Value="#444444"/>
+                    <Setter Property="BorderBrush" Value="{x:Static services:AppColors.Ui444444Brush}"/>
                     <Setter Property="BorderThickness" Value="1"/>
-                    <Setter Property="Background" Value="#202020"/>
+                    <Setter Property="Background" Value="{x:Static services:AppColors.Ui202020Brush}"/>
                 </Style>
             </StatusBar.Resources>
 
@@ -131,7 +122,7 @@
                         <TextBlock Text="AUTO" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="#333333"/>
+                                    <Setter Property="Foreground" Value="{x:Static services:AppColors.Ui333333Brush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsAutoRange}" Value="True">
                                             <Setter Property="Foreground" Value="{DynamicResource OverlayRangeTextBrush}"/>
@@ -145,7 +136,7 @@
                         <TextBlock Text="MIN" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="#333333"/>
+                                    <Setter Property="Foreground" Value="{x:Static services:AppColors.Ui333333Brush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsMin}" Value="True">
                                             <Setter Property="Foreground" Value="{DynamicResource OverlayMinMaxBrush}"/>
@@ -159,7 +150,7 @@
                         <TextBlock Text="MAX" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="#333333"/>
+                                    <Setter Property="Foreground" Value="{x:Static services:AppColors.Ui333333Brush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsMax}" Value="True">
                                             <Setter Property="Foreground" Value="{DynamicResource OverlayMinMaxBrush}"/>
@@ -177,7 +168,7 @@
             <StatusBarItem HorizontalAlignment="Right">
                 <TextBlock x:Name="DeviceNameText"
                            Text="{Binding DeviceName}"
-                           Foreground="#AAAAAA"
+                           Foreground="{x:Static services:AppColors.UiAAAAAABrush}"
                            FontSize="12"/>
             </StatusBarItem>
         </StatusBar>
@@ -191,9 +182,9 @@
 
             <Border Grid.Row="0"
                     CornerRadius="5"
-                    BorderBrush="#27618A"
+                    BorderBrush="{x:Static services:AppColors.Ui27618ABrush}"
                     BorderThickness="1"
-                    Background="#10304A"
+                    Background="{x:Static services:AppColors.Ui10304ABrush}"
                     Padding="10,7">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock x:Name="FunctionText"
@@ -241,7 +232,7 @@
                                    TextWrapping="NoWrap" Padding="0,0,25,0"/>
 
                         <Border Grid.Column="1"
-                                Background="#444444"
+                                Background="{x:Static services:AppColors.Ui444444Brush}"
                                 Height="85"
                                 VerticalAlignment="Center"
                                 Margin="0"/>
@@ -301,35 +292,35 @@
 
                 <!-- Rejestracja i licznik ramek po prawej -->
                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
-                    <Border BorderBrush="#555555" BorderThickness="1" CornerRadius="5"
-                            Background="#202020" Padding="8,7" Margin="0,0,0,10">
+                    <Border BorderBrush="{x:Static services:AppColors.Ui555555Brush}" BorderThickness="1" CornerRadius="5"
+                            Background="{x:Static services:AppColors.Ui202020Brush}" Padding="8,7" Margin="0,0,0,10">
                         <StackPanel>
                             <TextBlock Text="F12 · REC" HorizontalAlignment="Center"
-                                       Foreground="#888888" FontSize="11" Margin="0,0,0,2"/>
+                                       Foreground="{x:Static services:AppColors.Ui888888Brush}" FontSize="11" Margin="0,0,0,2"/>
                             <TextBlock x:Name="RecordingIndicator"
                                        Text="{Binding RecordingStatus}"
                                        FontWeight="Bold" FontSize="17"
-                                       Foreground="#999999"
+                                       Foreground="{x:Static services:AppColors.Ui999999Brush}"
                                        HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Border>
-                    <Border BorderBrush="#555555" BorderThickness="1" CornerRadius="5"
-                            Background="#202020" Padding="8,7">
+                    <Border BorderBrush="{x:Static services:AppColors.Ui555555Brush}" BorderThickness="1" CornerRadius="5"
+                            Background="{x:Static services:AppColors.Ui202020Brush}" Padding="8,7">
                         <StackPanel>
                             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[StatusFrames]}"
-                                       Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                                       Foreground="{x:Static services:AppColors.UiAAAAAABrush}" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding RecordedFrames}"
                                        FontSize="21" FontWeight="SemiBold"
-                                       Foreground="White" HorizontalAlignment="Center"/>
+                                       Foreground="{x:Static services:AppColors.UiWhiteBrush}" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Border>
-                    <Border BorderBrush="#555555" BorderThickness="1" CornerRadius="5"
-                            Background="#202020" Padding="8,7" Margin="0,10,0,0">
+                    <Border BorderBrush="{x:Static services:AppColors.Ui555555Brush}" BorderThickness="1" CornerRadius="5"
+                            Background="{x:Static services:AppColors.Ui202020Brush}" Padding="8,7" Margin="0,10,0,0">
                         <TextBlock Text="HOLD" FontSize="17" FontWeight="Bold"
                                    HorizontalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="#666666"/>
+                                    <Setter Property="Foreground" Value="{x:Static services:AppColors.Ui666666Brush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsHold}" Value="True">
                                             <Setter Property="Foreground" Value="{DynamicResource OverlayHoldBrush}"/>
