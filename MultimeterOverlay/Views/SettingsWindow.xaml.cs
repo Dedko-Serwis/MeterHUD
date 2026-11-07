@@ -14,12 +14,14 @@ public partial class SettingsWindow : Window
 {
     private readonly AppSettings _settings;
     private readonly SettingsViewModel _viewModel;
+    private readonly Func<bool> _isRecording;
 
-    public SettingsWindow(AppSettings settings)
+    public SettingsWindow(AppSettings settings, Func<bool>? isRecording = null)
     {
         InitializeComponent();
 
         _settings = settings;
+        _isRecording = isRecording ?? (() => false);
         _viewModel = new SettingsViewModel(settings);
 
         DataContext = _viewModel;
@@ -258,6 +260,88 @@ public partial class SettingsWindow : Window
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or System.ComponentModel.Win32Exception or NotSupportedException)
         {
             MessageBox.Show($"Nie można otworzyć folderu CSV: {ex.Message}",
+                "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void DeleteCsvFiles_Click(object sender, RoutedEventArgs e)
+    {
+        if (_isRecording())
+        {
+            MessageBox.Show("Zatrzymaj nagrywanie przed usunięciem plików CSV.",
+                "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(_viewModel.CsvDirectory))
+                throw new ArgumentException("Nie wskazano folderu.");
+
+            string directory = Path.GetFullPath(
+                Environment.ExpandEnvironmentVariables(_viewModel.CsvDirectory.Trim()));
+
+            if (!Directory.Exists(directory))
+            {
+                MessageBox.Show("Wybrany folder nie istnieje.", "MultimeterOverlay",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            // Wyłącznie pliki tworzone przez logger: UT161E_yyyyMMdd_HHmmss_fff.csv
+            string[] files = Directory.GetFiles(directory, "UT161E_*.csv",
+                SearchOption.TopDirectoryOnly)
+                .Where(path => System.Text.RegularExpressions.Regex.IsMatch(
+                    Path.GetFileName(path),
+                    @"^UT161E_\d{8}_\d{6}_\d{3}\.csv$",
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                .ToArray();
+
+            if (files.Length == 0)
+            {
+                MessageBox.Show("Nie znaleziono plików CSV programu.",
+                    "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (MessageBox.Show(
+                    $"Usunąć {files.Length} plików CSV z folderu:\n{directory}\n\nOperacji nie można cofnąć.",
+                    "MultimeterOverlay", MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
+                return;
+
+            // Ponowna kontrola po potwierdzeniu.
+            if (_isRecording())
+            {
+                MessageBox.Show("Nagrywanie jest aktywne. Usuwanie anulowano.",
+                    "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int deleted = 0;
+            int failed = 0;
+            foreach (string file in files)
+            {
+                try
+                {
+                    File.Delete(file);
+                    deleted++;
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
+                    or System.Security.SecurityException)
+                {
+                    failed++;
+                }
+            }
+
+            MessageBox.Show($"Usunięto: {deleted}. Nie udało się usunąć: {failed}.",
+                "MultimeterOverlay", MessageBoxButton.OK,
+                failed > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
+            or ArgumentException or NotSupportedException or System.Security.SecurityException)
+        {
+            MessageBox.Show($"Nie można usunąć plików CSV: {ex.Message}",
                 "MultimeterOverlay", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
