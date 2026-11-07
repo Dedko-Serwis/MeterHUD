@@ -69,7 +69,10 @@ public partial class OverlayWindow : Window
     private static SolidColorBrush ParseColor(string? value, string fallback)
     {
         if (value is null || !System.Text.RegularExpressions.Regex.IsMatch(value, "^#[0-9a-fA-F]{6}$"))
+        {
             value = fallback;
+        }
+
         return new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
     }
 

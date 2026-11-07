@@ -3,11 +3,10 @@ using MultimeterOverlay.Core;
 using MultimeterOverlay.Models;
 using MultimeterOverlay.Services;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Threading;
 using UT161EReader;
-using System.Windows;
 
 namespace MultimeterOverlay.ViewModels;
 
@@ -88,17 +87,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set => SetField(ref _range, value);
     }
 
-        private void ConnectionService_ConnectionChanged(
-        object? sender,
-        bool connected)
+    private void ConnectionService_ConnectionChanged(
+    object? sender,
+    bool connected)
     {
         if (Application.Current?.Dispatcher is not { } dispatcher)
+        {
             return;
+        }
 
         _ = dispatcher.BeginInvoke(() =>
         {
             if (_disposed || IsSimulationMode || IsDisplayTestMode)
+            {
                 return;
+            }
 
             if (!connected)
             {
@@ -120,12 +123,16 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         EventArgs e)
     {
         if (Application.Current?.Dispatcher is not { } dispatcher)
+        {
             return;
+        }
 
         _ = dispatcher.BeginInvoke(() =>
         {
             if (_disposed || IsSimulationMode || IsDisplayTestMode)
+            {
                 return;
+            }
 
             if (_connectionService?.IsConnected == true &&
                 _hasReceivedReading)
@@ -141,12 +148,16 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         MultimeterReading reading)
     {
         if (Application.Current?.Dispatcher is not { } dispatcher)
+        {
             return;
+        }
 
         _ = dispatcher.BeginInvoke(() =>
         {
             if (_disposed || IsSimulationMode || IsDisplayTestMode)
+            {
                 return;
+            }
 
             _hasReceivedReading = true;
 
@@ -163,7 +174,11 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         get => _connectionState;
         private set
         {
-            if (_connectionState == value) return;
+            if (_connectionState == value)
+            {
+                return;
+            }
+
             _connectionState = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ConnectionState)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status)));
@@ -183,10 +198,14 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         string name = AppDefaults.DeviceName;
 
         if (IsDisplayTestMode)
+        {
             return $"{name} {LocalizationService.Instance["DeviceDisplayTestSuffix"]}";
+        }
 
         if (IsSimulationMode)
+        {
             return $"{name} {LocalizationService.Instance["DeviceSimulationSuffix"]}";
+        }
 
         return name;
     }
@@ -211,7 +230,11 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         get => _recordingState;
         private set
         {
-            if (_recordingState == value) return;
+            if (_recordingState == value)
+            {
+                return;
+            }
+
             SetField(ref _recordingState, value);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecordingStatus)));
         }
@@ -286,7 +309,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         _connectionService.ConnectionChanged += ConnectionService_ConnectionChanged;
         _connectionService.ReadingReceived += ConnectionService_ReadingReceived;
         _connectionService.ReadingMissing += ConnectionService_ReadingMissing;
-        _connectionService.RecordingStopped +=    ConnectionService_RecordingStopped;
+        _connectionService.RecordingStopped += ConnectionService_RecordingStopped;
     }
 
 
@@ -294,7 +317,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is not ("Item[]" or nameof(LocalizationService.Language)))
+        {
             return;
+        }
 
         // Nazwa urządzenia
         DeviceName = GetDeviceDisplayName();
@@ -327,7 +352,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set
         {
             if (_isDisplayTestMode == value)
+            {
                 return;
+            }
 
             SetField(ref _isDisplayTestMode, value);
 
@@ -341,12 +368,16 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public async Task EnableDisplayTestAsync()
     {
         if (IsDisplayTestMode)
+        {
             return;
+        }
 
         _testStartedSimulation = !IsSimulationMode;
 
         if (_testStartedSimulation)
+        {
             await EnableSimulationAsync();
+        }
 
         _simulationTimer.Stop();
 
@@ -377,7 +408,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public void DisableDisplayTest()
     {
         if (!IsDisplayTestMode)
+        {
             return;
+        }
 
         _displayTestTimer.Stop();
         _displayTestTimer.Tick -= DisplayTestTimer_Tick;
@@ -400,7 +433,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     private void DisplayTestTimer_Tick(object? sender, EventArgs e)
     {
-        if (!IsDisplayTestMode) return;
+        if (!IsDisplayTestMode)
+        {
+            return;
+        }
 
         // Kolejne fazy testu.
         int step = _displayTestStep++ % 6;
@@ -439,7 +475,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public async Task EnableSimulationAsync()
     {
         if (IsSimulationMode)
+        {
             return;
+        }
 
         // Najpierw zatrzymujemy rzeczywisty miernik.
         await StopAsync();
@@ -463,7 +501,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public void DisableSimulation(bool restartDevice = true)
     {
         if (!IsSimulationMode)
+        {
             return;
+        }
 
         _simulationTimer.Stop();
         _simulationTimer.Tick -= SimulationTimer_Tick;
@@ -476,7 +516,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         ConnectionState = ConnectionState.Disconnected;
 
         if (restartDevice)
+        {
             Start();
+        }
     }
 
 
@@ -484,7 +526,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         object? sender, EventArgs e)
     {
         if (!IsSimulationMode)
+        {
             return;
+        }
 
         MultimeterReading reading = _simulator.Next();
 
@@ -499,7 +543,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         if (_connectionService is null)
+        {
             throw new InvalidOperationException("Serwis połączenia nie został zainicjalizowany.");
+        }
 
         _cts ??= new CancellationTokenSource();
 
@@ -590,13 +636,17 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         RecordingStoppedEventArgs e)
     {
         if (Application.Current?.Dispatcher is not { } dispatcher)
+        {
             return;
+        }
 
         _ = dispatcher.BeginInvoke(() =>
         {
-            if (_disposed)             return;
+            if (_disposed)
+            {
+                return;
+            }
 
-            
             if (!IsRecording && RecordingState != RecordingState.Recording)
             {
                 return;
@@ -624,7 +674,10 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     public void ToggleRecording()
     {
-        if (IsSimulationMode || IsDisplayTestMode) return;
+        if (IsSimulationMode || IsDisplayTestMode)
+        {
+            return;
+        }
 
         if (IsRecording)
         {
@@ -636,7 +689,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         if (recordingDevice is null ||
             ConnectionState != ConnectionState.Connected)
+        {
             return;
+        }
 
         var logger = recordingDevice.Logger;
         logger.Start();
@@ -681,7 +736,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         var logger = recordingDevice.Logger;
 
         if (!IsRecording && !logger.IsRecording)
+        {
             return;
+        }
 
         logger.Stop();
 
@@ -708,17 +765,23 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         var recordingDevice = RecordingDevice;
 
         if (recordingDevice is null)
+        {
             return;
+        }
 
         var logger = recordingDevice.Logger;
 
         if (!IsRecording && !logger.IsRecording)
+        {
             return;
+        }
 
         RecordedFrames = logger.FrameCount;
 
         if (logger.IsRecording)
+        {
             return;
+        }
 
         // Logger zakończył pracę, mimo że ViewModel
         // nadal uważał rejestrację za aktywną.
@@ -755,16 +818,22 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             IsAcDcMode = true;
 
             if (reading.IsAcComponent == true)
+            {
                 AcDisplayValue = reading.DisplayValue;
+            }
             else if (reading.IsAcComponent == false)
+            {
                 DcDisplayValue = reading.DisplayValue;
+            }
 
             AcDcUnit = reading.Unit
                 .Replace("AC+DC", "", StringComparison.OrdinalIgnoreCase)
                 .Trim();
 
             if (string.IsNullOrEmpty(AcDcUnit))
+            {
                 AcDcUnit = "V";
+            }
         }
         else
         {
@@ -819,7 +888,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public async Task StopAsync()
     {
         if (_cts is null)
+        {
             return;
+        }
 
         // Zatrzymujemy rejestrację, zanim serwis
         // zwolni urządzenie HID.
@@ -830,7 +901,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         try
         {
             if (_connectionService is not null)
+            {
                 await _connectionService.StopAsync();
+            }
         }
         finally
         {
@@ -845,7 +918,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public void Dispose()
     {
         if (_disposed)
+        {
             return;
+        }
 
         _disposed = true;
         _cts?.Dispose();
@@ -863,7 +938,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             _connectionService.ConnectionChanged -= ConnectionService_ConnectionChanged;
             _connectionService.ReadingReceived -= ConnectionService_ReadingReceived;
             _connectionService.ReadingMissing -= ConnectionService_ReadingMissing;
-            _connectionService.RecordingStopped -=    ConnectionService_RecordingStopped;
+            _connectionService.RecordingStopped -= ConnectionService_RecordingStopped;
         }
         _connectionService?.Dispose();
         _connectionService = null;
@@ -877,7 +952,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         [CallerMemberName] string? propertyName = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value))
+        {
             return;
+        }
 
         field = value;
 

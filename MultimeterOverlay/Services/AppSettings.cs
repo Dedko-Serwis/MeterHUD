@@ -51,7 +51,9 @@ public sealed class AppSettings
         try
         {
             if (!File.Exists(SettingsPath))
+            {
                 return new AppSettings();
+            }
 
             string json = File.ReadAllText(SettingsPath);
 
@@ -72,7 +74,9 @@ public sealed class AppSettings
         string? directory = Path.GetDirectoryName(SettingsPath);
 
         if (directory is not null)
+        {
             Directory.CreateDirectory(directory);
+        }
 
         string json = JsonSerializer.Serialize(
             this,
@@ -87,6 +91,8 @@ public sealed class AppSettings
     public static void Reset()
     {
         if (File.Exists(SettingsPath))
+        {
             File.Delete(SettingsPath);
+        }
     }
 }

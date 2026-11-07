@@ -32,7 +32,9 @@ public static class MeasurementLocalizationService
         };
 
         if (key is null)
+        {
             return reading.Function;
+        }
 
         return LocalizationService.Instance[key];
     }

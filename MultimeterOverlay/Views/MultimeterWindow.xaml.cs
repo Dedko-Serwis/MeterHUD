@@ -2,14 +2,12 @@
 using MultimeterOverlay.Models;
 using MultimeterOverlay.Services;
 using MultimeterOverlay.ViewModels;
-using MultimeterOverlay.Views;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using UT161EReader;
 
 namespace MultimeterOverlay.Views;
 
@@ -51,7 +49,9 @@ public partial class MultimeterWindow : Window
         object sender, RoutedEventArgs e)
     {
         if (_displayTestSwitchInProgress)
+        {
             return;
+        }
 
         _displayTestSwitchInProgress = true;
 
@@ -97,7 +97,11 @@ public partial class MultimeterWindow : Window
     private async void SimulationMenuItem_Click(
         object sender, RoutedEventArgs e)
     {
-        if (_viewModel.IsDisplayTestMode)            return;
+        if (_viewModel.IsDisplayTestMode)
+        {
+            return;
+        }
+
         if (_simulationSwitchInProgress)
         {
             SimulationMenuItem.IsChecked = _viewModel.IsSimulationMode;
@@ -143,7 +147,9 @@ public partial class MultimeterWindow : Window
     object sender, KeyEventArgs e)
     {
         if (e.Key != Key.F12)
+        {
             return;
+        }
 
         _viewModel.ToggleRecording();
 
@@ -216,7 +222,9 @@ public partial class MultimeterWindow : Window
         OverlayTopmostMenuItem.IsChecked = _settings.OverlayTopmost;
 
         if (_settings.ShowOverlay)
+        {
             _overlayWindow.Show();
+        }
     }
 
 
@@ -224,14 +232,18 @@ public partial class MultimeterWindow : Window
         object sender, RoutedEventArgs e)
     {
         if (_overlayWindow is null)
+        {
             return;
+        }
 
         bool show = ShowOverlayMenuItem.IsChecked;
 
         _settings.ShowOverlay = show;
 
         if (show)
+        {
             _overlayWindow.Show();
+        }
         else
         {
             _overlayWindow.SavePosition();
@@ -307,7 +319,9 @@ public partial class MultimeterWindow : Window
 
 
         if (result != MessageBoxResult.Yes)
+        {
             return;
+        }
 
         try
         {
@@ -355,7 +369,9 @@ public partial class MultimeterWindow : Window
         System.ComponentModel.CancelEventArgs e)
     {
         if (_shutdownCompleted)
+        {
             return;
+        }
 
         e.Cancel = true;
 
@@ -364,10 +380,14 @@ public partial class MultimeterWindow : Window
             _recordingTimer.Stop();
 
             if (_viewModel.IsDisplayTestMode)
+            {
                 _viewModel.DisableDisplayTest();
+            }
 
             if (_viewModel.IsSimulationMode)
+            {
                 _viewModel.DisableSimulation(restartDevice: false);
+            }
 
             await _viewModel.StopAsync();
 
@@ -433,7 +453,10 @@ public partial class MultimeterWindow : Window
     private static SolidColorBrush ParseColor(string? value, string fallback)
     {
         if (value is null || !System.Text.RegularExpressions.Regex.IsMatch(value, "^#[0-9a-fA-F]{6}$"))
+        {
             value = fallback;
+        }
+
         return new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
     }
 
@@ -477,6 +500,8 @@ public partial class MultimeterWindow : Window
         }
 
         if (_settings.MainMaximized)
+        {
             WindowState = WindowState.Maximized;
+        }
     }
 }

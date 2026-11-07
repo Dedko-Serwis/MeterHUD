@@ -33,9 +33,15 @@ public sealed class LocalizationService : INotifyPropertyChanged
         get
         {
             if (_selected.TryGetValue(key, out string? value))
+            {
                 return value;
+            }
+
             if (_polish.TryGetValue(key, out value))
+            {
                 return value;
+            }
+
             return _resources.GetString(key, _culture)
                 ?? _resources.GetString(key, CultureInfo.GetCultureInfo("pl"))
                 ?? key;
@@ -48,7 +54,9 @@ public sealed class LocalizationService : INotifyPropertyChanged
     {
         string selected = language == "en" ? "en" : "pl";
         if (Language == selected)
+        {
             return;
+        }
 
         _culture = CultureInfo.GetCultureInfo(selected);
         ReloadTranslations();

@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:MultimeterOverlay.ViewModels"
         Title="MeterHUD by DEDKO Serwis"
-        Width="760"
-        Height="360"
+        Width="650"
+        Height="350"
         MinWidth="650"
-        MinHeight="310"
+        MinHeight="350"
         Background="{DynamicResource OverlayBackgroundBrush}"
         Foreground="{DynamicResource OverlayTextBrush}"
         WindowStartupLocation="CenterScreen">
@@ -20,7 +20,7 @@
         <SolidColorBrush x:Key="OverlayMinMaxBrush" Color="#2563B5"/>
         <SolidColorBrush x:Key="OverlayAcBrush" Color="#C49A16"/>
         <SolidColorBrush x:Key="OverlayDcBrush" Color="#228B50"/>
-        <SolidColorBrush x:Key="OverlayHoldBrush" Color="#D97706"/>
+        <SolidColorBrush x:Key="OverlayHoldBrush" Color="#FF00AA"/>
         <BooleanToVisibilityConverter
         x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>

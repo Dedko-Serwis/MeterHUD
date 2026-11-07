@@ -43,7 +43,7 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     public string CsvDirectory
     {
         get => _csvDirectory;
-        set { if (_csvDirectory == value) return; _csvDirectory = value; OnPropertyChanged(); }
+        set { if (_csvDirectory == value) { return; } _csvDirectory = value; OnPropertyChanged(); }
     }
 
     public string Language
@@ -52,7 +52,9 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         set
         {
             if (_language == value)
+            {
                 return;
+            }
 
             _language = value;
             OnPropertyChanged();
@@ -62,61 +64,61 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     public string OverlayBackgroundColor
     {
         get => _overlayBackgroundColor;
-        set { if (_overlayBackgroundColor == value) return; _overlayBackgroundColor = value; OnPropertyChanged(); }
+        set { if (_overlayBackgroundColor == value) { return; } _overlayBackgroundColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayTextColor
     {
         get => _overlayTextColor;
-        set { if (_overlayTextColor == value) return; _overlayTextColor = value; OnPropertyChanged(); }
+        set { if (_overlayTextColor == value) { return; } _overlayTextColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayConnectedColor
     {
         get => _overlayConnectedColor;
-        set { if (_overlayConnectedColor == value) return; _overlayConnectedColor = value; OnPropertyChanged(); }
+        set { if (_overlayConnectedColor == value) { return; } _overlayConnectedColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayWaitingColor
     {
         get => _overlayWaitingColor;
-        set { if (_overlayWaitingColor == value) return; _overlayWaitingColor = value; OnPropertyChanged(); }
+        set { if (_overlayWaitingColor == value) { return; } _overlayWaitingColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayDisconnectedColor
     {
         get => _overlayDisconnectedColor;
-        set { if (_overlayDisconnectedColor == value) return; _overlayDisconnectedColor = value; OnPropertyChanged(); }
+        set { if (_overlayDisconnectedColor == value) { return; } _overlayDisconnectedColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayRangeTextColor
     {
         get => _overlayRangeTextColor;
-        set { if (_overlayRangeTextColor == value) return; _overlayRangeTextColor = value; OnPropertyChanged(); }
+        set { if (_overlayRangeTextColor == value) { return; } _overlayRangeTextColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayMinMaxColor
     {
         get => _overlayMinMaxColor;
-        set { if (_overlayMinMaxColor == value) return; _overlayMinMaxColor = value; OnPropertyChanged(); }
+        set { if (_overlayMinMaxColor == value) { return; } _overlayMinMaxColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayAcColor
     {
         get => _overlayAcColor;
-        set { if (_overlayAcColor == value) return; _overlayAcColor = value; OnPropertyChanged(); }
+        set { if (_overlayAcColor == value) { return; } _overlayAcColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayDcColor
     {
         get => _overlayDcColor;
-        set { if (_overlayDcColor == value) return; _overlayDcColor = value; OnPropertyChanged(); }
+        set { if (_overlayDcColor == value) { return; } _overlayDcColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayHoldColor
     {
         get => _overlayHoldColor;
-        set { if (_overlayHoldColor == value) return; _overlayHoldColor = value; OnPropertyChanged(); }
+        set { if (_overlayHoldColor == value) { return; } _overlayHoldColor = value; OnPropertyChanged(); }
     }
 
     private void OnPropertyChanged(

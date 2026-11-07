@@ -1,17 +1,26 @@
 ﻿
 using MultimeterOverlay.Services;
 using MultimeterOverlay.ViewModels;
-using System.Windows;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Media;
-using Forms = System.Windows.Forms;
 using DrawingColor = System.Drawing.Color;
+using Forms = System.Windows.Forms;
 
 namespace MultimeterOverlay.Views;
 
 public partial class SettingsWindow : Window
 {
+    [GeneratedRegex(@"^#[0-9a-fA-F]{6}$")]
+    private static partial Regex HexColorRegex();
+
+    [GeneratedRegex(
+        @"^UT161E_\d{8}_\d{6}_\d{3}\.csv$",
+        RegexOptions.IgnoreCase)]
+    private static partial Regex CsvFileRegex();
+
     private readonly AppSettings _settings;
     private readonly SettingsViewModel _viewModel;
     private readonly Func<bool> _isRecording;
@@ -61,7 +70,9 @@ public partial class SettingsWindow : Window
         try
         {
             if (string.IsNullOrWhiteSpace(_viewModel.CsvDirectory))
+            {
                 throw new ArgumentException(LocalizationService.Instance["SettingsSpecifyCsvFolder"]);
+            }
 
             csvDirectory = Path.GetFullPath(
                 Environment.ExpandEnvironmentVariables(_viewModel.CsvDirectory.Trim()));
@@ -139,8 +150,8 @@ public partial class SettingsWindow : Window
     private static bool TryNormalizeColor(string? value, out string normalized)
     {
         normalized = "";
-        if (value is null || value.Length != 7 || value[0] != '#' ||
-            !System.Text.RegularExpressions.Regex.IsMatch(value, "^#[0-9a-fA-F]{6}$"))
+
+        if (value is null || !HexColorRegex().IsMatch(value))
             return false;
 
         normalized = value.ToUpperInvariant();
@@ -150,28 +161,57 @@ public partial class SettingsWindow : Window
     private void RefreshColorPreviews()
     {
         if (TryNormalizeColor(_viewModel.OverlayBackgroundColor, out string bg))
+        {
             BackgroundColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(bg));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayTextColor, out string fg))
+        {
             TextColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(fg));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayConnectedColor, out string connected))
+        {
             ConnectedColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(connected));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayWaitingColor, out string waiting))
+        {
             WaitingColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(waiting));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayDisconnectedColor, out string disconnected))
+        {
             DisconnectedColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(disconnected));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayRangeTextColor, out string rangeText))
+        {
             RangeTextColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(rangeText));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayMinMaxColor, out string minMax))
+        {
             MinMaxColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(minMax));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayAcColor, out string ac))
+        {
             AcColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ac));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayDcColor, out string dc))
+        {
             DcColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dc));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayHoldColor, out string hold))
+        {
             HoldColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hold));
+        }
     }
 
-    private void PickColor(string current, Action<string> setColor)
+    private static void PickColor(string current, Action<string> setColor)
     {
         using var dialog = new Forms.ColorDialog { FullOpen = true, AnyColor = true };
         if (TryNormalizeColor(current, out string hex))
@@ -180,7 +220,9 @@ public partial class SettingsWindow : Window
             dialog.Color = DrawingColor.FromArgb(color.R, color.G, color.B);
         }
         if (dialog.ShowDialog() == Forms.DialogResult.OK)
+        {
             setColor($"#{dialog.Color.R:X2}{dialog.Color.G:X2}{dialog.Color.B:X2}");
+        }
     }
 
     private void BackgroundColor_Click(object sender, RoutedEventArgs e) =>
@@ -217,14 +259,14 @@ public partial class SettingsWindow : Window
     {
         _viewModel.OverlayBackgroundColor = "#181818";
         _viewModel.OverlayTextColor = "#FFFFFF";
-        _viewModel.OverlayConnectedColor = "#39C875";
-        _viewModel.OverlayWaitingColor = "#F4D35E";
-        _viewModel.OverlayDisconnectedColor = "#777777";
-        _viewModel.OverlayRangeTextColor = "#D0D0D0";
-        _viewModel.OverlayMinMaxColor = "#2563B5";
-        _viewModel.OverlayAcColor = "#C49A16";
-        _viewModel.OverlayDcColor = "#228B50";
-        _viewModel.OverlayHoldColor = "#D97706";
+        _viewModel.OverlayConnectedColor = "#00B72E";
+        _viewModel.OverlayWaitingColor = "#E0D725";
+        _viewModel.OverlayDisconnectedColor = "#585858";
+        _viewModel.OverlayRangeTextColor = "#AAAAAA";
+        _viewModel.OverlayMinMaxColor = "#0071E1";
+        _viewModel.OverlayAcColor = "#D96C00";
+        _viewModel.OverlayDcColor = "#00C400";
+        _viewModel.OverlayHoldColor = "#FF8000";
     }
 
     private void BrowseCsvDirectory_Click(object sender, RoutedEventArgs e)
@@ -238,7 +280,9 @@ public partial class SettingsWindow : Window
                 : _settings.GetCsvDirectory()
         };
         if (dialog.ShowDialog() == Forms.DialogResult.OK)
+        {
             _viewModel.CsvDirectory = dialog.SelectedPath;
+        }
     }
 
     private void DefaultCsvDirectory_Click(object sender, RoutedEventArgs e) =>
@@ -276,7 +320,9 @@ public partial class SettingsWindow : Window
         try
         {
             if (string.IsNullOrWhiteSpace(_viewModel.CsvDirectory))
+            {
                 throw new ArgumentException(LocalizationService.Instance["SettingsNoFolder"]);
+            }
 
             string directory = Path.GetFullPath(
                 Environment.ExpandEnvironmentVariables(_viewModel.CsvDirectory.Trim()));
@@ -289,13 +335,11 @@ public partial class SettingsWindow : Window
             }
 
             // Wyłącznie pliki tworzone przez logger: UT161E_yyyyMMdd_HHmmss_fff.csv
-            string[] files = Directory.GetFiles(directory, "UT161E_*.csv",
+            string[] files = [.. Directory.GetFiles(
+                directory,
+                "UT161E_*.csv",
                 SearchOption.TopDirectoryOnly)
-                .Where(path => System.Text.RegularExpressions.Regex.IsMatch(
-                    Path.GetFileName(path),
-                    @"^UT161E_\d{8}_\d{6}_\d{3}\.csv$",
-                    System.Text.RegularExpressions.RegexOptions.IgnoreCase))
-                .ToArray();
+                .Where(path => CsvFileRegex().IsMatch(Path.GetFileName(path)))];
 
             if (files.Length == 0)
             {
@@ -308,7 +352,9 @@ public partial class SettingsWindow : Window
                     string.Format(LocalizationService.Instance["SettingsDeleteConfirm"], files.Length, directory),
                     "MeterHUD", MessageBoxButton.YesNo,
                     MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
+            {
                 return;
+            }
 
             // Ponowna kontrola po potwierdzeniu.
             if (_isRecording())
