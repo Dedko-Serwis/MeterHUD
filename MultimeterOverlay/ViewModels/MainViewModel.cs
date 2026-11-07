@@ -272,7 +272,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private int _displayTestStep;
 
 
-    public MainViewModel() : this(new UT161EMultimeterFactory())
+    public MainViewModel() : this(new UT161EMultimeterFactory(() => AppSettings.Load().GetCsvDirectory()))
     {
     }
 
