@@ -202,7 +202,7 @@
                     <RowDefinition Height="94"/>
                 </Grid.RowDefinitions>
 
-                <!-- AUTO / MANUAL: sam tekst, bez tła i ramki -->
+                <!-- AUTO: sam tekst, bez tła i ramki -->
                 <StackPanel Grid.Row="0"
                             Orientation="Horizontal"
                             HorizontalAlignment="Left">
@@ -210,9 +210,6 @@
                                Style="{StaticResource ActiveTextStyle}"
                                VerticalAlignment="Center"
                                Margin="6,0,12,0"/>
-                    <TextBlock Text="MANUAL"
-                               Style="{StaticResource ManualTextStyle}"
-                               VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- AC / DC -->
