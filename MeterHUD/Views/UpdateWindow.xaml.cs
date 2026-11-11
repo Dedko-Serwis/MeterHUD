@@ -10,6 +10,8 @@ public partial class UpdateWindow : Window
     private readonly AppSettings _settings;
     private UpdateRelease? _release;
     private bool _busy;
+    private static string L(string key) => LocalizationService.Instance[key];
+    private static string F(string key, object value) => string.Format(L(key), value);
     public UpdateWindow(UpdateService service, AppSettings settings)
     {
         InitializeComponent();
@@ -30,7 +32,7 @@ public partial class UpdateWindow : Window
         if (!int.TryParse(item.Tag?.ToString(), out var days)) return;
         _settings.UpdateCheckDays = days;
         try { _settings.Save(); }
-        catch (Exception ex) { StatusText.Text = "Błąd zapisu ustawień: " + ex.Message; }
+        catch (Exception ex) { StatusText.Text = F("UpdateSaveError", ex.Message); }
     }
 
     public async Task CheckAsync()
@@ -41,22 +43,22 @@ public partial class UpdateWindow : Window
         InstallButton.IsEnabled = false;
         try
         {
-            StatusText.Text = "Sprawdzam GitHub Releases...";
+            StatusText.Text = L("UpdateChecking");
             _release = await _service.CheckAsync();
             _settings.LastUpdateCheckUtc = DateTimeOffset.UtcNow;
             _settings.Save();
             RefreshLastCheck();
             LatestVersionText.Text = _release?.Version.ToString(3) ?? "—";
             NotesText.Text = _release?.Notes ?? "";
-            StatusText.Text = _release is null ? "Brak publicznego wydania (repozytorium może być prywatne)." :
-                _release.Version <= UpdateService.CurrentVersion ? "Masz aktualną wersję." :
-                _release.InstallerUrl is null || _release.Sha256 is null
-                    ? "Nowa wersja dostępna, ale brak zweryfikowanego instalatora."
-                    : "Dostępna jest nowsza wersja.";
+            StatusText.Text = _release is null ? L("UpdateNoRelease") :
+                _release.Version <= UpdateService.CurrentVersion ? L("UpdateCurrent") :
+                !UpdateService.HasVerifiedInstaller(_release)
+                    ? L("UpdateNoInstaller")
+                    : L("UpdateAvailable");
             InstallButton.IsEnabled = _release is { InstallerUrl: not null, Sha256: not null } &&
                                       _release.Version > UpdateService.CurrentVersion;
         }
-        catch (Exception ex) { StatusText.Text = "Błąd sprawdzania: " + ex.Message; }
+        catch (Exception ex) { StatusText.Text = F("UpdateCheckError", ex.Message); }
         finally { _busy = false; CheckButton.IsEnabled = true; }
     }
 
@@ -65,7 +67,7 @@ public partial class UpdateWindow : Window
     private async void Install_Click(object sender, RoutedEventArgs e)
     {
         if (_busy || _release is null) return;
-        if (MessageBox.Show(this, "Pobrać i uruchomić instalator? Zapisz wcześniej swoją pracę.",
+        if (MessageBox.Show(this, L("UpdateConfirm"),
                 "MeterHUD", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
         _busy = true;
         CheckButton.IsEnabled = false;
@@ -73,16 +75,16 @@ public partial class UpdateWindow : Window
         DownloadProgress.Visibility = Visibility.Visible;
         try
         {
-            StatusText.Text = "Pobieranie instalatora...";
+            StatusText.Text = L("UpdateDownloading");
             var progress = new Progress<int>(value => DownloadProgress.Value = value);
             var path = await _service.DownloadVerifiedAsync(_release, progress);
-            StatusText.Text = "Pobrano i zweryfikowano SHA-256. Uruchamiam instalator...";
+            StatusText.Text = L("UpdateVerified");
             UpdateService.StartInstaller(path);
             Application.Current.Shutdown();
         }
         catch (Exception ex)
         {
-            StatusText.Text = "Błąd aktualizacji: " + ex.Message;
+            StatusText.Text = F("UpdateInstallError", ex.Message);
             InstallButton.IsEnabled = true;
         }
         finally { _busy = false; CheckButton.IsEnabled = true; }
