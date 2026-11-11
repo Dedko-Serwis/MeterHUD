@@ -14,7 +14,14 @@ public sealed class UpdateService
 {
     private const string ApiUrl = "https://api.github.com/repos/Dedko-Serwis/MeterHUD/releases/latest";
     private static readonly HttpClient Client = CreateClient();
-    public static Version CurrentVersion => Assembly.GetEntryAssembly()?.GetName().Version ?? new Version(0, 0, 0);
+    public static Version CurrentVersion
+    {
+        get
+        {
+            var version = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version(0, 0, 0);
+            return new Version(version.Major, version.Minor, Math.Max(0, version.Build));
+        }
+    }
 
     private static HttpClient CreateClient()
     {
