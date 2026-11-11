@@ -105,6 +105,7 @@
   "MenuShowObsOverlay": "Show OBS overlay",
   "MenuMode": "Mode",
   "MenuHelp": "Help",
+  "MenuUpdate": "Update",
   "MenuAbout": "About...",
   "AboutTitle": "About MeterHUD",
   "AboutDescription": "Multimeter monitor with OBS overlay",
