@@ -105,6 +105,7 @@
   "MenuShowObsOverlay": "Pokaż nakładkę OBS",
   "MenuMode": "Tryb",
   "MenuHelp": "Pomoc",
+  "MenuUpdate": "Aktualizacja",
   "MenuAbout": "O aplikacji...",
   "AboutTitle": "O aplikacji MeterHUD",
   "AboutDescription": "Monitor pomiarów multimetru z nakładką OBS",
