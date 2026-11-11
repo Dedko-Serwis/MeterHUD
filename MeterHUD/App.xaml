@@ -1,0 +1,22 @@
+<Application x:Class="MeterHUD.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MeterHUD"
+             xmlns:services="clr-namespace:MeterHUD.Services"
+             StartupUri="Views/MultimeterWindow.xaml">
+    <Application.Resources>
+        <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="{x:Static services:AppColors.OverlayBackgroundValue}"/>
+        <SolidColorBrush x:Key="OverlayTextBrush" Color="{x:Static services:AppColors.OverlayTextValue}"/>
+        <SolidColorBrush x:Key="OverlayConnectedBrush" Color="{x:Static services:AppColors.OverlayConnectedValue}"/>
+        <SolidColorBrush x:Key="OverlayWaitingBrush" Color="{x:Static services:AppColors.OverlayWaitingValue}"/>
+        <SolidColorBrush x:Key="OverlayDisconnectedBrush" Color="{x:Static services:AppColors.OverlayDisconnectedValue}"/>
+        <SolidColorBrush x:Key="OverlayRangeTextBrush" Color="{x:Static services:AppColors.OverlayRangeTextValue}"/>
+        <SolidColorBrush x:Key="OverlayMinMaxBrush" Color="{x:Static services:AppColors.OverlayMinMaxValue}"/>
+        <SolidColorBrush x:Key="OverlayAcBrush" Color="{x:Static services:AppColors.OverlayAcValue}"/>
+        <SolidColorBrush x:Key="OverlayDcBrush" Color="{x:Static services:AppColors.OverlayDcValue}"/>
+        <SolidColorBrush x:Key="OverlayHoldBrush" Color="{x:Static services:AppColors.OverlayHoldValue}"/>
+        <ObjectDataProvider x:Key="Loc"
+                        ObjectType="{x:Type services:LocalizationService}"
+                        MethodName="get_Instance"/>
+    </Application.Resources>
+</Application>

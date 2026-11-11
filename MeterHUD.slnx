@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MeterHUD.Core/MeterHUD.Core.csproj" />
+  <Project Path="MeterHUD.Devices.UT161E/MeterHUD.Devices.UT161E.csproj" />
+  <Project Path="MeterHUD.Tests/MeterHUD.Tests.csproj" Id="a06b46b9-2f44-4ec3-b491-7b2d39b1c5ae" />
+  <Project Path="MeterHUD/MeterHUD.csproj" />
+</Solution>

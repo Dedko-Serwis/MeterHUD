@@ -8,6 +8,6 @@ MeterHUD is free software, including for commercial use, under the **GNU General
 
 See [LICENSE](LICENSE) for the full license text.
 
-Repository: https://github.com/Dedko-Serwis/MultimeterOverlay
+Repository: https://github.com/Dedko-Serwis/MeterHUD
 
 The software is under development; hardware testing is not yet complete.
