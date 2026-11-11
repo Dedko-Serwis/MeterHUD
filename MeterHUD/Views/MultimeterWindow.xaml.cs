@@ -16,6 +16,8 @@ public partial class MultimeterWindow : Window
     private readonly MainViewModel _viewModel = new();
     private OverlayWindow? _overlayWindow;
     private readonly AppSettings _settings = AppSettings.Load();
+    private readonly UpdateService _updateService = new();
+    private UpdateWindow? _updateWindow;
     private bool _simulationSwitchInProgress;
 
     private bool _shutdownCompleted;
@@ -207,7 +209,7 @@ public partial class MultimeterWindow : Window
     }
 
 
-    private void MainWindow_Loaded(
+    private async void MainWindow_Loaded(
         object sender, RoutedEventArgs e)
     {
         _viewModel.Start();
@@ -225,6 +227,8 @@ public partial class MultimeterWindow : Window
         {
             _overlayWindow.Show();
         }
+
+        await CheckUpdatesOnStartupAsync();
     }
 
 
@@ -415,6 +419,40 @@ public partial class MultimeterWindow : Window
     }
 
 
+
+    private void UpdateMenuItem_Click(object sender, RoutedEventArgs e) => ShowUpdateWindow();
+
+    private void UpdateNotification_Click(object sender, MouseButtonEventArgs e) => ShowUpdateWindow();
+
+    private void ShowUpdateWindow()
+    {
+        if (_updateWindow is { IsVisible: true }) { _updateWindow.Activate(); return; }
+        _updateWindow = new UpdateWindow(_updateService, _settings) { Owner = this };
+        _updateWindow.ShowDialog();
+    }
+
+    private async Task CheckUpdatesOnStartupAsync()
+    {
+        try
+        {
+            var days = _settings.UpdateCheckDays;
+            if (days == 0 || (days > 0 && _settings.LastUpdateCheckUtc is { } last &&
+                DateTimeOffset.UtcNow - last < TimeSpan.FromDays(days))) return;
+            var release = await _updateService.CheckAsync();
+            _settings.LastUpdateCheckUtc = DateTimeOffset.UtcNow;
+            _settings.Save();
+            if (release is { InstallerUrl: not null, Sha256: not null } &&
+                release.Version > UpdateService.CurrentVersion)
+            {
+                UpdateNotification.Text = $"⬇ Dostępna aktualizacja {release.Version.ToString(3)}";
+                UpdateNotification.Visibility = Visibility.Visible;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Sprawdzanie aktualizacji: " + ex.Message);
+        }
+    }
 
     private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
     {
