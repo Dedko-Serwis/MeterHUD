@@ -1,6 +1,6 @@
 #define MyAppName "MeterHUD"
 #ifndef MyAppVersion
-  #define MyAppVersion "1.0.0"
+  #error MyAppVersion must be supplied by scripts/build-release.ps1
 #endif
 #ifndef SourceDir
   #define SourceDir "..\dist\publish"
