@@ -48,7 +48,7 @@ public sealed class UpdateService
     private static HttpClient CreateClient()
     {
         var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-        client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("MeterHUD", "0.2"));
+        client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("MeterHUD", "1.0"));
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
         return client;
     }
