@@ -152,7 +152,9 @@ public partial class SettingsWindow : Window
         normalized = "";
 
         if (value is null || !HexColorRegex().IsMatch(value))
+        {
             return false;
+        }
 
         normalized = value.ToUpperInvariant();
         return true;

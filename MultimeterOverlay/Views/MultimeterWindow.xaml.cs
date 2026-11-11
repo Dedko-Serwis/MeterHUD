@@ -1,12 +1,10 @@
-﻿
-using MultimeterOverlay.Models;
+﻿using MultimeterOverlay.Models;
 using MultimeterOverlay.Services;
 using MultimeterOverlay.ViewModels;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace MultimeterOverlay.Views;
@@ -17,9 +15,7 @@ public partial class MultimeterWindow : Window
     private OverlayWindow? _overlayWindow;
     private readonly AppSettings _settings = AppSettings.Load();
     private bool _simulationSwitchInProgress;
-
     private bool _shutdownCompleted;
-
     private bool _displayTestSwitchInProgress;
     private readonly DispatcherTimer _recordingTimer = new()
     {
@@ -54,7 +50,6 @@ public partial class MultimeterWindow : Window
         }
 
         _displayTestSwitchInProgress = true;
-
         DisplayTestMenuItem.IsEnabled = false;
         SimulationMenuItem.IsEnabled = false;
 
@@ -79,16 +74,10 @@ public partial class MultimeterWindow : Window
         }
         finally
         {
-            DisplayTestMenuItem.IsChecked =
-                _viewModel.IsDisplayTestMode;
-
-            SimulationMenuItem.IsChecked =
-                _viewModel.IsSimulationMode &&
-                !_viewModel.IsDisplayTestMode;
-
+            DisplayTestMenuItem.IsChecked = _viewModel.IsDisplayTestMode;
+            SimulationMenuItem.IsChecked = _viewModel.IsSimulationMode && !_viewModel.IsDisplayTestMode;
             SimulationMenuItem.IsEnabled = true;
             DisplayTestMenuItem.IsEnabled = true;
-
             _displayTestSwitchInProgress = false;
         }
     }
@@ -169,9 +158,7 @@ public partial class MultimeterWindow : Window
         _settings.MainTop = bounds.Top;
         _settings.MainWidth = bounds.Width;
         _settings.MainHeight = bounds.Height;
-
-        _settings.MainMaximized =
-            WindowState == WindowState.Maximized;
+        _settings.MainMaximized = WindowState == WindowState.Maximized;
     }
 
 
@@ -179,7 +166,6 @@ public partial class MultimeterWindow : Window
         object? sender, EventArgs e)
     {
         _viewModel.RefreshRecordingCounter();
-
         _blinkVisible = !_blinkVisible;
         UpdateRecordingIndicator();
     }
@@ -189,14 +175,11 @@ public partial class MultimeterWindow : Window
         if (_viewModel.IsRecording)
         {
             RecordingIndicator.Foreground = AppColors.UiOrangeRedBrush;
-
-            RecordingIndicator.Opacity =
-                _blinkVisible ? 1.0 : 0.15;
+            RecordingIndicator.Opacity = _blinkVisible ? 1.0 : 0.15;
         }
         else
         {
             RecordingIndicator.Opacity = 1.0;
-
             RecordingIndicator.Foreground =
                 _viewModel.RecordingState == RecordingState.Error
                     ? AppColors.UiRedBrush
@@ -211,11 +194,7 @@ public partial class MultimeterWindow : Window
         object sender, RoutedEventArgs e)
     {
         _viewModel.Start();
-
-        _overlayWindow = new OverlayWindow(_viewModel, _settings)
-        {
-            Owner = this
-        };
+        _overlayWindow = new OverlayWindow(_viewModel, _settings) { Owner = this };
 
         ShowOverlayMenuItem.IsChecked = _settings.ShowOverlay;
         LockOverlaySizeMenuItem.IsChecked = _settings.OverlaySizeLocked;
@@ -253,31 +232,26 @@ public partial class MultimeterWindow : Window
         SaveSettings();
     }
 
-    private void LockOverlaySizeMenuItem_Click(
-        object sender, RoutedEventArgs e)
+    private void LockOverlaySizeMenuItem_Click(object sender, RoutedEventArgs e)
     {
         _settings.OverlaySizeLocked = LockOverlaySizeMenuItem.IsChecked;
         _overlayWindow?.ApplySizeLock();
         SaveSettings();
     }
 
-    private void OverlayTopmostMenuItem_Click(
-        object sender, RoutedEventArgs e)
+    private void OverlayTopmostMenuItem_Click(object sender, RoutedEventArgs e)
     {
         _settings.OverlayTopmost = OverlayTopmostMenuItem.IsChecked;
         _overlayWindow?.ApplyTopmost();
         SaveSettings();
     }
 
-    private void OpenCsvFolder_Click(
-        object sender, RoutedEventArgs e)
+    private void OpenCsvFolder_Click(object sender, RoutedEventArgs e)
     {
         try
         {
             string directory = _settings.GetCsvDirectory();
-
             Directory.CreateDirectory(directory);
-
             Process.Start(new ProcessStartInfo
             {
                 FileName = directory,
@@ -297,18 +271,15 @@ public partial class MultimeterWindow : Window
     private void ResetMainWindow()
     {
         WindowState = WindowState.Normal;
-
         Width = 560;
         Height = 300;
 
         Rect workArea = SystemParameters.WorkArea;
-
         Left = workArea.Left + (workArea.Width - Width) / 2;
         Top = workArea.Top + (workArea.Height - Height) / 2;
     }
 
-    private void ResetSettings_Click(
-    object sender, RoutedEventArgs e)
+    private void ResetSettings_Click(object sender, RoutedEventArgs e)
     {
 
         MessageBoxResult result = MessageBox.Show(
@@ -316,7 +287,6 @@ public partial class MultimeterWindow : Window
             LocalizationService.Instance["ResetSettingsTitle"],
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
-
 
         if (result != MessageBoxResult.Yes)
         {
@@ -327,12 +297,9 @@ public partial class MultimeterWindow : Window
         {
             _overlayWindow?.ResetPosition();
             ResetMainWindow();
-
             _settings.ShowOverlay = true;
             ShowOverlayMenuItem.IsChecked = true;
-
             _overlayWindow?.Show();
-
             SaveSettings();
         }
         catch (Exception ex)
@@ -359,10 +326,6 @@ public partial class MultimeterWindow : Window
             MessageBox.Show(string.Format(LocalizationService.Instance["ErrorSettingsSave"], ex.Message), "MeterHUD", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
-
-
-
-
 
     private async void MainWindow_Closing(
         object? sender,
