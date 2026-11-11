@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MeterHUD.Devices.UT161E\MeterHUD.Devices.UT161E.csproj" />\n    <ProjectReference Include="..\MeterHUD\MeterHUD.csproj" />
+    <ProjectReference Include="..\MeterHUD.Devices.UT161E\MeterHUD.Devices.UT161E.csproj" />
+    <ProjectReference Include="..\MeterHUD\MeterHUD.csproj" />
   </ItemGroup>
 
   <ItemGroup>
