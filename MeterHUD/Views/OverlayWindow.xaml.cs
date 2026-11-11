@@ -3,7 +3,6 @@ using MeterHUD.Services;
 using MeterHUD.ViewModels;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace MeterHUD.Views;
 

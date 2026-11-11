@@ -78,7 +78,9 @@ public static class AppColors
     {
         if (value is null || value.Length != 7 || value[0] != '#' ||
             !value.AsSpan(1).ToString().All(Uri.IsHexDigit))
+        {
             value = fallback;
+        }
 
         return new SolidColorBrush(Parse(value));
     }
