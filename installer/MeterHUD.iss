@@ -1,6 +1,6 @@
 #define MyAppName "MeterHUD"
 #ifndef MyAppVersion
-  #define MyAppVersion "0.2.0"
+  #define MyAppVersion "1.0.0"
 #endif
 #ifndef SourceDir
   #define SourceDir "..\dist\publish"
