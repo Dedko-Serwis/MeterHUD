@@ -95,8 +95,8 @@ public sealed class UpdateService
             !Uri.TryCreate(release.InstallerUrl, UriKind.Absolute, out var uri) ||
             uri.Scheme != Uri.UriSchemeHttps || !uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException("Brak zaufanego instalatora z sumą SHA-256.");
-
-        var uri = new Uri(release.InstallerUrl!);\n        var directory = Path.Combine(Path.GetTempPath(), "MeterHUD-Updates");
+        
+        var directory = Path.Combine(Path.GetTempPath(), "MeterHUD-Updates");
         Directory.CreateDirectory(directory);
         var file = Path.Combine(directory, Guid.NewGuid().ToString("N") + "-Setup.exe");
         try

@@ -444,7 +444,7 @@ public partial class MultimeterWindow : Window
             if (release is { InstallerUrl: not null, Sha256: not null } &&
                 release.Version > UpdateService.CurrentVersion)
             {
-                UpdateNotification.Text = "⬇ " + string.Format(LocalizationService.Instance["UpdateNotification"], release.Version.ToString(3));\n                UpdateNotification.ToolTip = LocalizationService.Instance["UpdateNotificationHint"];
+                UpdateNotification.Text = "⬇ " + string.Format(LocalizationService.Instance["UpdateNotification"], release.Version.ToString(3));                UpdateNotification.ToolTip = LocalizationService.Instance["UpdateNotificationHint"];
                 UpdateNotification.Visibility = Visibility.Visible;
             }
         }
