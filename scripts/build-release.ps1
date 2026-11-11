@@ -1,11 +1,11 @@
-param([string]$Version = "0.2.0")
+param([string]$Version = "1.0.0")
 $ErrorActionPreference = "Stop"
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $project = Join-Path $root "MeterHUD\MeterHUD.csproj"
 $publish = Join-Path $root "dist\publish"
 dotnet test (Join-Path $root "MeterHUD.slnx") -c Release
 if ($LASTEXITCODE -ne 0) { throw "Testy nie powiodły się" }
-dotnet publish $project -c Release -r win-x64 --self-contained true -p:Version=$Version -o $publish
+dotnet publish $project -c Release -r win-x64 --self-contained true "-p:Version=$Version" "-p:AssemblyVersion=$Version.0" "-p:FileVersion=$Version.0" "-p:InformationalVersion=$Version" -o $publish
 if ($LASTEXITCODE -ne 0) { throw "Publikacja nie powiodła się" }
 $isccCandidates = @(
     "$env:LOCALAPPDATA\Programs\Inno Setup 7\ISCC.exe"
