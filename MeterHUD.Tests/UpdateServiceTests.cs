@@ -54,4 +54,38 @@ public sealed class UpdateServiceTests
         Assert.False(UpdateService.HasVerifiedInstaller(new UpdateRelease(new Version(0, 3, 0), "", "https://github.com/example", null)));
         Assert.False(UpdateService.HasVerifiedInstaller(new UpdateRelease(new Version(0, 3, 0), "", "https://github.com/example", "wrong")));
     }
+
+    [Fact]
+    public void GitHubReleaseJson_ExtractsVersionInstallerAndDigest()
+    {
+        var hash = new string('a', 64);
+        var json = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            tag_name = "v0.3.0",
+            body = "New features",
+            assets = new[]
+            {
+                new { name = "MeterHUD-0.3.0-Setup.exe", browser_download_url = "https://github.com/Dedko-Serwis/MeterHUD/releases/download/v0.3.0/MeterHUD-0.3.0-Setup.exe", digest = "sha256:" + hash }
+            }
+        });
+        var release = UpdateService.ParseReleaseJson(json);
+        Assert.Equal(new Version(0, 3, 0), release.Version);
+        Assert.Equal("New features", release.Notes);
+        Assert.Equal(hash, release.Sha256);
+        Assert.True(UpdateService.HasVerifiedInstaller(release));
+    }
+
+    [Fact]
+    public void GitHubReleaseJson_MissingInstallerDoesNotEnableUpdate()
+    {
+        var release = UpdateService.ParseReleaseJson("{\"tag_name\":\"v0.3.0\",\"body\":\"Notes\",\"assets\":[]}");
+        Assert.Null(release.InstallerUrl);
+        Assert.False(UpdateService.HasVerifiedInstaller(release));
+    }
+
+    [Fact]
+    public void GitHubReleaseJson_InvalidVersionThrows()
+    {
+        Assert.Throws<FormatException>(() => UpdateService.ParseReleaseJson("{\"tag_name\":\"v0.3.0-beta\",\"assets\":[]}"));
+    }
 }
