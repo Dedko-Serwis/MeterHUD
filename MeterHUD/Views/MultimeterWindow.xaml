@@ -73,6 +73,8 @@
                           Click="SettingsMenuItem_Click"/>
             </MenuItem>
 
+            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuUpdate]}" Foreground="{x:Static services:AppColors.UiWhiteBrush}" Click="UpdateMenuItem_Click"/>
+
             <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuHelp]}" Foreground="{x:Static services:AppColors.UiWhiteBrush}">
                 <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuAbout]}" Click="AboutMenuItem_Click"/>
             </MenuItem>
@@ -164,6 +166,11 @@
             </StatusBarItem>
 
             <Separator/>
+
+            <StatusBarItem>
+                <TextBlock x:Name="UpdateNotification" Text="⬇ Dostępna aktualizacja" Foreground="#F2C14E"
+                           Cursor="Hand" Visibility="Collapsed" MouseLeftButtonUp="UpdateNotification_Click"/>
+            </StatusBarItem>
 
             <StatusBarItem HorizontalAlignment="Right">
                 <TextBlock x:Name="DeviceNameText"

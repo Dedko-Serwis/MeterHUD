@@ -27,6 +27,8 @@ public sealed class AppSettings
     public double MainHeight { get; set; }
     public bool MainMaximized { get; set; }
 
+    public int UpdateCheckDays { get; set; } = 7;
+    public DateTimeOffset? LastUpdateCheckUtc { get; set; }
     public string Language { get; set; } = "pl";
     public string CsvDirectory { get; set; } = "";
 
