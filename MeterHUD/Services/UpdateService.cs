@@ -23,6 +23,28 @@ public sealed class UpdateService
         }
     }
 
+    public static bool TryParseReleaseVersion(string? tag, out Version? version)
+    {
+        version = null;
+        if (string.IsNullOrWhiteSpace(tag)) return false;
+        var normalized = tag.Trim();
+        if (normalized.StartsWith("v", StringComparison.OrdinalIgnoreCase)) normalized = normalized[1..];
+        if (!Version.TryParse(normalized, out var parsed) || parsed.Build < 0) return false;
+        version = new Version(parsed.Major, parsed.Minor, parsed.Build);
+        return true;
+    }
+
+    public static bool IsNewer(Version installed, Version latest) => latest > installed;
+
+    public static bool ShouldCheck(int days, DateTimeOffset? last, DateTimeOffset now) =>
+        days != 0 && (days < 0 || last is null || now - last.Value >= TimeSpan.FromDays(days));
+
+    public static bool HasVerifiedInstaller(UpdateRelease? release) =>
+        release is { InstallerUrl: not null, Sha256: not null } &&
+        Uri.TryCreate(release.InstallerUrl, UriKind.Absolute, out var uri) &&
+        uri.Scheme == Uri.UriSchemeHttps && uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) &&
+        release.Sha256.Length == 64 && release.Sha256.All(Uri.IsHexDigit);
+
     private static HttpClient CreateClient()
     {
         var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
@@ -40,7 +62,7 @@ public sealed class UpdateService
         using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
         var root = doc.RootElement;
         var tag = root.GetProperty("tag_name").GetString()?.TrimStart('v', 'V');
-        if (!Version.TryParse(tag, out var version))
+        if (!TryParseReleaseVersion(tag, out var version))
             throw new FormatException("Nieprawidłowa wersja GitHub Release.");
         var notes = root.TryGetProperty("body", out var body) ? body.GetString() ?? "" : "";
         string? url = null, hash = null;
@@ -57,7 +79,7 @@ public sealed class UpdateService
                 break;
             }
         }
-        return new UpdateRelease(version, notes, url, hash);
+        return new UpdateRelease(version!, notes, url, hash);
     }
 
     public async Task<string> DownloadVerifiedAsync(UpdateRelease release, IProgress<int>? progress = null, CancellationToken cancellationToken = default)
@@ -68,7 +90,7 @@ public sealed class UpdateService
             uri.Scheme != Uri.UriSchemeHttps || !uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException("Brak zaufanego instalatora z sumą SHA-256.");
 
-        var directory = Path.Combine(Path.GetTempPath(), "MeterHUD-Updates");
+        var uri = new Uri(release.InstallerUrl!);\n        var directory = Path.Combine(Path.GetTempPath(), "MeterHUD-Updates");
         Directory.CreateDirectory(directory);
         var file = Path.Combine(directory, Guid.NewGuid().ToString("N") + "-Setup.exe");
         try
