@@ -444,7 +444,8 @@ public partial class MultimeterWindow : Window
             if (release is { InstallerUrl: not null, Sha256: not null } &&
                 release.Version > UpdateService.CurrentVersion)
             {
-                UpdateNotification.Text = $"⬇ {release.Version.ToString(3)}";\n                UpdateNotification.ToolTip = "Dostępna aktualizacja MeterHUD — kliknij, aby otworzyć okno aktualizacji";
+                UpdateNotification.Text = $"⬇ {release.Version.ToString(3)}";
+                UpdateNotification.ToolTip = "Dostępna aktualizacja MeterHUD — kliknij, aby otworzyć okno aktualizacji";
                 UpdateNotification.Visibility = Visibility.Visible;
             }
         }
