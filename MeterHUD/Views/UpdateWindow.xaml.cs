@@ -23,8 +23,8 @@ public partial class UpdateWindow : Window
     }
 
     private void RefreshLastCheck() =>
-        LastCheckText.Text = "Ostatnie sprawdzenie: " +
-            (_settings.LastUpdateCheckUtc?.ToLocalTime().ToString("yyyy-MM-dd HH:mm") ?? "nigdy");
+        LastCheckText.Text = F("UpdateLast",
+            _settings.LastUpdateCheckUtc?.ToLocalTime().ToString("yyyy-MM-dd HH:mm") ?? L("UpdateNever"));
 
     private void IntervalCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
