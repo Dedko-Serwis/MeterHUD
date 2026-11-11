@@ -59,7 +59,12 @@ public sealed class UpdateService
         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             return null; // Brak publicznego wydania albo repozytorium nadal prywatne.
         response.EnsureSuccessStatusCode();
-        using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+        return ParseReleaseJson(await response.Content.ReadAsStringAsync(cancellationToken));
+    }
+
+    public static UpdateRelease ParseReleaseJson(string json)
+    {
+        using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
         var tag = root.GetProperty("tag_name").GetString()?.TrimStart('v', 'V');
         if (!TryParseReleaseVersion(tag, out var version))
@@ -80,6 +85,7 @@ public sealed class UpdateService
             }
         }
         return new UpdateRelease(version!, notes, url, hash);
+    
     }
 
     public async Task<string> DownloadVerifiedAsync(UpdateRelease release, IProgress<int>? progress = null, CancellationToken cancellationToken = default)
