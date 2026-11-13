@@ -341,6 +341,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         // Odświeżenie pozostałych tłumaczeń
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Status)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDiodeMode)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecordingStatus)));
     }
 
@@ -576,6 +577,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             0x19;
 
 
+
+    public bool IsDiodeMode => _functionCode == 0x08;
 
     public bool IsMin
     {
@@ -850,6 +853,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAC)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDC)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDiodeMode)));
         Range = reading.IsAutoRange ? AppDefaults.AutoRange : AppDefaults.ManualRange;
         IsHold = reading.IsHold;
         IsMin = reading.IsMin;
@@ -883,6 +887,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAC)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDC)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasurementType)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDiodeMode)));
     }
 
     public async Task StopAsync()
