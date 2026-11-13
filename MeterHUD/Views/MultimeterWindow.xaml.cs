@@ -474,11 +474,12 @@ public partial class MultimeterWindow : Window
             Owner = this
         };
 
-        if (window.ShowDialog() == true)
+        window.SettingsSaved += (_, _) =>
         {
             _overlayWindow?.ApplyAppearance();
             ApplyAppearance();
-        }
+        };
+        window.ShowDialog();
     }
 
     private void ApplyAppearance()
