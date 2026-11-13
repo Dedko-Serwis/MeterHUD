@@ -45,6 +45,7 @@ public sealed class AppSettings
     public string OverlayMinMaxColor { get; set; } = AppColors.OverlayMinMax;
     public string OverlayAcColor { get; set; } = AppColors.OverlayAc;
     public string OverlayDcColor { get; set; } = AppColors.OverlayDc;
+    public string OverlayDiodeColor { get; set; } = AppColors.OverlayDiode;
     public string OverlayHoldColor { get; set; } = AppColors.OverlayHold;
 
 
