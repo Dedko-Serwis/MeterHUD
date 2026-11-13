@@ -2,6 +2,7 @@
 using MeterHUD.Services;
 using MeterHUD.ViewModels;
 using System.Diagnostics;
+using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -24,6 +25,22 @@ public partial class SettingsWindow : Window
     private readonly AppSettings _settings;
     private readonly SettingsViewModel _viewModel;
     private readonly Func<bool> _isRecording;
+    private string _savedSnapshot = string.Empty;
+
+    public event EventHandler? SettingsSaved;
+
+    private string CurrentSnapshot() => string.Join("\u001F",
+        _viewModel.Language, _viewModel.CsvDirectory,
+        _viewModel.OverlayBackgroundColor, _viewModel.OverlayTextColor,
+        _viewModel.OverlayConnectedColor, _viewModel.OverlayWaitingColor,
+        _viewModel.OverlayDisconnectedColor, _viewModel.OverlayRangeTextColor,
+        _viewModel.OverlayMinMaxColor, _viewModel.OverlayAcColor,
+        _viewModel.OverlayDcColor, _viewModel.OverlayHoldColor,
+        _viewModel.OverlayDiodeColor);
+
+    private void UpdateSaveButton() => SaveButton.IsEnabled = CurrentSnapshot() != _savedSnapshot;
+
+    private void SettingsChanged(object? sender, PropertyChangedEventArgs e) => UpdateSaveButton();
 
     public SettingsWindow(AppSettings settings, Func<bool>? isRecording = null)
     {
@@ -46,6 +63,9 @@ public partial class SettingsWindow : Window
         HoldColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
         DiodeColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
         RefreshColorPreviews();
+        _savedSnapshot = CurrentSnapshot();
+        _viewModel.PropertyChanged += SettingsChanged;
+        UpdateSaveButton();
     }
 
     private void Save_Click(
@@ -125,7 +145,9 @@ public partial class SettingsWindow : Window
 
             LocalizationService.Instance.SetLanguage(_settings.Language);
 
-            DialogResult = true;
+            _savedSnapshot = CurrentSnapshot();
+            UpdateSaveButton();
+            SettingsSaved?.Invoke(this, EventArgs.Empty);
 
         }
         catch (Exception ex)
