@@ -11,7 +11,12 @@
             <Button Content="{Binding Source={StaticResource Loc}, Path=[ButtonClose]}" Width="90" Height="30" IsCancel="True" Click="Close_Click"/>
         </StackPanel>
         <StackPanel>
-            <TextBlock Text="MeterHUD" FontSize="26" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                <TextBlock Text="MeterHUD" FontSize="26" FontWeight="Bold"/>
+                <TextBlock Text="{Binding AppVersion}" FontSize="12"
+                           Foreground="{x:Static services:AppColors.UiAAAAAABrush}"
+                           Margin="9,0,0,0" VerticalAlignment="Bottom"/>
+            </StackPanel>
             <TextBlock Text="by DEDKO Serwis" Foreground="{x:Static services:AppColors.UiAAAAAABrush}" Margin="0,0,0,14"/>
             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[AboutDescription]}" TextWrapping="Wrap" Margin="0,0,0,16"/>
             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[AboutCopyright]}" TextWrapping="Wrap" Margin="0,0,0,12"/>
