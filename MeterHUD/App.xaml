@@ -14,6 +14,7 @@
         <SolidColorBrush x:Key="OverlayMinMaxBrush" Color="{x:Static services:AppColors.OverlayMinMaxValue}"/>
         <SolidColorBrush x:Key="OverlayAcBrush" Color="{x:Static services:AppColors.OverlayAcValue}"/>
         <SolidColorBrush x:Key="OverlayDcBrush" Color="{x:Static services:AppColors.OverlayDcValue}"/>
+        <SolidColorBrush x:Key="OverlayDiodeBrush" Color="{x:Static services:AppColors.OverlayDiodeValue}"/>
         <SolidColorBrush x:Key="OverlayHoldBrush" Color="{x:Static services:AppColors.OverlayHoldValue}"/>
         <ObjectDataProvider x:Key="Loc"
                         ObjectType="{x:Type services:LocalizationService}"
