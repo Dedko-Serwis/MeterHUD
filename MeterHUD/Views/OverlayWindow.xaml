@@ -334,8 +334,8 @@
                             </Grid>
                         </Grid>
 
-                        <!-- Dwa pomiary AC+DC -->
-                        <Grid>
+                        <!-- Dwa pomiary AC+DC: przesunięcie całego bloku w lewo i lekko w górę -->
+                        <Grid Margin="-14,-8,0,0">
                             <Grid.Style>
                                 <Style TargetType="Grid">
                                     <Setter Property="Visibility" Value="Collapsed"/>
