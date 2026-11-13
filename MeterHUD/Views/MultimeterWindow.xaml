@@ -244,29 +244,18 @@
                                 VerticalAlignment="Center"
                                 Margin="0"/>
 
-                        <!-- Symbol diody nad jednostką, tylko dla funkcji 0x08 -->
+                        <!-- Jednostka pozostaje wyśrodkowana; dioda nie uczestniczy w pomiarze wysokości -->
                         <Grid Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center">
-                            <Grid.RowDefinitions>
-                                <RowDefinition>
-                                    <RowDefinition.Style>
-                                        <Style TargetType="RowDefinition">
-                                            <Setter Property="Height" Value="0"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsDiodeMode}" Value="True">
-                                                    <Setter Property="Height" Value="24"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </RowDefinition.Style>
-                                </RowDefinition>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Viewbox Grid.Row="1" Panel.ZIndex="1" Width="30" Height="14"
-                                     HorizontalAlignment="Center" VerticalAlignment="Top" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Viewbox.RenderTransform><TranslateTransform Y="-13"/></Viewbox.RenderTransform>
+                            <TextBlock x:Name="UnitText"
+                                       Text="{Binding Unit}"
+                                       Foreground="{DynamicResource OverlayTextBrush}"
+                                       FontSize="30" TextWrapping="NoWrap"
+                                       Padding="5" TextAlignment="Center"/>
+                            <Viewbox Width="24" Height="11"
+                                     HorizontalAlignment="Center" VerticalAlignment="Top"
+                                     Margin="0,-8,0,0" Panel.ZIndex="1">
                                 <Path Data="M 2,11 L 12,11 M 12,2 L 12,20 L 31,11 Z M 31,2 L 31,20 M 31,11 L 42,11"
-                                      Stroke="{DynamicResource OverlayDiodeBrush}"
-                                      StrokeThickness="2.5"
+                                      Stroke="{DynamicResource OverlayDiodeBrush}" StrokeThickness="2"
                                       StrokeLineJoin="Round">
                                     <Path.Style>
                                         <Style TargetType="Path">
@@ -280,15 +269,8 @@
                                     </Path.Style>
                                 </Path>
                             </Viewbox>
-                            <TextBlock x:Name="UnitText"
-                                       Grid.Row="1"
-                                       Text="{Binding Unit}"
-                                       Foreground="{DynamicResource OverlayTextBrush}"
-                                       FontSize="30"
-                                       TextWrapping="NoWrap"
-                                       Padding="5"
-                                       TextAlignment="Center"/>
                         </Grid>
+                    </Grid>
                     </Grid>
 
                     <!-- Dwa pomiary AC+DC -->
