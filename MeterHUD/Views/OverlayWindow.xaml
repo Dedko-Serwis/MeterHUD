@@ -295,13 +295,42 @@
                    VerticalAlignment="Center"
                    TextWrapping="NoWrap"/>
 
-                            <TextBlock Grid.Column="1"
-                   Text="{Binding OverlayUnit}"
-                   FontSize="26"
-                   Foreground="{DynamicResource OverlayTextBrush}"
-                   TextAlignment="Center"
-                   VerticalAlignment="Center"
-                   TextWrapping="NoWrap"/>
+                            <Grid Grid.Column="1" VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition>
+                                        <RowDefinition.Style>
+                                            <Style TargetType="RowDefinition">
+                                                <Setter Property="Height" Value="0"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDiodeMode}" Value="True">
+                                                        <Setter Property="Height" Value="20"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </RowDefinition.Style>
+                                    </RowDefinition>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Viewbox Grid.Row="0" Width="38" Height="18" HorizontalAlignment="Center">
+                                    <Path Data="M 2,11 L 12,11 M 12,2 L 12,20 L 31,11 Z M 31,2 L 31,20 M 31,11 L 42,11"
+                                          Stroke="{DynamicResource OverlayDiodeBrush}"
+                                          StrokeThickness="2.5" StrokeLineJoin="Round">
+                                        <Path.Style>
+                                            <Style TargetType="Path">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDiodeMode}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Path.Style>
+                                    </Path>
+                                </Viewbox>
+                                <TextBlock Grid.Row="1" Text="{Binding OverlayUnit}"
+                                           FontSize="26" Foreground="{DynamicResource OverlayTextBrush}"
+                                           TextAlignment="Center" TextWrapping="NoWrap"/>
+                            </Grid>
                         </Grid>
 
                         <!-- Dwa pomiary AC+DC -->
