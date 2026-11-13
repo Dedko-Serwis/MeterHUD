@@ -18,6 +18,7 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     private string _overlayMinMaxColor;
     private string _overlayAcColor;
     private string _overlayDcColor;
+    private string _overlayDiodeColor;
     private string _overlayHoldColor;
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -37,6 +38,7 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
         _overlayMinMaxColor = settings.OverlayMinMaxColor;
         _overlayAcColor = settings.OverlayAcColor;
         _overlayDcColor = settings.OverlayDcColor;
+        _overlayDiodeColor = settings.OverlayDiodeColor;
         _overlayHoldColor = settings.OverlayHoldColor;
     }
 
@@ -113,6 +115,12 @@ public sealed class SettingsViewModel : INotifyPropertyChanged
     {
         get => _overlayDcColor;
         set { if (_overlayDcColor == value) { return; } _overlayDcColor = value; OnPropertyChanged(); }
+    }
+
+    public string OverlayDiodeColor
+    {
+        get => _overlayDiodeColor;
+        set { if (_overlayDiodeColor == value) { return; } _overlayDiodeColor = value; OnPropertyChanged(); }
     }
 
     public string OverlayHoldColor
