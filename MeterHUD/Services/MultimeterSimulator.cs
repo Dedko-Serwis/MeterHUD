@@ -10,7 +10,7 @@ public sealed class MultimeterSimulator
 
     public MultimeterReading Next()
     {
-        int step = _index++ % 12;
+        int step = _index++ % 13;
 
         return step switch
         {
@@ -29,6 +29,7 @@ public sealed class MultimeterSimulator
                         acDc: true, ac: true),
             10 => Create("-1.234", "V AC+DC", "Napięcie AC+DC", 0x19,
                          acDc: true, ac: false),
+            11 => Create("0.612", "V", "Test diody", 0x08),
             _ => Create("0.000", "V DC", "Napięcie DC", 0x02,
                         auto: false)
         };
