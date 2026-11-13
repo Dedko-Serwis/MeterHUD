@@ -202,30 +202,30 @@
                     <RowDefinition Height="94"/>
                 </Grid.RowDefinitions>
 
-                <!-- AUTO: sam tekst, bez tła i ramki -->
-                <StackPanel Grid.Row="0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left">
-                    <TextBlock Text="AUTO"
+                <!-- Stała szerokość pola nazwy pomiaru pomiędzy AUTO i AC/DC -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="55"/>
+                        <ColumnDefinition Width="195"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="AUTO"
                                Style="{StaticResource ActiveTextStyle}"
-                               VerticalAlignment="Center"
-                               Margin="6,0,12,0"/>
-                </StackPanel>
-
-                <!-- AC / DC -->
-                <StackPanel Grid.Row="0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Right">
-
-                    <Border Style="{StaticResource ACStyle}">
-                        <TextBlock Text="AC" Style="{StaticResource ACTextStyle}" VerticalAlignment="Center"/>
-                    </Border>
-                    <Border Style="{StaticResource DCStyle}">
-                        <TextBlock Text="DC" Style="{StaticResource DCTextStyle}" VerticalAlignment="Center"/>
-                    </Border>
-
-
-                </StackPanel>
+                               VerticalAlignment="Center" Margin="6,0,0,0"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Function}"
+                               FontSize="11" Foreground="{DynamicResource OverlayTextBrush}"
+                               TextAlignment="Center" TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center" Margin="2,0"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Border Style="{StaticResource ACStyle}">
+                            <TextBlock Text="AC" Style="{StaticResource ACTextStyle}" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Style="{StaticResource DCStyle}">
+                            <TextBlock Text="DC" Style="{StaticResource DCTextStyle}" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
 
                 <!-- GŁÓWNA CZĘŚĆ -->
                 <Grid Grid.Row="1">
@@ -422,5 +422,10 @@
                 </Grid>
             </Grid>
         </Viewbox>
+        <!-- Wymiary widoczne tylko gdy zmiana rozmiaru jest odblokowana -->
+        <TextBlock x:Name="OverlaySizeText" HorizontalAlignment="Right"
+                   VerticalAlignment="Bottom" Margin="0,0,8,5"
+                   FontSize="10" Foreground="{DynamicResource OverlayTextBrush}"
+                   IsHitTestVisible="False" Visibility="Collapsed"/>
     </Border>
 </Window>
