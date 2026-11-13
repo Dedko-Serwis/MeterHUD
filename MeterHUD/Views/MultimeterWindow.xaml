@@ -264,7 +264,7 @@
                             <Viewbox Grid.Row="0" Width="44" Height="22"
                                      HorizontalAlignment="Center" Stretch="Uniform">
                                 <Path Data="M 2,11 L 12,11 M 12,2 L 12,20 L 31,11 Z M 31,2 L 31,20 M 31,11 L 42,11"
-                                      Stroke="{DynamicResource OverlayTextBrush}"
+                                      Stroke="{DynamicResource OverlayDiodeBrush}"
                                       StrokeThickness="2.5"
                                       StrokeLineJoin="Round">
                                     <Path.Style>
