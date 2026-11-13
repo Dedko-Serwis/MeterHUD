@@ -191,6 +191,7 @@
             </Style>
         </Border.Style>
 
+        <Grid>
         <!-- Tutaj pozostaje istniejący Viewbox -->
 
     <Viewbox Stretch="Uniform"
@@ -427,5 +428,6 @@
                    VerticalAlignment="Bottom" Margin="0,0,8,5"
                    FontSize="10" Foreground="{DynamicResource OverlayTextBrush}"
                    IsHitTestVisible="False" Visibility="Collapsed"/>
+        </Grid>
     </Border>
 </Window>
