@@ -44,6 +44,7 @@ public partial class SettingsWindow : Window
         AcColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
         DcColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
         HoldColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
+        DiodeColorTextBox.TextChanged += (_, _) => RefreshColorPreviews();
         RefreshColorPreviews();
     }
 
@@ -59,7 +60,8 @@ public partial class SettingsWindow : Window
             !TryNormalizeColor(_viewModel.OverlayMinMaxColor, out string minMax) ||
             !TryNormalizeColor(_viewModel.OverlayAcColor, out string ac) ||
             !TryNormalizeColor(_viewModel.OverlayDcColor, out string dc) ||
-            !TryNormalizeColor(_viewModel.OverlayHoldColor, out string hold))
+            !TryNormalizeColor(_viewModel.OverlayHoldColor, out string hold) ||
+            !TryNormalizeColor(_viewModel.OverlayDiodeColor, out string diode))
         {
             MessageBox.Show(LocalizationService.Instance["SettingsInvalidColor"], "MeterHUD",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -96,6 +98,7 @@ public partial class SettingsWindow : Window
         string previousAc = _settings.OverlayAcColor;
         string previousDc = _settings.OverlayDcColor;
         string previousHold = _settings.OverlayHoldColor;
+        string previousDiode = _settings.OverlayDiodeColor;
 
         try
         {
@@ -117,6 +120,7 @@ public partial class SettingsWindow : Window
             _settings.OverlayAcColor = ac;
             _settings.OverlayDcColor = dc;
             _settings.OverlayHoldColor = hold;
+            _settings.OverlayDiodeColor = diode;
             _settings.Save();
 
             LocalizationService.Instance.SetLanguage(_settings.Language);
@@ -138,6 +142,7 @@ public partial class SettingsWindow : Window
             _settings.OverlayAcColor = previousAc;
             _settings.OverlayDcColor = previousDc;
             _settings.OverlayHoldColor = previousHold;
+            _settings.OverlayDiodeColor = previousDiode;
 
             MessageBox.Show(
                 string.Format(LocalizationService.Instance["ErrorSettingsSave"], ex.Message),
@@ -162,6 +167,11 @@ public partial class SettingsWindow : Window
 
     private void RefreshColorPreviews()
     {
+        if (TryNormalizeColor(_viewModel.OverlayDiodeColor, out string diode))
+        {
+            DiodeColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(diode));
+        }
+
         if (TryNormalizeColor(_viewModel.OverlayBackgroundColor, out string bg))
         {
             BackgroundColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(bg));
@@ -212,6 +222,9 @@ public partial class SettingsWindow : Window
             HoldColorButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hold));
         }
     }
+
+    private void DiodeColor_Click(object sender, RoutedEventArgs e) =>
+        PickColor(_viewModel.OverlayDiodeColor, value => _viewModel.OverlayDiodeColor = value);
 
     private static void PickColor(string current, Action<string> setColor)
     {
@@ -269,6 +282,7 @@ public partial class SettingsWindow : Window
         _viewModel.OverlayAcColor = AppColors.OverlayAc;
         _viewModel.OverlayDcColor = AppColors.OverlayDc;
         _viewModel.OverlayHoldColor = AppColors.OverlayHold;
+        _viewModel.OverlayDiodeColor = AppColors.OverlayDiode;
     }
 
     private void BrowseCsvDirectory_Click(object sender, RoutedEventArgs e)
