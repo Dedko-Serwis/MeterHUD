@@ -22,6 +22,7 @@ public static class AppColors
     public const string OverlayMinMax = "#0071E1";        // Aktywne wskaźniki MIN i MAX
     public const string OverlayAc = "#FF0000";            // Aktywny wskaźnik AC
     public const string OverlayDc = "#00C400";            // Aktywny wskaźnik DC
+    public const string OverlayDiode = "#00C400";       // Symbol diody w oknie głównym i nakładce
     public const string OverlayHold = "#FF8000";          // Aktywny wskaźnik HOLD
 
     // ============================================================
@@ -38,6 +39,7 @@ public static class AppColors
     public static Color OverlayMinMaxValue => Parse(OverlayMinMax);
     public static Color OverlayAcValue => Parse(OverlayAc);
     public static Color OverlayDcValue => Parse(OverlayDc);
+    public static Color OverlayDiodeValue => Parse(OverlayDiode);
     public static Color OverlayHoldValue => Parse(OverlayHold);
 
     // ============================================================
