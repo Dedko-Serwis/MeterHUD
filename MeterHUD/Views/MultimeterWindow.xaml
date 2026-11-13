@@ -73,9 +73,9 @@
                           Click="SettingsMenuItem_Click"/>
             </MenuItem>
 
-            <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuUpdate]}" Foreground="{x:Static services:AppColors.UiWhiteBrush}" Click="UpdateMenuItem_Click"/>
-
             <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuHelp]}" Foreground="{x:Static services:AppColors.UiWhiteBrush}">
+                <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuUpdate]}" Click="UpdateMenuItem_Click"/>
+                <Separator/>
                 <MenuItem Header="{Binding Source={StaticResource Loc}, Path=[MenuAbout]}" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
