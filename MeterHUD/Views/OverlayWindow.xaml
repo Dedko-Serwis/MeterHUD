@@ -303,7 +303,7 @@
                                                 <Setter Property="Height" Value="0"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsDiodeMode}" Value="True">
-                                                        <Setter Property="Height" Value="20"/>
+                                                        <Setter Property="Height" Value="0"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -311,7 +311,8 @@
                                     </RowDefinition>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <Viewbox Grid.Row="0" Width="38" Height="18" HorizontalAlignment="Center">
+                                <Viewbox Grid.Row="1" Panel.ZIndex="1" Width="26" Height="12" HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                                    <Viewbox.RenderTransform><TranslateTransform Y="-11"/></Viewbox.RenderTransform>
                                     <Path Data="M 2,11 L 12,11 M 12,2 L 12,20 L 31,11 Z M 31,2 L 31,20 M 31,11 L 42,11"
                                           Stroke="{DynamicResource OverlayDiodeBrush}"
                                           StrokeThickness="2.5" StrokeLineJoin="Round">
