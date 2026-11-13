@@ -24,6 +24,7 @@ public partial class OverlayWindow : Window
 
         Loaded += OverlayWindow_Loaded;
         Closing += OverlayWindow_Closing;
+        SizeChanged += (_, _) => UpdateSizeIndicator();
     }
 
     private void OverlayWindow_Loaded(
@@ -59,6 +60,14 @@ public partial class OverlayWindow : Window
         ResizeMode = _settings.OverlaySizeLocked
             ? ResizeMode.NoResize
             : ResizeMode.CanResizeWithGrip;
+        UpdateSizeIndicator();
+    }
+
+    private void UpdateSizeIndicator()
+    {
+        OverlaySizeText.Visibility = _settings.OverlaySizeLocked
+            ? Visibility.Collapsed : Visibility.Visible;
+        OverlaySizeText.Text = $"{Width:0} × {Height:0}";
     }
 
     public void ApplyTopmost()
