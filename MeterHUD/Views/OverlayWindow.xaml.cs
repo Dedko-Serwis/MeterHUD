@@ -50,6 +50,7 @@ public partial class OverlayWindow : Window
         Resources["OverlayMinMaxBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayMinMaxColor, AppColors.OverlayMinMax);
         Resources["OverlayAcBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayAcColor, AppColors.OverlayAc);
         Resources["OverlayDcBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayDcColor, AppColors.OverlayDc);
+        Resources["OverlayDiodeBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayDiodeColor, AppColors.OverlayDiode);
         Resources["OverlayHoldBrush"] = AppColors.ParseOverlayBrush(_settings.OverlayHoldColor, AppColors.OverlayHold);
     }
 
