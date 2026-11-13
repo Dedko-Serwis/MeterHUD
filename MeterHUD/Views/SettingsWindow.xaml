@@ -51,7 +51,7 @@
         <ColumnDefinition Width="95"/>
         <ColumnDefinition Width="40"/>
     </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
     <TextBlock Grid.Row="0" Text="{Binding Source={StaticResource Loc}, Path=[SettingsOverlayBackground]}" VerticalAlignment="Center"/>
     <TextBox x:Name="BackgroundColorTextBox" Grid.Row="0" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
@@ -119,6 +119,13 @@
                          Text="{Binding OverlayDcColor, UpdateSourceTrigger=PropertyChanged}"/>
     <Button x:Name="DcColorButton" Grid.Row="3" Grid.Column="2"
                         Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="DcColor_Click" Padding="0" Height="20" VerticalAlignment="Center"/>
+    <TextBlock Grid.Row="5" Text="{Binding Source={StaticResource Loc}, Path=[SettingsDiodeColor]}" VerticalAlignment="Center"/>
+    <TextBox x:Name="DiodeColorTextBox" Grid.Row="5" Grid.Column="1"
+             Margin="0,3,6,3" VerticalContentAlignment="Center"
+             Text="{Binding OverlayDiodeColor, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button x:Name="DiodeColorButton" Grid.Row="5" Grid.Column="2"
+            ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}"
+            Click="DiodeColor_Click" Padding="0" Height="20" VerticalAlignment="Center"/>
     <TextBlock Grid.Row="4" Text="{Binding Source={StaticResource Loc}, Path=[SettingsHoldBackground]}" VerticalAlignment="Center"/>
     <TextBox x:Name="HoldColorTextBox" Grid.Row="4" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
