@@ -38,8 +38,8 @@
                                Margin="0,0,0,18"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="310"/>
+                            <ColumnDefinition Width="326"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsDisplayFrame]}"
@@ -51,7 +51,7 @@
         <ColumnDefinition Width="95"/>
         <ColumnDefinition Width="40"/>
     </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
     <TextBlock Grid.Row="0" Text="{Binding Source={StaticResource Loc}, Path=[SettingsOverlayBackground]}" VerticalAlignment="Center"/>
     <TextBox x:Name="BackgroundColorTextBox" Grid.Row="0" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
@@ -84,7 +84,7 @@
                         Content="" ToolTip="{Binding Source={StaticResource Loc}, Path=[SettingsPickColor]}" Click="DisconnectedColor_Click" Padding="0" Height="20" VerticalAlignment="Center"/>
 </Grid>
                         </StackPanel>
-                        <StackPanel Grid.Column="1">
+                        <StackPanel Grid.Column="1" Margin="16,0,0,0">
                             <TextBlock Text="{Binding Source={StaticResource Loc}, Path=[SettingsIndicators]}"
                                        FontWeight="SemiBold" Foreground="{x:Static services:AppColors.UiAAAAAABrush}"
                                        Margin="0,0,0,8"/>
