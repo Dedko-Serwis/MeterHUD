@@ -244,16 +244,39 @@
                                 VerticalAlignment="Center"
                                 Margin="0"/>
 
-                        <TextBlock x:Name="UnitText"
-                                   Grid.Column="2"
-                                   Text="{Binding Unit}"
-                                   Foreground="{DynamicResource OverlayTextBrush}"
-                                   FontSize="30"
-                                   Margin="12,0,0,0"                                   
-                                   VerticalAlignment="Center"
-                                   TextWrapping="NoWrap" 
-                                   Padding="5" 
-                                   TextAlignment="Center"/>
+                        <!-- Symbol diody nad jednostką, tylko dla funkcji 0x08 -->
+                        <Grid Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Viewbox Grid.Row="0" Width="44" Height="22"
+                                     HorizontalAlignment="Center" Stretch="Uniform">
+                                <Path Data="M 2,11 L 12,11 M 12,2 L 12,20 L 31,11 Z M 31,2 L 31,20 M 31,11 L 42,11"
+                                      Stroke="{DynamicResource OverlayTextBrush}"
+                                      StrokeThickness="2.5"
+                                      StrokeLineJoin="Round">
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDiodeMode}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                            </Viewbox>
+                            <TextBlock x:Name="UnitText"
+                                       Grid.Row="1"
+                                       Text="{Binding Unit}"
+                                       Foreground="{DynamicResource OverlayTextBrush}"
+                                       FontSize="30"
+                                       TextWrapping="NoWrap"
+                                       Padding="5"
+                                       TextAlignment="Center"/>
+                        </Grid>
                     </Grid>
 
                     <!-- Dwa pomiary AC+DC -->
