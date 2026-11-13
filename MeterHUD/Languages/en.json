@@ -74,6 +74,7 @@
   "SettingsMinMaxBackground": "MIN / MAX (background)",
   "SettingsAcBackground": "AC (background)",
   "SettingsDcBackground": "DC (background)",
+  "SettingsDiodeColor": "Diode symbol",
   "SettingsHoldBackground": "HOLD (background)",
   "SettingsDefaultColors": "Default colors",
   "SettingsFilePaths": "File paths",
