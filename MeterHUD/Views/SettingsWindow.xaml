@@ -94,7 +94,7 @@
         <ColumnDefinition Width="95"/>
         <ColumnDefinition Width="40"/>
     </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/></Grid.RowDefinitions>
     <TextBlock Grid.Row="0" Text="{Binding Source={StaticResource Loc}, Path=[SettingsAutoManualText]}" VerticalAlignment="Center"/>
     <TextBox x:Name="RangeTextColorTextBox" Grid.Row="0" Grid.Column="1"
                          Margin="0,3,6,3" VerticalContentAlignment="Center"
