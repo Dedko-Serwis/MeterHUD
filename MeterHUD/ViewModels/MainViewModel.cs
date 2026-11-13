@@ -44,8 +44,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     private readonly DispatcherTimer _simulationTimer = new()
     {
-        Interval = TimeSpan.FromSeconds(2)
+        Interval = TimeSpan.FromSeconds(4)
     };
+
+    private bool _isSimulationPaused;
+
+    public bool IsSimulationPaused => _isSimulationPaused;
+
+    public void ToggleSimulationPause()
+    {
+        if (!IsSimulationMode || IsDisplayTestMode) return;
+        _isSimulationPaused = !_isSimulationPaused;
+        if (_isSimulationPaused) _simulationTimer.Stop();
+        else _simulationTimer.Start();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSimulationPaused)));
+    }
 
     private bool _isSimulationMode;
 
@@ -494,6 +507,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         StopRecording();
 
         _simulator.Reset();
+        _isSimulationPaused = false;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSimulationPaused)));
 
         IsSimulationMode = true;
         DeviceName = GetDeviceDisplayName();
@@ -503,7 +518,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         _simulationTimer.Start();
 
-        // Pierwszy pomiar bez czekania dwóch sekund.
+        // Pierwszy pomiar bez oczekiwania na następny interwał.
         SimulationTimer_Tick(this, EventArgs.Empty);
     }
 
@@ -516,6 +531,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         _simulationTimer.Stop();
         _simulationTimer.Tick -= SimulationTimer_Tick;
+        _isSimulationPaused = false;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSimulationPaused)));
 
         IsSimulationMode = false;
 
@@ -534,7 +551,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private void SimulationTimer_Tick(
         object? sender, EventArgs e)
     {
-        if (!IsSimulationMode)
+        if (!IsSimulationMode || _isSimulationPaused)
         {
             return;
         }
