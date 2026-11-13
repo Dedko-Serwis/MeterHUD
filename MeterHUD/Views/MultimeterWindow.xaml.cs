@@ -148,6 +148,13 @@ public partial class MultimeterWindow : Window
     private void MainWindow_PreviewKeyDown(
     object sender, KeyEventArgs e)
     {
+        if (e.Key == Key.Space && _viewModel.IsSimulationMode && !_viewModel.IsDisplayTestMode)
+        {
+            _viewModel.ToggleSimulationPause();
+            e.Handled = true;
+            return;
+        }
+
         if (e.Key != Key.F12)
         {
             return;
