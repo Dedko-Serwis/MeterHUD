@@ -442,7 +442,15 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         // Kolejne fazy testu.
         int step = _displayTestStep++ % 6;
 
+        // Faza 2: sprawdzenie symbolu diody nad jednostką V.
+        // Pozostałe fazy zachowują dotychczasowe wskazania testowe.
+        bool diodeStep = step == 2;
         IsAcDcMode = step >= 3;
+        Unit = diodeStep ? "V" : "mV";
+        Function = diodeStep
+            ? LocalizationService.Instance["MeasurementDiode"]
+            : LocalizationService.Instance["MeasurementVoltageACDC"];
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDiodeMode)));
 
         ConnectionState = (step % 3) switch
         {
@@ -578,7 +586,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
 
 
-    public bool IsDiodeMode => _functionCode == 0x08;
+    public bool IsDiodeMode => (IsDisplayTestMode && _displayTestStep % 6 == 3) || (!IsDisplayTestMode && _functionCode == 0x08);
 
     public bool IsMin
     {
