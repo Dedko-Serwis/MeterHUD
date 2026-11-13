@@ -271,7 +271,6 @@
                             </Viewbox>
                         </Grid>
                     </Grid>
-                    </Grid>
 
                     <!-- Dwa pomiary AC+DC -->
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
