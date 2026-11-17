@@ -1,9 +1,6 @@
 name: MeterHUD build and tests
 on:
-  push:
-    branches: [master, feature/updates-and-installer]
-  pull_request:
-    branches: [master]
+  workflow_dispatch:
 jobs:
   build:
     runs-on: windows-latest
